@@ -1,0 +1,175 @@
+{
+  "name": "Homepage",
+  "sections": {
+    "hero_banner": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Welcome to Our Store",
+        "content": "<p>Discover our amazing collection of products crafted with care and attention to detail. Quality you can trust, style you'll love.</p>",
+        "cta_label": "Shop Now",
+        "cta_url": "/collections/all",
+        "align": "center",
+        "bg_color": "#f8f9fa",
+        "heading_color": "#333333",
+        "text_color": "#666666",
+        "cta_bg_color": "#007cba",
+        "cta_text_color": "#ffffff",
+        "padding_top": 100,
+        "padding_bottom": 100,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 60
+      }
+    },
+    "featured_products": {
+      "type": "product-grid-paginate",
+      "settings": {
+        "heading": "Featured Products",
+        "collection": "featured",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "columns_tablet": 2,
+        "columns_mobile": 1,
+        "show_vendor": true,
+        "show_rating": true,
+        "enable_quick_view": true,
+        "padding_top": 80,
+        "padding_bottom": 40
+      }
+    },
+    "testimonials": {
+      "type": "testimonial-carousel",
+      "settings": {
+        "title": "What Our Customers Say",
+        "subtitle": "Don't just take our word for it",
+        "bg_color": "#ffffff",
+        "text_color": "#333333",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Absolutely love this product! The quality is outstanding and customer service was excellent. Will definitely be purchasing again.",
+            "rating": 5,
+            "author_name": "Sarah Johnson",
+            "author_title": "Verified Customer",
+            "company": "New York, NY"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Fast shipping and exactly what I ordered. The attention to detail is impressive and the packaging was beautiful.",
+            "rating": 5,
+            "author_name": "Mike Chen",
+            "author_title": "Repeat Customer",
+            "company": "Los Angeles, CA"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Great experience from start to finish. The product exceeded my expectations and arrived earlier than promised.",
+            "rating": 5,
+            "author_name": "Emily Rodriguez",
+            "author_title": "Happy Customer",
+            "company": "Chicago, IL"
+          }
+        }
+      ]
+    },
+    "image_with_text": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Our Story",
+        "content": "<p>Founded with a passion for quality and craftsmanship, we've been creating exceptional products for over a decade. Every item is carefully designed and made with sustainable materials.</p><p>We believe in building lasting relationships with our customers through transparency, quality, and exceptional service.</p>",
+        "cta_label": "Learn More",
+        "cta_url": "/pages/about",
+        "align": "left",
+        "bg_color": "#ffffff",
+        "heading_color": "#333333",
+        "text_color": "#666666",
+        "cta_bg_color": "#28a745",
+        "cta_text_color": "#ffffff",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "newsletter_signup": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Stay Updated",
+        "content": "<p>Subscribe to our newsletter for exclusive offers, new product announcements, and style inspiration delivered to your inbox.</p>",
+        "cta_label": "Subscribe",
+        "cta_url": "#newsletter-form",
+        "align": "center",
+        "bg_color": "#f8f9fa",
+        "heading_color": "#333333",
+        "text_color": "#666666",
+        "cta_bg_color": "#007cba",
+        "cta_text_color": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "faq_section": {
+      "type": "faq-accordion",
+      "settings": {
+        "title": "Frequently Asked Questions",
+        "description": "<p>Find answers to the most common questions about our products, shipping, and returns.</p>",
+        "container_width": 800,
+        "title_alignment": "center",
+        "bg_color": "#ffffff",
+        "title_color": "#333333",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>We offer several shipping options:</p><ul><li><strong>Standard Shipping:</strong> 3-5 business days</li><li><strong>Express Shipping:</strong> 1-2 business days</li><li><strong>Overnight Shipping:</strong> Next business day</li></ul><p>All orders placed before 2 PM EST ship the same day.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy on all items. To be eligible for a return:</p><ul><li>Items must be in original condition</li><li>Tags must be attached</li><li>Original packaging required</li><li>Receipt or proof of purchase needed</li></ul><p>Return shipping is free for exchanges or defective items.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes! We ship to over 50 countries worldwide. International shipping rates and delivery times vary by destination.</p><p>Please note that international customers are responsible for any customs duties or taxes that may apply.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How do I track my order?",
+            "answer": "<p>Once your order ships, you'll receive a tracking number via email. You can:</p><ul><li>Click the tracking link in your shipping confirmation email</li><li>Visit our order tracking page and enter your order number</li><li>Log into your account to view order status</li></ul><p>Tracking information is typically updated within 24 hours of shipment.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What payment methods do you accept?",
+            "answer": "<p>We accept all major payment methods:</p><ul><li>Credit cards (Visa, Mastercard, American Express, Discover)</li><li>PayPal</li><li>Apple Pay</li><li>Google Pay</li><li>Shop Pay</li></ul><p>All transactions are secure and encrypted for your protection.</p>"
+          }
+        }
+      ]
+    }
+  },
+  "order": [
+    "hero_banner",
+    "featured_products",
+    "testimonials",
+    "image_with_text",
+    "newsletter_signup",
+    "faq_section"
+  ]
+}

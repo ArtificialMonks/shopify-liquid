@@ -1,0 +1,30 @@
+{% comment %} sections/logo-list.liquid {% endcomment %}
+<section class="logos" aria-label="Brand logos">
+  <ul class="logos__list" role="list">
+    {% for block in section.blocks %}
+      <li class="logos__item" role="listitem" {{ block.shopify_attributes }}>
+        {% if block.settings.image %}
+          <img
+            src="{{ block.settings.image | image_url: width: 240 }}"
+            alt="{{ block.settings.alt | escape }}"
+            loading="lazy"
+            width="240"
+          >
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% schema %}{
+  "name": "Logo list",
+  "max_blocks": 12,
+  "settings": [],
+  "blocks": [
+    {"type":"logo","name":"Logo","settings":[
+      {"type":"image_picker","id":"image","label":"Image"},
+      {"type":"text","id":"alt","label":"Alt text"}
+    ]}
+  ],
+  "presets": [{"name":"Logo list","blocks":[{"type":"logo"},{"type":"logo"},{"type":"logo"}]}]
+}{% endschema %}
+

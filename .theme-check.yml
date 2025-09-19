@@ -1,0 +1,85 @@
+# Theme Check configuration for Shopify Liquid development
+# Documentation: https://shopify.dev/docs/themes/tools/theme-check
+
+# Enable/disable checks globally
+enabled: true
+
+# Root directory for theme files
+root: "."
+
+# Exclude directories from checking
+exclude:
+  - "node_modules/**"
+  - "dist/**"
+  - "build/**"
+  - "_archive/**"
+  - ".git/**"
+
+# Ignore specific files
+ignore:
+  - "shopify-liquid-guides/examples/*.json"
+
+# Check configuration
+checks:
+  # Liquid syntax and best practices
+  LiquidTag:
+    enabled: true
+    severity: error
+
+  UnknownFilter:
+    enabled: true
+    severity: warning
+
+  DeprecatedFilter:
+    enabled: true
+    severity: warning
+
+  # HTML validation
+  ValidHTMLTranslation:
+    enabled: true
+    severity: error
+
+  # Performance checks
+  AssetSizeAppJSCSS:
+    enabled: true
+    threshold_in_bytes: 100000
+    severity: warning
+
+  # Security checks
+  ContentForHeaderModification:
+    enabled: true
+    severity: error
+
+  # Best practices
+  UnusedAssign:
+    enabled: true
+    severity: info
+
+  MissingRequiredTemplateFiles:
+    enabled: false  # Disabled for documentation repository
+
+  # Code quality
+  UnusedSnippet:
+    enabled: true
+    severity: info
+
+  # Translation rules
+  TranslationKeyExists:
+    enabled: false  # Disabled for documentation examples
+
+# File-specific configurations
+file_patterns:
+  "shopify-liquid-guides/code-library/sections/*.liquid":
+    checks:
+      MissingTemplate:
+        enabled: false
+
+  "shopify-liquid-guides/code-library/blocks/*.liquid":
+    checks:
+      MissingTemplate:
+        enabled: false
+
+  "shopify-liquid-guides/code-library/snippets/*.liquid":
+    checks:
+      UnusedSnippet:
+        enabled: false

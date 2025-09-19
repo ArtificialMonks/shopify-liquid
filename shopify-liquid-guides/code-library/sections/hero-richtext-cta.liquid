@@ -1,0 +1,47 @@
+{% comment %} sections/hero-richtext-cta.liquid {% endcomment %}
+<section class="hero hero--richtext" role="region" aria-label="{{ section.settings.aria_label | default: section.settings.heading | default: 'Hero' | escape }}">
+  <div class="hero__inner container">
+    {% if section.settings.heading != blank %}
+      <h2 class="hero__heading">{{ section.settings.heading | escape }}</h2>
+    {% endif %}
+
+    {% if section.settings.content != blank %}
+      <div class="hero__content rte">
+        {{ section.settings.content }}
+      </div>
+    {% endif %}
+
+    {% if section.settings.cta_url != blank and section.settings.cta_label != blank %}
+      <div class="hero__actions">
+        <a
+          class="btn btn--primary hero__cta"
+          href="{{ section.settings.cta_url }}"
+          aria-label="{{ section.settings.cta_aria_label | default: section.settings.cta_label | escape }}"
+        >
+          {{ section.settings.cta_label | escape }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}{
+  "name": "Hero (rich text + CTA)",
+  "settings": [
+    {"type": "text", "id": "heading", "label": "Heading", "default": "Welcome to our store"},
+    {"type": "richtext", "id": "content", "label": "Content", "default": "<p>Add your rich text here. Keep it concise and scannable.</p>"},
+    {"type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop now"},
+    {"type": "url", "id": "cta_url", "label": "CTA URL"},
+    {"type": "text", "id": "cta_aria_label", "label": "CTA aria-label (optional)", "info": "Improves accessibility by providing a more descriptive action label."},
+    {"type": "text", "id": "aria_label", "label": "Section aria-label (optional)", "info": "Accessible name for the hero region."},
+    {"type": "select", "id": "align", "label": "Content alignment", "options": [
+      {"value": "left", "label": "Left"},
+      {"value": "center", "label": "Center"},
+      {"value": "right", "label": "Right"}
+    ], "default": "center"}
+  ],
+  "presets": [
+    {"name": "Hero (rich text + CTA)"}
+  ]
+}{% endschema %}
+

@@ -1,0 +1,40 @@
+{%- comment -%} Paste inside a section's block loop {%- endcomment -%}
+{%- assign u = block.id | replace: '_', '' | downcase -%}
+
+{% style %}
+  .video-text-{{ u }}{display:flex;align-items:center;gap:{{ block.settings.gap }}px}
+  .video-text__media-{{ u }} video{width:100%;height:auto;display:block;border-radius:{{ block.settings.radius }}px}
+  .video-text__text-{{ u }}{font-size:{{ block.settings.text_size }}px;line-height:1.6}
+  {% if block.settings.layout == 'text_left' %}.video-text-{{ u }}{flex-direction:row}{% else %}.video-text-{{ u }}{flex-direction:row-reverse}{% endif %}
+  @media(max-width:749px){.video-text-{{ u }}{flex-direction:column;gap:{{ block.settings.gap_mobile }}px}}
+{% endstyle %}
+
+<div class="video-text-{{ u }}" {{ block.shopify_attributes }}>
+  <div class="video-text__media-{{ u }}">
+    {% if block.settings.video_url %}
+      <video {% if block.settings.muted %}muted{% endif %} {% if block.settings.autoplay %}autoplay{% endif %} {% if block.settings.loop %}loop{% endif %} {% if block.settings.controls %}controls{% endif %} preload="metadata" playsinline>
+        <source src="{{ block.settings.video_url }}" type="video/mp4">
+      </video>
+    {% else %}
+      <div style="aspect-ratio:16/9;background:#f4f4f4;border-radius:{{ block.settings.radius }}px"></div>
+    {% endif %}
+  </div>
+  <div class="video-text__text-{{ u }}">{{ block.settings.rte }}</div>
+</div>
+
+{%- comment -%} Block schema (add under section schema -> blocks[])
+{"type":"video_text","name":"Video + Text","settings":[
+{"type":"url","id":"video_url","label":"MP4 URL"},
+{"type":"richtext","id":"rte","label":"Text"},
+{"type":"select","id":"layout","label":"Layout","options":[{"value":"text_left","label":"Text left, video right"},{"value":"text_right","label":"Video left, text right"}],"default":"text_left"},
+{"type":"range","id":"gap","label":"Gap","min":0,"max":100,"step":4,"unit":"px","default":24},
+{"type":"range","id":"gap_mobile","label":"Mobile gap","min":0,"max":60,"step":4,"unit":"px","default":16},
+{"type":"range","id":"radius","label":"Video radius","min":0,"max":30,"step":2,"unit":"px","default":8},
+{"type":"range","id":"text_size","label":"Text size","min":12,"max":28,"step":1,"unit":"px","default":16},
+{"type":"checkbox","id":"autoplay","label":"Autoplay"},
+{"type":"checkbox","id":"loop","label":"Loop"},
+{"type":"checkbox","id":"muted","label":"Muted","default":true},
+{"type":"checkbox","id":"controls","label":"Show controls","default":true}
+]}
+{%- endcomment -%}
+

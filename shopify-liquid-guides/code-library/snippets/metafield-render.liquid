@@ -1,0 +1,7 @@
+{%- comment -%} Render a product metafield safely {%- endcomment -%}
+{%- if product.metafields.custom.size_guide != blank -%}
+  <div class="size-guide">
+    {{ product.metafields.custom.size_guide | metafield_tag }}
+  </div>
+{%- endif -%}
+

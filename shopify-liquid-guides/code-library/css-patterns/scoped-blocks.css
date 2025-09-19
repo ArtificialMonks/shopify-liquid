@@ -1,0 +1,262 @@
+/* Scoped Blocks CSS Pattern
+ *
+ * This demonstrates the CSS methodology for block scoping used throughout
+ * the Shopify Liquid guides. Use this as a reference for building isolated,
+ * reusable components.
+ */
+
+/* ========================================
+ * BASIC SCOPED BLOCK PATTERN
+ * ======================================== */
+
+/* Generated in Liquid with unique suffix */
+.media-text-UNIQUEID {
+  display: flex;
+  gap: var(--gap, 24px);
+  padding: var(--padding, 20px);
+  background: var(--bg-color, #ffffff);
+  border-radius: var(--radius, 8px);
+}
+
+.media-text__media-UNIQUEID {
+  flex: 1;
+  overflow: hidden;
+  border-radius: var(--media-radius, 4px);
+}
+
+.media-text__content-UNIQUEID {
+  flex: 1;
+  color: var(--text-color, #333333);
+  font-size: var(--text-size, 16px);
+  line-height: 1.6;
+}
+
+.media-text__title-UNIQUEID {
+  margin: 0 0 var(--title-margin, 16px) 0;
+  font-size: var(--title-size, 24px);
+  color: var(--title-color, #000000);
+  font-weight: 600;
+}
+
+/* ========================================
+ * RESPONSIVE PATTERN
+ * ======================================== */
+
+@media (max-width: 749px) {
+  .media-text-UNIQUEID {
+    flex-direction: column;
+    gap: var(--gap-mobile, 16px);
+    padding: var(--padding-mobile, 16px);
+  }
+
+  .media-text__content-UNIQUEID {
+    font-size: var(--text-size-mobile, 14px);
+  }
+
+  .media-text__title-UNIQUEID {
+    font-size: var(--title-size-mobile, 20px);
+  }
+}
+
+/* ========================================
+ * LAYOUT VARIANTS
+ * ======================================== */
+
+/* Media left, content right (default) */
+.media-text-UNIQUEID {
+  flex-direction: row;
+}
+
+/* Content left, media right */
+.media-text-UNIQUEID.media-text--reversed-UNIQUEID {
+  flex-direction: row-reverse;
+}
+
+/* Stacked layout */
+.media-text-UNIQUEID.media-text--stacked-UNIQUEID {
+  flex-direction: column;
+}
+
+/* ========================================
+ * STATE MODIFIERS
+ * ======================================== */
+
+.media-text-UNIQUEID.media-text--featured-UNIQUEID {
+  border: 2px solid var(--accent-color, #007cba);
+  box-shadow: 0 4px 20px rgba(0, 124, 186, 0.1);
+}
+
+.media-text-UNIQUEID.media-text--large-UNIQUEID .media-text__title-UNIQUEID {
+  font-size: calc(var(--title-size, 24px) * 1.5);
+}
+
+/* ========================================
+ * ADVANCED SCOPING EXAMPLES
+ * ======================================== */
+
+/* Feature Grid Block */
+.feature-grid-UNIQUEID {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--grid-gap, 30px);
+  padding: var(--section-padding, 40px) 0;
+}
+
+.feature-grid__item-UNIQUEID {
+  text-align: center;
+  padding: var(--item-padding, 20px);
+  background: var(--item-bg, #f8f9fa);
+  border-radius: var(--item-radius, 8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-grid__item-UNIQUEID:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-grid__icon-UNIQUEID {
+  width: var(--icon-size, 48px);
+  height: var(--icon-size, 48px);
+  margin: 0 auto var(--icon-margin, 16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-grid__title-UNIQUEID {
+  font-size: var(--feature-title-size, 18px);
+  color: var(--feature-title-color, #333);
+  margin: 0 0 var(--feature-title-margin, 12px) 0;
+}
+
+.feature-grid__text-UNIQUEID {
+  font-size: var(--feature-text-size, 14px);
+  color: var(--feature-text-color, #666);
+  line-height: 1.5;
+}
+
+/* ========================================
+ * TESTIMONIAL CARD SCOPING
+ * ======================================== */
+
+.testimonial-card-UNIQUEID {
+  background: var(--card-bg, #ffffff);
+  padding: var(--card-padding, 30px);
+  border-radius: var(--card-radius, 12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, var(--shadow-opacity, 0.1));
+  text-align: center;
+  position: relative;
+}
+
+.testimonial-card__quote-UNIQUEID {
+  font-size: var(--quote-size, 16px);
+  color: var(--quote-color, #333);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0 0 var(--quote-margin, 20px) 0;
+}
+
+.testimonial-card__quote-UNIQUEID::before {
+  content: '"';
+  font-size: calc(var(--quote-size, 16px) * 2);
+  color: var(--accent-color, #007cba);
+  position: absolute;
+  top: var(--quote-offset, 10px);
+  left: var(--quote-offset, 10px);
+  line-height: 1;
+}
+
+.testimonial-card__author-UNIQUEID {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--author-gap, 15px);
+}
+
+.testimonial-card__avatar-UNIQUEID {
+  width: var(--avatar-size, 50px);
+  height: var(--avatar-size, 50px);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.testimonial-card__info-UNIQUEID {
+  text-align: left;
+}
+
+.testimonial-card__name-UNIQUEID {
+  font-weight: 600;
+  color: var(--name-color, #333);
+  font-size: var(--name-size, 14px);
+  margin: 0;
+}
+
+.testimonial-card__title-UNIQUEID {
+  color: var(--title-color, #666);
+  font-size: var(--author-title-size, 12px);
+  margin: 2px 0 0 0;
+}
+
+/* ========================================
+ * CSS CUSTOM PROPERTIES PATTERN
+ * ======================================== */
+
+/* Base component with CSS custom properties */
+.component-UNIQUEID {
+  /* Set all variables from Liquid settings */
+  --component-bg: #ffffff;
+  --component-color: #333333;
+  --component-padding: 20px;
+  --component-radius: 8px;
+  --component-gap: 16px;
+
+  /* Apply the variables */
+  background: var(--component-bg);
+  color: var(--component-color);
+  padding: var(--component-padding);
+  border-radius: var(--component-radius);
+  display: flex;
+  gap: var(--component-gap);
+}
+
+/* ========================================
+ * UTILITY CLASSES WITH SCOPING
+ * ======================================== */
+
+/* These would be generated per component instance */
+.text-center-UNIQUEID { text-align: center; }
+.text-left-UNIQUEID { text-align: left; }
+.text-right-UNIQUEID { text-align: right; }
+
+.flex-column-UNIQUEID { flex-direction: column; }
+.flex-row-UNIQUEID { flex-direction: row; }
+
+.hidden-mobile-UNIQUEID {
+  @media (max-width: 749px) {
+    display: none;
+  }
+}
+
+.hidden-desktop-UNIQUEID {
+  @media (min-width: 750px) {
+    display: none;
+  }
+}
+
+/* ========================================
+ * BEST PRACTICES SUMMARY
+ * ======================================== */
+
+/*
+1. Always append -UNIQUEID to every class name
+2. Use CSS custom properties for dynamic values
+3. Include responsive breakpoints in same scoped block
+4. Use BEM methodology: .block-UNIQUEID, .block__element-UNIQUEID, .block--modifier-UNIQUEID
+5. Group related styles together
+6. Use semantic class names that describe function, not appearance
+7. Include hover/focus states for interactive elements
+8. Provide fallback values with var(--property, fallback)
+9. Keep specificity low - avoid nested selectors when possible
+10. Use consistent naming patterns across all components
+*/

@@ -1,0 +1,14 @@
+{%- comment -%} Responsive image pattern using image_url and srcset {%- endcomment -%}
+{%- if section.settings.image -%}
+  <img
+    class="media"
+    src="{{ section.settings.image | image_url: width: 800 }}"
+    srcset="{{ section.settings.image | image_url: width: 400 }} 400w, {{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1200 }} 1200w"
+    sizes="(min-width: 990px) 800px, 100vw"
+    alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+    loading="lazy"
+    width="800"
+    height="{{ section.settings.image.aspect_ratio | default: 1.5 | times: 800 | round }}"
+  >
+{%- endif -%}
+

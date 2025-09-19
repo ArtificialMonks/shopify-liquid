@@ -1,0 +1,209 @@
+{
+  "name": "Product",
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "enable_sticky_info": true,
+        "media_size": "large",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "stacked",
+        "media_position": "left",
+        "image_zoom": "hover",
+        "mobile_thumbnails": "show",
+        "hide_variants": false,
+        "enable_video_looping": false
+      },
+      "blocks": [
+        {
+          "type": "vendor",
+          "settings": {}
+        },
+        {
+          "type": "title",
+          "settings": {}
+        },
+        {
+          "type": "price",
+          "settings": {}
+        },
+        {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        {
+          "type": "description",
+          "settings": {}
+        },
+        {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      ]
+    },
+    "product_recommendations": {
+      "type": "product-grid-paginate",
+      "settings": {
+        "heading": "You may also like",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_tablet": 2,
+        "columns_mobile": 1,
+        "show_vendor": false,
+        "show_rating": true,
+        "enable_quick_view": false,
+        "padding_top": 60,
+        "padding_bottom": 20
+      }
+    },
+    "product_features": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Product Features",
+        "content": "",
+        "align": "center",
+        "bg_color": "#f8f9fa",
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": [
+        {
+          "type": "feature_item",
+          "settings": {
+            "title": "Premium Materials",
+            "description": "Crafted from the finest materials for durability and comfort",
+            "icon_size": 48
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "title": "Eco-Friendly",
+            "description": "Sustainably sourced and environmentally responsible manufacturing",
+            "icon_size": 48
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "title": "Quality Guaranteed",
+            "description": "Backed by our comprehensive warranty and satisfaction guarantee",
+            "icon_size": 48
+          }
+        }
+      ]
+    },
+    "product_reviews": {
+      "type": "testimonial-carousel",
+      "settings": {
+        "title": "Customer Reviews",
+        "subtitle": "See what our customers are saying",
+        "bg_color": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "This product exceeded all my expectations. The quality is fantastic and it arrived exactly as described.",
+            "rating": 5,
+            "author_name": "Jennifer Williams",
+            "author_title": "Verified Purchase",
+            "company": "Boston, MA"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Love the attention to detail and the sustainable packaging. Will definitely be ordering again!",
+            "rating": 5,
+            "author_name": "David Park",
+            "author_title": "Repeat Customer",
+            "company": "Seattle, WA"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Great value for the price. Fast shipping and excellent customer service when I had questions.",
+            "rating": 4,
+            "author_name": "Maria Garcia",
+            "author_title": "Happy Customer",
+            "company": "Miami, FL"
+          }
+        }
+      ]
+    },
+    "shipping_returns": {
+      "type": "faq-accordion",
+      "settings": {
+        "title": "Shipping & Returns",
+        "description": "<p>Everything you need to know about delivery and returns for this product.</p>",
+        "container_width": 700,
+        "title_alignment": "center",
+        "bg_color": "#f8f9fa",
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "When will my order ship?",
+            "answer": "<p>Orders typically ship within 1-2 business days. You'll receive a tracking number once your order is on its way.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What's your return policy for this item?",
+            "answer": "<p>This item is eligible for our 30-day return policy. It must be in original condition with tags attached for a full refund.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Is this item available in other colors/sizes?",
+            "answer": "<p>Please check the variant options above. If you don't see your preferred option, it may be temporarily out of stock. Sign up for restock notifications!</p>"
+          }
+        }
+      ]
+    },
+    "care_instructions": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Care Instructions",
+        "content": "<h3>How to care for your purchase:</h3><ul><li><strong>Cleaning:</strong> Hand wash with mild soap and cold water</li><li><strong>Drying:</strong> Air dry away from direct sunlight</li><li><strong>Storage:</strong> Store in a cool, dry place when not in use</li><li><strong>Maintenance:</strong> Avoid harsh chemicals and abrasive materials</li></ul><p>Following these care instructions will help maintain the quality and extend the life of your product.</p>",
+        "align": "left",
+        "bg_color": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "main",
+    "product_recommendations",
+    "product_features",
+    "product_reviews",
+    "shipping_returns",
+    "care_instructions"
+  ]
+}

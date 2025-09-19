@@ -1,0 +1,14 @@
+{% comment %} Control where section is addable/visible via schema {% endcomment %}
+<section class="promo" aria-label="Promo banner">
+  <p>{{ section.settings.text | escape }}</p>
+</section>
+{% schema %}{
+  "name": "Promo banner",
+  "settings": [
+    {"type":"text","id":"text","label":"Text","default":"Free shipping over $50"}
+  ],
+  "presets": [{"name":"Promo banner"}],
+  "enabled_on": {"templates": ["*"]},
+  "disabled_on": {"templates": ["cart"], "groups": ["footer"]}
+}{% endschema %}
+

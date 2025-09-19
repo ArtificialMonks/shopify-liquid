@@ -1,0 +1,155 @@
+{
+  "name": "Collection",
+  "sections": {
+    "banner": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "{{ collection.title }}",
+        "content": "{{ collection.description }}",
+        "align": "center",
+        "bg_color": "#f8f9fa",
+        "heading_color": "#333333",
+        "text_color": "#666666",
+        "padding_top": 80,
+        "padding_bottom": 40,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 30
+      }
+    },
+    "main": {
+      "type": "main-collection-product-grid",
+      "settings": {
+        "products_per_page": 24,
+        "columns_desktop": 4,
+        "columns_tablet": 3,
+        "columns_mobile": 2,
+        "image_ratio": "square",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": true,
+        "enable_quick_add": true,
+        "enable_filtering": true,
+        "filter_type": "horizontal",
+        "enable_sorting": true,
+        "columns_mobile": 2
+      }
+    },
+    "collection_features": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Why Choose Our {{ collection.title }}?",
+        "content": "",
+        "align": "center",
+        "bg_color": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": [
+        {
+          "type": "feature_item",
+          "settings": {
+            "title": "Curated Selection",
+            "description": "Every item in this collection is carefully selected for quality and style",
+            "icon_size": 48
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "title": "Expert Reviews",
+            "description": "Our team tests every product to ensure it meets our high standards",
+            "icon_size": 48
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "title": "Customer Favorites",
+            "description": "These are the products our customers love and recommend most",
+            "icon_size": 48
+          }
+        }
+      ]
+    },
+    "related_collections": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Explore More Collections",
+        "content": "<p>Discover other carefully curated collections that complement your style.</p>",
+        "cta_label": "View All Collections",
+        "cta_url": "/collections",
+        "align": "center",
+        "bg_color": "#f8f9fa",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "collection_faq": {
+      "type": "faq-accordion",
+      "settings": {
+        "title": "Collection FAQ",
+        "description": "<p>Common questions about this collection and our products.</p>",
+        "container_width": 700,
+        "title_alignment": "center",
+        "bg_color": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How often do you add new items to this collection?",
+            "answer": "<p>We regularly update our collections with new arrivals. New items are typically added monthly, and we'll notify subscribers via email when fresh products are available.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are these items available in different sizes/colors?",
+            "answer": "<p>Many items in this collection offer multiple size and color options. Click on any product to see all available variants. If you don't see your preferred option, check back soon or sign up for restock notifications.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer bulk discounts for this collection?",
+            "answer": "<p>Yes! We offer quantity discounts for purchases of 3 or more items from the same collection. The discount is automatically applied at checkout. Contact us for larger bulk orders.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I return items from this collection?",
+            "answer": "<p>All items in this collection are covered by our standard 30-day return policy. Items must be in original condition with tags attached. Some personalized or custom items may have different return terms.</p>"
+          }
+        }
+      ]
+    },
+    "newsletter_signup": {
+      "type": "hero-richtext-cta",
+      "settings": {
+        "heading": "Stay in the Loop",
+        "content": "<p>Be the first to know about new arrivals, exclusive deals, and collection updates.</p>",
+        "cta_label": "Subscribe Now",
+        "cta_url": "#newsletter",
+        "align": "center",
+        "bg_color": "#f8f9fa",
+        "heading_color": "#333333",
+        "text_color": "#666666",
+        "cta_bg_color": "#007cba",
+        "cta_text_color": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "main",
+    "collection_features",
+    "related_collections",
+    "collection_faq",
+    "newsletter_signup"
+  ]
+}

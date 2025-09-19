@@ -1,0 +1,486 @@
+/* Responsive Grid Patterns
+ *
+ * Modern CSS Grid patterns for building responsive, flexible layouts
+ * that work across all screen sizes and device types.
+ */
+
+/* ========================================
+ * AUTO-FIT GRID PATTERN
+ * ======================================== */
+
+/* Basic auto-fit grid that adapts to container width */
+.grid-auto-fit-UNIQUEID {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--grid-gap, 24px);
+  padding: var(--grid-padding, 20px);
+}
+
+/* Auto-fit with minimum and maximum constraints */
+.grid-constrained-UNIQUEID {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: var(--grid-gap, 24px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--grid-padding, 20px);
+}
+
+/* ========================================
+ * RESPONSIVE BREAKPOINT GRID
+ * ======================================== */
+
+/* Mobile-first responsive grid */
+.grid-responsive-UNIQUEID {
+  display: grid;
+  gap: var(--grid-gap-mobile, 16px);
+  grid-template-columns: 1fr;
+  padding: var(--grid-padding-mobile, 16px);
+}
+
+/* Tablet breakpoint */
+@media (min-width: 750px) {
+  .grid-responsive-UNIQUEID {
+    grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+    gap: var(--grid-gap-tablet, 24px);
+    padding: var(--grid-padding-tablet, 24px);
+  }
+}
+
+/* Desktop breakpoint */
+@media (min-width: 990px) {
+  .grid-responsive-UNIQUEID {
+    grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+    gap: var(--grid-gap-desktop, 32px);
+    padding: var(--grid-padding-desktop, 32px);
+  }
+}
+
+/* Large desktop breakpoint */
+@media (min-width: 1400px) {
+  .grid-responsive-UNIQUEID {
+    grid-template-columns: repeat(var(--columns-large, 4), 1fr);
+    gap: var(--grid-gap-large, 40px);
+  }
+}
+
+/* ========================================
+ * PRODUCT GRID PATTERNS
+ * ======================================== */
+
+/* Product grid with consistent aspect ratios */
+.product-grid-UNIQUEID {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--product-gap, 24px);
+  padding: var(--grid-padding, 20px);
+}
+
+.product-grid-UNIQUEID .product-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg, #ffffff);
+  border-radius: var(--card-radius, 8px);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-grid-UNIQUEID .product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.product-grid-UNIQUEID .product-image {
+  aspect-ratio: var(--image-ratio, 1);
+  overflow: hidden;
+  background: var(--image-bg, #f8f9fa);
+}
+
+.product-grid-UNIQUEID .product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-grid-UNIQUEID .product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+.product-grid-UNIQUEID .product-info {
+  padding: var(--card-padding, 16px);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-grid-UNIQUEID .product-title {
+  font-size: var(--title-size, 16px);
+  font-weight: 600;
+  color: var(--title-color, #333333);
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.product-grid-UNIQUEID .product-price {
+  font-size: var(--price-size, 18px);
+  font-weight: 700;
+  color: var(--price-color, #007cba);
+  margin-top: auto;
+}
+
+/* ========================================
+ * MASONRY-STYLE GRID
+ * ======================================== */
+
+/* CSS-only masonry effect using subgrid */
+.masonry-grid-UNIQUEID {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--masonry-gap, 20px);
+  padding: var(--grid-padding, 20px);
+}
+
+.masonry-grid-UNIQUEID .masonry-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  background: var(--item-bg, #ffffff);
+  border-radius: var(--item-radius, 8px);
+  padding: var(--item-padding, 20px);
+  margin-bottom: var(--masonry-gap, 20px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.masonry-grid-UNIQUEID .masonry-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Fallback for browsers without subgrid support */
+@supports not (grid-template-rows: subgrid) {
+  .masonry-grid-UNIQUEID {
+    columns: var(--masonry-columns, 3);
+    column-gap: var(--masonry-gap, 20px);
+    grid-template-columns: none;
+  }
+
+  .masonry-grid-UNIQUEID .masonry-item {
+    display: inline-block;
+    width: 100%;
+  }
+}
+
+/* ========================================
+ * FEATURED CONTENT GRID
+ * ======================================== */
+
+/* Grid with featured item taking more space */
+.featured-grid-UNIQUEID {
+  display: grid;
+  gap: var(--featured-gap, 24px);
+  padding: var(--grid-padding, 20px);
+  grid-template-columns: 1fr;
+}
+
+/* Desktop layout with featured item */
+@media (min-width: 990px) {
+  .featured-grid-UNIQUEID {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: repeat(var(--featured-rows, 2), 1fr);
+  }
+
+  .featured-grid-UNIQUEID .featured-item {
+    grid-row: 1 / -1;
+  }
+
+  .featured-grid-UNIQUEID .secondary-items {
+    display: grid;
+    gap: var(--secondary-gap, 16px);
+    grid-template-rows: subgrid;
+    grid-row: 1 / -1;
+  }
+}
+
+/* ========================================
+ * CARD GRID WITH EQUAL HEIGHTS
+ * ======================================== */
+
+.card-grid-UNIQUEID {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--card-gap, 24px);
+  padding: var(--grid-padding, 20px);
+  align-items: stretch; /* Equal height cards */
+}
+
+.card-grid-UNIQUEID .card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--card-border, #e5e5e5);
+  border-radius: var(--card-radius, 8px);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-grid-UNIQUEID .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-grid-UNIQUEID .card-header {
+  padding: var(--card-header-padding, 20px) var(--card-padding, 20px) 0;
+}
+
+.card-grid-UNIQUEID .card-body {
+  padding: var(--card-padding, 20px);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-grid-UNIQUEID .card-footer {
+  padding: 0 var(--card-padding, 20px) var(--card-padding, 20px);
+  margin-top: auto;
+}
+
+/* ========================================
+ * ASYMMETRIC GRID PATTERNS
+ * ======================================== */
+
+/* Complex asymmetric layout */
+.asymmetric-grid-UNIQUEID {
+  display: grid;
+  gap: var(--asymmetric-gap, 20px);
+  padding: var(--grid-padding, 20px);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 750px) {
+  .asymmetric-grid-UNIQUEID {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 200px);
+  }
+
+  .asymmetric-grid-UNIQUEID .item-1 {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+  }
+
+  .asymmetric-grid-UNIQUEID .item-2 {
+    grid-column: 3 / 5;
+    grid-row: 1 / 2;
+  }
+
+  .asymmetric-grid-UNIQUEID .item-3 {
+    grid-column: 3 / 4;
+    grid-row: 2 / 4;
+  }
+
+  .asymmetric-grid-UNIQUEID .item-4 {
+    grid-column: 4 / 5;
+    grid-row: 2 / 3;
+  }
+
+  .asymmetric-grid-UNIQUEID .item-5 {
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
+  }
+
+  .asymmetric-grid-UNIQUEID .item-6 {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+  }
+
+  .asymmetric-grid-UNIQUEID .item-7 {
+    grid-column: 4 / 5;
+    grid-row: 3 / 4;
+  }
+}
+
+/* ========================================
+ * RESPONSIVE IMAGE GRID
+ * ======================================== */
+
+.image-grid-UNIQUEID {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--image-gap, 16px);
+  padding: var(--grid-padding, 20px);
+}
+
+.image-grid-UNIQUEID .image-item {
+  position: relative;
+  aspect-ratio: var(--image-ratio, 1);
+  overflow: hidden;
+  border-radius: var(--image-radius, 8px);
+  background: var(--image-bg, #f8f9fa);
+}
+
+.image-grid-UNIQUEID .image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.image-grid-UNIQUEID .image-item:hover img {
+  transform: scale(1.1);
+}
+
+.image-grid-UNIQUEID .image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 60%,
+    rgba(0, 0, 0, 0.7)
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: var(--overlay-padding, 20px);
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-grid-UNIQUEID .image-item:hover .image-overlay {
+  opacity: 1;
+}
+
+/* ========================================
+ * CONTAINER QUERIES (PROGRESSIVE ENHANCEMENT)
+ * ======================================== */
+
+.container-grid-UNIQUEID {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--container-gap, 20px);
+  padding: var(--grid-padding, 20px);
+  grid-template-columns: 1fr;
+}
+
+/* Container query breakpoints */
+@container (min-width: 400px) {
+  .container-grid-UNIQUEID {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@container (min-width: 600px) {
+  .container-grid-UNIQUEID {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@container (min-width: 800px) {
+  .container-grid-UNIQUEID {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Fallback for browsers without container queries */
+@supports not (container-type: inline-size) {
+  @media (min-width: 400px) {
+    .container-grid-UNIQUEID {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 600px) {
+    .container-grid-UNIQUEID {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 800px) {
+    .container-grid-UNIQUEID {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+/* ========================================
+ * UTILITY CLASSES
+ * ======================================== */
+
+/* Responsive column utilities */
+.cols-1-UNIQUEID { grid-template-columns: repeat(1, 1fr); }
+.cols-2-UNIQUEID { grid-template-columns: repeat(2, 1fr); }
+.cols-3-UNIQUEID { grid-template-columns: repeat(3, 1fr); }
+.cols-4-UNIQUEID { grid-template-columns: repeat(4, 1fr); }
+.cols-5-UNIQUEID { grid-template-columns: repeat(5, 1fr); }
+.cols-6-UNIQUEID { grid-template-columns: repeat(6, 1fr); }
+
+/* Gap utilities */
+.gap-xs-UNIQUEID { gap: 8px; }
+.gap-sm-UNIQUEID { gap: 16px; }
+.gap-md-UNIQUEID { gap: 24px; }
+.gap-lg-UNIQUEID { gap: 32px; }
+.gap-xl-UNIQUEID { gap: 40px; }
+
+/* Alignment utilities */
+.items-start-UNIQUEID { align-items: start; }
+.items-center-UNIQUEID { align-items: center; }
+.items-end-UNIQUEID { align-items: end; }
+.items-stretch-UNIQUEID { align-items: stretch; }
+
+.justify-start-UNIQUEID { justify-items: start; }
+.justify-center-UNIQUEID { justify-items: center; }
+.justify-end-UNIQUEID { justify-items: end; }
+.justify-stretch-UNIQUEID { justify-items: stretch; }
+
+/* Span utilities */
+.col-span-1-UNIQUEID { grid-column: span 1; }
+.col-span-2-UNIQUEID { grid-column: span 2; }
+.col-span-3-UNIQUEID { grid-column: span 3; }
+.col-span-4-UNIQUEID { grid-column: span 4; }
+.col-span-full-UNIQUEID { grid-column: 1 / -1; }
+
+.row-span-1-UNIQUEID { grid-row: span 1; }
+.row-span-2-UNIQUEID { grid-row: span 2; }
+.row-span-3-UNIQUEID { grid-row: span 3; }
+.row-span-4-UNIQUEID { grid-row: span 4; }
+.row-span-full-UNIQUEID { grid-row: 1 / -1; }
+
+/* ========================================
+ * ACCESSIBILITY CONSIDERATIONS
+ * ======================================== */
+
+/* Ensure grid items are keyboard accessible */
+.grid-interactive-UNIQUEID .grid-item:focus {
+  outline: 2px solid var(--focus-color, #007cba);
+  outline-offset: 2px;
+}
+
+/* Screen reader friendly grid */
+.grid-accessible-UNIQUEID {
+  /* Maintain logical reading order */
+  /* Use aria-label for complex grids */
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .grid-UNIQUEID * {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* ========================================
+ * BEST PRACTICES SUMMARY
+ * ======================================== */
+
+/*
+1. Use CSS Grid for two-dimensional layouts
+2. Combine with Flexbox for one-dimensional alignment within grid items
+3. Always include fallbacks for older browsers
+4. Use container queries for truly responsive components
+5. Maintain semantic HTML structure regardless of visual layout
+6. Test with various content lengths and screen sizes
+7. Ensure keyboard navigation and screen reader accessibility
+8. Use CSS custom properties for dynamic values from Liquid
+9. Scope all classes with unique identifiers to prevent conflicts
+10. Consider performance impact of complex grid layouts
+*/

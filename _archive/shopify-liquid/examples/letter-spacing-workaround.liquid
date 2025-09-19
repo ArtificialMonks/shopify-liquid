@@ -1,0 +1,121 @@
+{% comment %}
+  Letter Spacing Workaround for Shopify Range Setting Decimal Limitations
+  
+  Problem: Shopify doesn't allow range settings with more than 1 decimal place
+  Solution: Use integers (multiplied by 100) and divide in the CSS
+{% endcomment %}
+
+{% comment %} WRONG - This will cause validation errors {% endcomment %}
+{% comment %}
+{
+  "type": "range",
+  "id": "heading_letter_spacing",
+  "label": "Letter Spacing",
+  "min": 0.05,      // 2 decimal places - NOT ALLOWED
+  "max": 0.25,      // 2 decimal places - NOT ALLOWED  
+  "step": 0.05,     // 2 decimal places - NOT ALLOWED
+  "default": 0.1,
+  "unit": "em"
+}
+{% endcomment %}
+
+{% comment %} CORRECT - Use integers and divide by 100 {% endcomment %}
+{% schema %}
+{
+  "name": "Typography Settings Example",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Letter Spacing Settings"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Heading Letter Spacing",
+      "min": 5,
+      "max": 25,
+      "step": 5,
+      "unit": "",
+      "default": 10,
+      "info": "Letter spacing in 0.01em units (10 = 0.10em)"
+    },
+    {
+      "type": "range",
+      "id": "body_letter_spacing",
+      "label": "Body Letter Spacing",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "",
+      "default": 5,
+      "info": "Letter spacing in 0.01em units (5 = 0.05em)"
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "label": "Button Letter Spacing",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "",
+      "default": 15,
+      "info": "Letter spacing in 0.01em units (15 = 0.15em)"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  /* Convert integer values to decimal em units */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: {{ settings.heading_letter_spacing | times: 0.01 }}em;
+  }
+  
+  body, p {
+    letter-spacing: {{ settings.body_letter_spacing | times: 0.01 }}em;
+  }
+  
+  button, .btn {
+    letter-spacing: {{ settings.button_letter_spacing | times: 0.01 }}em;
+  }
+  
+  /* Alternative: Using divided_by for more precision */
+  .precise-spacing {
+    letter-spacing: {{ settings.heading_letter_spacing | divided_by: 100.0 }}em;
+  }
+{% endstyle %}
+
+{% comment %} 
+  Alternative Approach: Use a select dropdown for precise control
+{% endcomment %}
+{% comment %}
+{
+  "type": "select",
+  "id": "heading_letter_spacing_select",
+  "label": "Heading Letter Spacing",
+  "options": [
+    {"value": "0", "label": "0em (Normal)"},
+    {"value": "0.025", "label": "0.025em (Tight)"},
+    {"value": "0.05", "label": "0.05em (Slightly Tight)"},
+    {"value": "0.075", "label": "0.075em (Balanced)"},
+    {"value": "0.1", "label": "0.1em (Slightly Wide)"},
+    {"value": "0.125", "label": "0.125em (Wide)"},
+    {"value": "0.15", "label": "0.15em (Very Wide)"},
+    {"value": "0.2", "label": "0.2em (Extra Wide)"}
+  ],
+  "default": "0.1"
+}
+{% endcomment %}
+
+{% comment %} 
+  Alternative Approach: Use a number input for full flexibility
+{% endcomment %}
+{% comment %}
+{
+  "type": "number",
+  "id": "heading_letter_spacing_number",
+  "label": "Heading Letter Spacing (em)",
+  "placeholder": "0.1",
+  "info": "Enter letter spacing in em units (e.g., 0.05, 0.1, 0.15)"
+}
+{% endcomment %}

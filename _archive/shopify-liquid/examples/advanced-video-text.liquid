@@ -1,0 +1,803 @@
+{% doc %}
+  @prompt
+    Create an advanced video and text section with:
+    - Video on one side, text on the other (switchable)
+    - Support for YouTube, Vimeo, or uploaded MP4
+    - Rich text content with heading and paragraph
+    - Customizable styling and spacing
+    - Mobile-responsive layout
+    - Smooth animations and transitions
+    
+  @responsive
+    - Side-by-side on desktop
+    - Stacked on mobile
+    - Configurable breakpoints
+    
+  @accessibility
+    - Proper ARIA labels
+    - Keyboard navigation
+    - Video controls
+    - Reduced motion support
+{% enddoc %}
+
+{% comment %} Generate unique ID for scoped CSS {% endcomment %}
+{% assign section_id = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  /* Base container styles */
+  .video-text-{{ section_id }} {
+    padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px 0;
+    background: {{ section.settings.background_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  .video-text__container-{{ section_id }} {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Flexible layout grid */
+  .video-text__grid-{{ section_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ section.settings.content_gap }}px;
+    align-items: {{ section.settings.vertical_alignment }};
+  }
+
+  /* Video side */
+  .video-text__video-{{ section_id }} {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ section.settings.video_radius }}px;
+    {% if section.settings.enable_shadow %}
+      box-shadow: 0 10px 40px rgba(0,0,0,{{ section.settings.shadow_intensity | divided_by: 100.0 | round: 2 }});
+    {% endif %}
+  }
+
+  /* Aspect ratio container */
+  .video-text__aspect-{{ section_id }} {
+    position: relative;
+    width: 100%;
+    {% case section.settings.video_aspect %}
+      {% when '16-9' %}
+        padding-bottom: 56.25%;
+      {% when '4-3' %}
+        padding-bottom: 75%;
+      {% when '1-1' %}
+        padding-bottom: 100%;
+      {% when '9-16' %}
+        padding-bottom: 177.78%;
+      {% else %}
+        padding-bottom: 56.25%;
+    {% endcase %}
+  }
+
+  /* Video iframe/element */
+  .video-text__iframe-{{ section_id }},
+  .video-text__video-element-{{ section_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-text__video-element-{{ section_id }} {
+    object-fit: cover;
+  }
+
+  /* Text content side */
+  .video-text__content-{{ section_id }} {
+    padding: {{ section.settings.text_padding }}px;
+  }
+
+  .video-text__heading-{{ section_id }} {
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: {{ section.settings.heading_weight }};
+    color: {{ section.settings.heading_color }};
+    margin-bottom: {{ section.settings.heading_spacing }}px;
+    line-height: {{ section.settings.heading_line_height | divided_by: 100.0 }};
+  }
+
+  .video-text__text-{{ section_id }} {
+    font-size: {{ section.settings.text_size }}px;
+    color: {{ section.settings.text_color }};
+    line-height: {{ section.settings.text_line_height | divided_by: 100.0 }};
+    margin-bottom: {{ section.settings.text_spacing }}px;
+  }
+
+  .video-text__button-{{ section_id }} {
+    display: inline-block;
+    padding: {{ section.settings.button_padding_y }}px {{ section.settings.button_padding_x }}px;
+    background: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ section.settings.button_radius }}px;
+    font-size: {{ section.settings.button_size }}px;
+    font-weight: {{ section.settings.button_weight }};
+    transition: all 300ms ease;
+  }
+
+  .video-text__button-{{ section_id }}:hover {
+    background: {{ section.settings.button_hover_bg }};
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  /* Video position variations */
+  {% if section.settings.video_position == 'right' %}
+    .video-text__grid-{{ section_id }} {
+      direction: rtl;
+    }
+    .video-text__grid-{{ section_id }} > * {
+      direction: ltr;
+    }
+  {% endif %}
+
+  /* Mobile responsive styles */
+  @media screen and (max-width: 749px) {
+    .video-text__grid-{{ section_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ section.settings.mobile_gap }}px;
+      direction: ltr;
+    }
+
+    .video-text__heading-{{ section_id }} {
+      font-size: {{ section.settings.mobile_heading_size }}px;
+      text-align: {{ section.settings.mobile_text_align }};
+    }
+
+    .video-text__text-{{ section_id }} {
+      font-size: {{ section.settings.mobile_text_size }}px;
+      text-align: {{ section.settings.mobile_text_align }};
+    }
+
+    .video-text__content-{{ section_id }} {
+      padding: {{ section.settings.mobile_text_padding }}px;
+      text-align: {{ section.settings.mobile_text_align }};
+    }
+
+    {% if section.settings.mobile_video_first %}
+      .video-text__video-{{ section_id }} {
+        order: -1;
+      }
+    {% endif %}
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .video-text__button-{{ section_id }} {
+      transition: none !important;
+    }
+  }
+
+  /* Loading state */
+  .video-text__loading-{{ section_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #999;
+  }
+{% endstyle %}
+
+<div class="video-text-{{ section_id }}" {{ section.shopify_attributes }}>
+  <div class="video-text__container-{{ section_id }}">
+    <div class="video-text__grid-{{ section_id }}">
+      
+      {% comment %} Video Column {% endcomment %}
+      <div class="video-text__video-{{ section_id }}">
+        <div class="video-text__aspect-{{ section_id }}">
+          {% case section.settings.video_type %}
+            {% when 'youtube' %}
+              {% if section.settings.youtube_id != blank %}
+                <iframe
+                  class="video-text__iframe-{{ section_id }}"
+                  src="https://www.youtube.com/embed/{{ section.settings.youtube_id }}?rel=0&modestbranding=1{% if section.settings.autoplay %}&autoplay=1&mute=1{% endif %}{% if section.settings.loop %}&loop=1&playlist={{ section.settings.youtube_id }}{% endif %}"
+                  title="{{ section.settings.video_alt_text | default: 'YouTube video' | escape }}"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              {% else %}
+                <div class="video-text__loading-{{ section_id }}">
+                  Enter YouTube Video ID
+                </div>
+              {% endif %}
+            
+            {% when 'vimeo' %}
+              {% if section.settings.vimeo_id != blank %}
+                <iframe
+                  class="video-text__iframe-{{ section_id }}"
+                  src="https://player.vimeo.com/video/{{ section.settings.vimeo_id }}?title=0&byline=0&portrait=0{% if section.settings.autoplay %}&autoplay=1&muted=1{% endif %}{% if section.settings.loop %}&loop=1{% endif %}"
+                  title="{{ section.settings.video_alt_text | default: 'Vimeo video' | escape }}"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              {% else %}
+                <div class="video-text__loading-{{ section_id }}">
+                  Enter Vimeo Video ID
+                </div>
+              {% endif %}
+            
+            {% when 'mp4' %}
+              {% if section.settings.mp4_url != blank %}
+                <video
+                  class="video-text__video-element-{{ section_id }}"
+                  {% if section.settings.autoplay %}autoplay{% endif %}
+                  {% if section.settings.loop %}loop{% endif %}
+                  {% if section.settings.muted %}muted{% endif %}
+                  {% if section.settings.controls %}controls{% endif %}
+                  playsinline
+                  preload="metadata">
+                  <source src="{{ section.settings.mp4_url }}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              {% else %}
+                <div class="video-text__loading-{{ section_id }}">
+                  Upload MP4 Video
+                </div>
+              {% endif %}
+            
+            {% else %}
+              <div class="video-text__loading-{{ section_id }}">
+                Select a video type
+              </div>
+          {% endcase %}
+        </div>
+      </div>
+
+      {% comment %} Text Content Column {% endcomment %}
+      <div class="video-text__content-{{ section_id }}">
+        {% if section.settings.heading != blank %}
+          <h2 class="video-text__heading-{{ section_id }}">
+            {{ section.settings.heading | escape }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.text != blank %}
+          <div class="video-text__text-{{ section_id }}">
+            {{ section.settings.text }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+          <a href="{{ section.settings.button_url }}" class="video-text__button-{{ section_id }}">
+            {{ section.settings.button_text | escape }}
+          </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+    
+    const sectionId = '{{ section_id }}';
+    const section = document.querySelector('.video-text-' + sectionId);
+    
+    if (!section) return;
+    
+    // Lazy load iframe when in viewport
+    const videos = section.querySelectorAll('iframe, video');
+    
+    if ('IntersectionObserver' in window) {
+      const videoObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            const element = entry.target;
+            
+            // For iframes, reload src to start loading
+            if (element.tagName === 'IFRAME') {
+              const src = element.src;
+              if (src && !src.includes('autoplay=1')) {
+                element.src = src;
+              }
+            }
+            
+            videoObserver.unobserve(element);
+          }
+        });
+      }, {
+        rootMargin: '50px'
+      });
+      
+      videos.forEach(function(video) {
+        videoObserver.observe(video);
+      });
+    }
+    
+    // Handle video play/pause on scroll for autoplay videos
+    {% if section.settings.autoplay and section.settings.pause_on_scroll %}
+      const videoElement = section.querySelector('video');
+      if (videoElement) {
+        const scrollObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              videoElement.play().catch(function() {
+                // Autoplay prevented
+              });
+            } else {
+              videoElement.pause();
+            }
+          });
+        }, {
+          threshold: 0.5
+        });
+        
+        scrollObserver.observe(videoElement);
+      }
+    {% endif %}
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Advanced Video & Text",
+  "tag": "section",
+  "class": "video-text-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Gap Between Video & Text",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "video_position",
+      "label": "Video Position",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertical Alignment",
+      "options": [
+        {"value": "start", "label": "Top"},
+        {"value": "center", "label": "Center"},
+        {"value": "end", "label": "Bottom"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Video Settings"
+    },
+    {
+      "type": "select",
+      "id": "video_type",
+      "label": "Video Type",
+      "options": [
+        {"value": "youtube", "label": "YouTube"},
+        {"value": "vimeo", "label": "Vimeo"},
+        {"value": "mp4", "label": "MP4 Upload"}
+      ],
+      "default": "youtube",
+      "info": "Choose your video source type"
+    },
+    {
+      "type": "text",
+      "id": "youtube_id",
+      "label": "YouTube Video ID",
+      "info": "Enter only the ID (e.g., dQw4w9WgXcQ)"
+    },
+    {
+      "type": "text",
+      "id": "vimeo_id",
+      "label": "Vimeo Video ID",
+      "info": "Enter only the ID (e.g., 347119375)"
+    },
+    {
+      "type": "url",
+      "id": "mp4_url",
+      "label": "MP4 Video URL",
+      "info": "Upload video to Files and paste URL"
+    },
+    {
+      "type": "select",
+      "id": "video_aspect",
+      "label": "Video Aspect Ratio",
+      "options": [
+        {"value": "16-9", "label": "16:9 (Widescreen)"},
+        {"value": "4-3", "label": "4:3 (Standard)"},
+        {"value": "1-1", "label": "1:1 (Square)"},
+        {"value": "9-16", "label": "9:16 (Vertical)"}
+      ],
+      "default": "16-9"
+    },
+    {
+      "type": "range",
+      "id": "video_radius",
+      "label": "Video Corner Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_shadow",
+      "label": "Enable Video Shadow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "shadow_intensity",
+      "label": "Shadow Intensity (%)",
+      "min": 10,
+      "max": 50,
+      "step": 10,
+      "unit": "%",
+      "default": 20,
+      "info": "Shadow opacity percentage"
+    },
+    {
+      "type": "text",
+      "id": "video_alt_text",
+      "label": "Video Alt Text",
+      "default": "Product video",
+      "info": "For accessibility"
+    },
+    {
+      "type": "header",
+      "content": "Video Controls"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": false,
+      "info": "Video will be muted if autoplay is enabled"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop Video",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Muted",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "controls",
+      "label": "Show Controls",
+      "default": true,
+      "info": "Only for MP4 videos"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_scroll",
+      "label": "Pause When Out of View",
+      "default": true,
+      "info": "Only for MP4 videos with autoplay"
+    },
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Video Section Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text Content",
+      "default": "<p>Add a detailed description of your video content here. This text supports <strong>bold</strong>, <em>italic</em>, and other rich text formatting.</p>"
+    },
+    {
+      "type": "range",
+      "id": "text_padding",
+      "label": "Text Padding",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Typography - Heading"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_weight",
+      "label": "Heading Weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Heading Bottom Spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "label": "Heading Line Height (%)",
+      "min": 100,
+      "max": 180,
+      "step": 10,
+      "unit": "%",
+      "default": 120,
+      "info": "120% = 1.2 line height"
+    },
+    {
+      "type": "header",
+      "content": "Typography - Body Text"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text Size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "text_line_height",
+      "label": "Text Line Height (%)",
+      "min": 120,
+      "max": 200,
+      "step": 10,
+      "unit": "%",
+      "default": 160,
+      "info": "160% = 1.6 line height"
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "label": "Text Bottom Spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button Link"
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Button Text Size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_weight",
+      "label": "Button Font Weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "label": "Button Horizontal Padding",
+      "min": 15,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "label": "Button Vertical Padding",
+      "min": 8,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button Corner Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Button Hover Background",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile Gap",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "label": "Mobile Heading Size",
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "mobile_text_size",
+      "label": "Mobile Text Size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "mobile_text_padding",
+      "label": "Mobile Text Padding",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_align",
+      "label": "Mobile Text Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_video_first",
+      "label": "Show Video First on Mobile",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Advanced Video & Text",
+      "category": "Media"
+    }
+  ]
+}
+{% endschema %}

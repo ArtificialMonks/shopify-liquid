@@ -1,0 +1,45 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "Shopify.theme-check-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+
+  "liquid.format.enable": true,
+  "liquid.completion.enable": true,
+  "liquid.hover.enable": true,
+  "liquid.links.enable": true,
+  "liquid.validation.enable": true,
+
+  "themeCheck.checkOnSave": true,
+  "themeCheck.checkOnOpen": true,
+  "themeCheck.onlySingleFileChecks": false,
+
+  "files.associations": {
+    "*.liquid": "liquid"
+  },
+
+  "emmet.includeLanguages": {
+    "liquid": "html"
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.git": true,
+    "**/_archive": true
+  },
+
+  "[liquid]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Shopify.theme-check-vscode",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 120
+  }
+}
