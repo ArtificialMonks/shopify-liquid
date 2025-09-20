@@ -1,14 +1,90 @@
-{%- comment -%} Responsive image pattern using image_url and srcset {%- endcomment -%}
-{%- if section.settings.image -%}
+{%- comment -%}
+  Responsive Image Snippet  Renders optimized responsive images with proper lazy loading,
+  Core Web Vitals optimization, and accessibility support.
+
+  Parameters:
+  - image: Image object (required)
+  - alt: Alt text override (optional)
+  - sizes: Sizes attribute (optional)
+  - class: CSS class (optional)
+  - loading: Loading strategy - 'lazy', 'eager', or 'auto' (optional, default: 'lazy')
+  - fetchpriority: Fetch priority - 'high', 'low', or 'auto' (optional)
+  - max_width: Maximum width for srcset (optional, default: 1600)
+
+  Usage:
+  {% render 'responsive-image',
+     image: product.featured_image,
+     alt: product.title,
+     sizes: '(min-width: 768px) 50vw, 100vw',
+     class: 'product-image',
+     loading: 'eager',
+     fetchpriority: 'high' %}
+{%- endcomment -%}
+
+{%- liquid
+  # Parameter validation and defaults
+  assign image_object = image
+  assign alt_text = alt | default: image_object.alt | escape
+  assign css_class = class | default: 'responsive-image'
+  assign loading_strategy = loading | default: 'lazy'
+  assign fetch_priority = fetchpriority | default: 'auto'
+  assign max_width = max_width | default: 1600
+  assign sizes_attr = sizes | default: '100vw'
+
+  # Generate srcset with optimized breakpoints
+  assign srcset_widths = '300,400,600,800,1000,1200,1400,1600'
+  assign srcset_array = ''
+  assign srcset_parts = srcset_widths | split: ','
+
+  for width in srcset_parts
+    assign width_int = width | plus: 0
+    if width_int <= max_width
+      if srcset_array != ''
+        assign srcset_array = srcset_array | append: ', '
+      endif
+      assign srcset_array = srcset_array | append: image_object | image_url: width: width_int | append: ' ' | append: width | append: 'w'
+    endif
+  endfor
+
+  # Calculate default width and height to prevent layout shift
+  assign default_width = 800
+  if max_width < 800
+    assign default_width = max_width
+  endif
+
+  assign image_height = image_object.aspect_ratio | default: 1.5 | times: default_width | round
+-%}
+
+{%- if image_object != blank -%}
   <img
-    class="media"
-    src="{{ section.settings.image | image_url: width: 800 }}"
-    srcset="{{ section.settings.image | image_url: width: 400 }} 400w, {{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1200 }} 1200w"
-    sizes="(min-width: 990px) 800px, 100vw"
-    alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
-    loading="lazy"
-    width="800"
-    height="{{ section.settings.image.aspect_ratio | default: 1.5 | times: 800 | round }}"
+    class="{{ css_class }}"
+    src="{{ image_object | image_url: width: default_width }}"
+    {%- if srcset_array != '' %}
+    srcset="{{ srcset_array }}"
+    {%- endif %}
+    sizes="{{ sizes_attr }}"
+    alt="{{ alt_text }}"
+    loading="{{ loading_strategy }}"
+    {%- if fetch_priority != 'auto' %}
+    fetchpriority="{{ fetch_priority }}"
+    {%- endif %}
+    width="{{ default_width }}"
+    height="{{ image_height }}"
+    {%- if image_object.aspect_ratio %}
+    style="aspect-ratio: {{ image_object.aspect_ratio }}"
+    {%- endif %}
   >
+{%- else -%}
+  {%- comment -%} Fallback for missing images {%- endcomment -%}
+  <div
+    class="{{ css_class }} {{ css_class }}--placeholder"
+    role="img"
+    aria-label="{{ alt_text | default: 'Image placeholder' }}"
+    style="aspect-ratio: 1.5; background: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #666;"
+  >
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+    </svg>
+  </div>
 {%- endif -%}
 

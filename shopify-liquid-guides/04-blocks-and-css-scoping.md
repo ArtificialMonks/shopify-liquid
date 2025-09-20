@@ -548,6 +548,27 @@ Use BEM (Block Element Modifier) methodology with unique suffixes:
 
 ## Next Steps
 
-- **[Code Library - Blocks](./code-library/blocks/)** - Ready-to-use block examples
+Continue building with production-ready patterns:
+- **[Performance & Accessibility](./05-performance-and-accessibility.md)** - Production optimization
+- **[Code Library - Sections](./code-library/sections/)** - Complete scoped examples
 - **[CSS Patterns](./code-library/css-patterns/)** - Advanced styling techniques
-- **[Performance & Accessibility](./05-performance-and-accessibility.md)** - Optimization strategies
+- **[Troubleshooting](./06-troubleshooting.md)** - Common CSS scoping issues
+
+## Essential References
+
+### Critical Implementation
+- **[Schema Validation Guidelines](./schema-validation/schema-guidelines.md)** - **ALWAYS validate schemas**
+- **[Theme Architecture](./docs/architecture/theme-overview.md)** - How CSS fits in theme structure
+
+### Asset Management
+- **[CSS Assets](./docs/assets/css-assets.md)** - Styling organization and optimization
+- **[Asset Optimization](./docs/assets/)** - Performance patterns for all asset types
+- **[Advanced Performance](./docs/advanced-features/advanced-performance.md)** - Cutting-edge optimization
+
+### Configuration Integration
+- **[Block Configuration](./docs/config/blocks-config.md)** - Schema patterns for styled components
+- **[Section Groups](./docs/config/section-groups.md)** - Scoping in dynamic layouts
+
+### Modern Development
+- **[Advanced Features](./docs/advanced-features/)** - AI blocks, PWA, modern patterns
+- **[Best Practices 2025](./docs/architecture/best-practices-2025.md)** - Current CSS standards

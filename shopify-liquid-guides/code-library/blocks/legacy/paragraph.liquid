@@ -1,0 +1,98 @@
+{%- comment -%}
+  Paragraph Block - Legacy Theme Block
+
+  Basic paragraph text block for backward compatibility.
+  Simple text display without rich formatting.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/paragraph.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Text settings
+  assign text = block.settings.text | default: 'Add your paragraph text here.'
+  assign alignment = block.settings.alignment | default: 'left'
+  assign text_color = block.settings.text_color
+  assign font_size = block.settings.font_size | default: 16
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .paragraph-block-{{ unique }} {
+    text-align: {{ alignment }};
+    padding: 10px 0;
+  }
+
+  .paragraph-block-{{ unique }}__text {
+    {% if text_color != blank %}
+      color: {{ text_color }};
+    {% endif %}
+    font-size: {{ font_size }}px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .paragraph-block-{{ unique }}__text {
+      font-size: {{ font_size | minus: 2 }}px;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="paragraph-block-{{ unique }}" {{ block.shopify_attributes }}>
+  <p class="paragraph-block-{{ unique }}__text">
+    {{ text }}
+  </p>
+</div>
+
+{% schema %}
+{
+  "name": "Paragraph",
+  "class": "paragraph-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Add your paragraph text here."
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Text alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"},
+        {"value": "justify", "label": "Justify"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Paragraph"
+    }
+  ]
+}
+{% endschema %}

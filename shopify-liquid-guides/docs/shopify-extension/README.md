@@ -309,22 +309,40 @@ For large themes:
 3. Use workspace-specific settings
 4. Close unused files to reduce memory usage
 
-## Integration with Shopify CLI
+## Integration with Shopify CLI & Validation Automation
 
-The extension works seamlessly with [Shopify CLI](https://shopify.dev/docs/themes/tools/cli):
+The extension works seamlessly with [Shopify CLI](https://shopify.dev/docs/themes/tools/cli) and our validation automation:
 
 ```bash
 # Initialize new theme with proper structure
 shopify theme init my-theme
 
+# Set up validation automation (recommended first step)
+./scripts/validate-theme.sh all
+
 # Serve theme with hot reload
 shopify theme serve
 
-# Deploy theme
+# Validate during development
+./scripts/validate-theme.sh development
+
+# Deploy theme (after production validation)
+./scripts/validate-theme.sh production
 shopify theme deploy
 ```
 
-The extension provides enhanced development experience when used alongside CLI tools.
+The extension provides enhanced development experience when used alongside CLI tools and validation automation.
+
+### Validation Integration in VS Code
+Our pre-configured workspace includes validation automation commands:
+
+**Quick Commands in Terminal:**
+- `./scripts/validate-theme.sh development` - Fast development validation
+- `./scripts/validate-theme.sh comprehensive` - Complete validation suite
+- `./scripts/validate-theme.sh production` - Theme Store compliance check
+- `./scripts/validate-theme.sh auto-fix` - Auto-correct common issues
+
+📖 **[Complete Validation Setup](../../../THEME-CHECK-SETUP.md)** - Ultimate automation guide with 50+ validation rules
 
 ## Updates and Contributing
 

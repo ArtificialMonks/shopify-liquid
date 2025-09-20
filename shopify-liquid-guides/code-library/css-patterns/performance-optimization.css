@@ -1,0 +1,401 @@
+/* Performance Optimization CSS Patterns
+ *
+ * Production-ready CSS patterns optimized for Core Web Vitals and
+ * Shopify Theme Store performance requirements.
+ *
+ * IMPLEMENTATION:
+ * {% assign unique = section.id | replace: '_', '' | downcase %}
+ * {% style %}
+ *   .component-{{ unique }} {
+ *     contain: layout style;
+ *     will-change: transform;
+ *   }
+ * {% endstyle %}
+ */
+
+/* ========================================
+ * CORE WEB VITALS OPTIMIZATION
+ * ======================================== */
+
+/* Prevent layout shifts (CLS optimization) */
+.stable-layout-UNIQUEID {
+  /* Reserve space for dynamic content */
+  min-height: var(--min-height, 200px);
+  contain: layout style size;
+
+  /* Prevent reflow during loading */
+  width: 100%;
+  aspect-ratio: var(--aspect-ratio, auto);
+}
+
+/* Optimize for Largest Contentful Paint (LCP) */
+.hero-image-UNIQUEID {
+  /* Critical images above the fold */
+  content-visibility: auto;
+  contain-intrinsic-size: var(--hero-width, 100vw) var(--hero-height, 50vh);
+
+  /* Prevent layout shift */
+  aspect-ratio: var(--image-ratio, 16/9);
+  width: 100%;
+  object-fit: cover;
+
+  /* Optimize loading */
+  loading: eager; /* For above-fold images */
+  fetchpriority: high;
+}
+
+.lazy-image-UNIQUEID {
+  /* Below-fold images */
+  loading: lazy;
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px;
+
+  /* Smooth loading transition */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lazy-image-UNIQUEID.loaded {
+  opacity: 1;
+}
+
+/* ========================================
+ * CSS CONTAINMENT FOR PERFORMANCE
+ * ======================================== */
+
+/* Component-level containment */
+.isolated-component-UNIQUEID {
+  /* Isolate layout, style, and paint */
+  contain: layout style paint;
+
+  /* Create new stacking context */
+  isolation: isolate;
+
+  /* Optimize repainting */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Animation containment */
+.animated-component-UNIQUEID {
+  /* Limit animation impact */
+  contain: layout style;
+  will-change: transform, opacity;
+
+  /* GPU acceleration */
+  transform: translate3d(0, 0, 0);
+}
+
+.animated-component-UNIQUEID:not(:hover):not(:focus) {
+  /* Remove will-change when not needed */
+  will-change: auto;
+}
+
+/* ========================================
+ * CONTENT VISIBILITY OPTIMIZATION
+ * ======================================== */
+
+/* Virtualize off-screen content */
+.virtualized-content-UNIQUEID {
+  content-visibility: auto;
+  contain-intrinsic-size: var(--content-width, 100%) var(--content-height, 300px);
+}
+
+/* Product grid virtualization */
+.product-grid-virtual-UNIQUEID {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 400px;
+  contain: layout style paint;
+}
+
+.product-grid-virtual-UNIQUEID:hover {
+  content-visibility: visible;
+}
+
+/* ========================================
+ * LOADING STATE OPTIMIZATION
+ * ======================================== */
+
+/* Skeleton loading states */
+.skeleton-UNIQUEID {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-bg, #f0f0f0) 25%,
+    var(--skeleton-highlight, #e0e0e0) 50%,
+    var(--skeleton-bg, #f0f0f0) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 2s infinite;
+
+  /* Performance optimization */
+  will-change: background-position;
+  contain: layout style;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Progressive image loading */
+.progressive-image-UNIQUEID {
+  position: relative;
+  overflow: hidden;
+  background: var(--image-placeholder, #f8f9fa);
+}
+
+.progressive-image-UNIQUEID .placeholder {
+  position: absolute;
+  inset: 0;
+  filter: blur(10px);
+  transform: scale(1.1);
+  transition: opacity 0.3s ease;
+}
+
+.progressive-image-UNIQUEID .full-image {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.progressive-image-UNIQUEID.loaded .placeholder {
+  opacity: 0;
+}
+
+.progressive-image-UNIQUEID.loaded .full-image {
+  opacity: 1;
+}
+
+/* ========================================
+ * SCROLL PERFORMANCE OPTIMIZATION
+ * ======================================== */
+
+/* Optimize scroll-triggered animations */
+.scroll-optimized-UNIQUEID {
+  /* Reduce paint during scroll */
+  contain: layout style;
+  transform: translateZ(0);
+
+  /* Smooth scrolling without janks */
+  scroll-behavior: smooth;
+}
+
+/* Intersection observer targets */
+.observe-UNIQUEID {
+  /* Prepare for intersection observer */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: var(--delay, 0s);
+
+  /* Performance containment */
+  contain: layout style;
+}
+
+.observe-UNIQUEID.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Disable scroll animations on mobile for performance */
+@media screen and (max-width: 749px) {
+  .observe-UNIQUEID {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ========================================
+ * CRITICAL CSS PATTERNS
+ * ======================================== */
+
+/* Above-the-fold critical styles */
+.critical-UNIQUEID {
+  /* Essential styles only */
+  display: block;
+  width: 100%;
+  background: var(--critical-bg, #ffffff);
+  color: var(--critical-color, #333333);
+
+  /* No animations in critical CSS */
+  transition: none;
+  transform: none;
+}
+
+/* Non-critical styles loaded async */
+.enhanced-UNIQUEID {
+  /* Progressive enhancement */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Applied when non-critical CSS loads */
+.css-loaded .enhanced-UNIQUEID {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========================================
+ * FONT LOADING OPTIMIZATION
+ * ======================================== */
+
+/* Font display optimization */
+.optimized-text-UNIQUEID {
+  /* Prevent invisible text during font load */
+  font-display: swap;
+
+  /* Fallback font similar metrics */
+  font-family: var(--primary-font, 'Arial', sans-serif);
+
+  /* Prevent layout shift */
+  font-size: var(--text-size, 16px);
+  line-height: var(--line-height, 1.5);
+  letter-spacing: var(--letter-spacing, normal);
+}
+
+/* Custom font with fallback */
+.custom-font-UNIQUEID {
+  font-family: var(--custom-font, 'Helvetica Neue', Arial, sans-serif);
+  font-display: swap;
+
+  /* Size adjust for metric matching */
+  size-adjust: var(--size-adjust, 100%);
+}
+
+/* ========================================
+ * ANIMATION PERFORMANCE
+ * ======================================== */
+
+/* GPU-accelerated animations */
+.gpu-animated-UNIQUEID {
+  /* Force GPU layer */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+
+  /* Optimize for animation */
+  will-change: transform, opacity;
+  contain: layout style;
+}
+
+/* Efficient hover effects */
+.efficient-hover-UNIQUEID {
+  /* Use transform instead of changing layout properties */
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  will-change: transform;
+}
+
+.efficient-hover-UNIQUEID:hover {
+  /* GPU-accelerated transform */
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Remove will-change when not hovering */
+.efficient-hover-UNIQUEID:not(:hover) {
+  will-change: auto;
+}
+
+/* ========================================
+ * MEMORY OPTIMIZATION
+ * ======================================== */
+
+/* Limit reflow scope */
+.contained-updates-UNIQUEID {
+  contain: layout style;
+
+  /* Isolate from parent layout */
+  isolation: isolate;
+
+  /* Prevent cascade impact */
+  all: unset;
+  display: block;
+}
+
+/* Efficient list rendering */
+.virtual-list-UNIQUEID {
+  /* Virtualize long lists */
+  overflow-y: auto;
+  height: var(--list-height, 400px);
+  contain: strict;
+  content-visibility: auto;
+}
+
+.virtual-list-UNIQUEID .list-item {
+  contain: layout style;
+  height: var(--item-height, 60px);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--item-height, 60px);
+}
+
+/* ========================================
+ * REDUCED MOTION PERFORMANCE
+ * ======================================== */
+
+/* Respect user preferences for performance */
+@media (prefers-reduced-motion: reduce) {
+  .performance-respectful-UNIQUEID,
+  .performance-respectful-UNIQUEID *,
+  .performance-respectful-UNIQUEID *::before,
+  .performance-respectful-UNIQUEID *::after {
+    /* Remove all animations */
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+
+    /* Remove will-change */
+    will-change: auto !important;
+
+    /* Remove transforms */
+    transform: none !important;
+  }
+}
+
+/* ========================================
+ * BEST PRACTICES SUMMARY
+ * ======================================== */
+
+/*
+PERFORMANCE OPTIMIZATION FOR SHOPIFY THEMES:
+
+1. CORE WEB VITALS FOCUS:
+   - Largest Contentful Paint (LCP): < 2.5s
+   - First Input Delay (FID): < 100ms
+   - Cumulative Layout Shift (CLS): < 0.1
+
+2. CSS CONTAINMENT:
+   - Use `contain: layout style` for components
+   - Add `content-visibility: auto` for off-screen content
+   - Implement `will-change` strategically (remove when done)
+
+3. LOADING OPTIMIZATION:
+   - Above-fold images: loading="eager", fetchpriority="high"
+   - Below-fold images: loading="lazy"
+   - Use aspect-ratio to prevent layout shifts
+   - Implement skeleton loading states
+
+4. ANIMATION PERFORMANCE:
+   - Animate transform and opacity only
+   - Use GPU acceleration: translate3d(0,0,0)
+   - Add will-change before animation, remove after
+   - Respect prefers-reduced-motion
+
+5. MEMORY EFFICIENCY:
+   - Virtualize long lists with content-visibility
+   - Use intersection observer for scroll effects
+   - Isolate components with CSS containment
+   - Progressive enhancement for non-critical styles
+
+6. SHOPIFY-SPECIFIC OPTIMIZATIONS:
+   - Optimize product image loading
+   - Efficient cart update animations
+   - Minimize reflow during filtering
+   - Smart pagination for collection pages
+
+7. THEME STORE REQUIREMENTS:
+   - Mobile performance prioritized
+   - Efficient hover states
+   - Minimal layout shifts
+   - Progressive loading strategies
+*/

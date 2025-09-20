@@ -1,0 +1,161 @@
+{%- comment -%}
+  Video Embed Block - Legacy Theme Block
+
+  YouTube and Vimeo embed support for backward compatibility.
+  Simple iframe embedding without advanced features.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/video-embed.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Video settings
+  assign video_url = block.settings.video_url
+  assign aspect_ratio = block.settings.aspect_ratio | default: '16:9'
+  assign autoplay = block.settings.autoplay | default: false
+  assign mute = block.settings.mute | default: false
+  assign loop_video = block.settings.loop | default: false
+
+  # Parse video ID and type
+  assign video_id = ''
+  assign video_type = ''
+
+  if video_url contains 'youtube.com' or video_url contains 'youtu.be'
+    assign video_type = 'youtube'
+    if video_url contains 'youtu.be/'
+      assign video_id = video_url | split: 'youtu.be/' | last | split: '?' | first
+    elsif video_url contains 'watch?v='
+      assign video_id = video_url | split: 'watch?v=' | last | split: '&' | first
+    elsif video_url contains '/embed/'
+      assign video_id = video_url | split: '/embed/' | last | split: '?' | first
+    endif
+  elsif video_url contains 'vimeo.com'
+    assign video_type = 'vimeo'
+    assign video_id = video_url | split: 'vimeo.com/' | last | split: '?' | first | split: '/' | last
+  endif
+
+  # Calculate padding for aspect ratio
+  case aspect_ratio
+    when '16:9'
+      assign ratio_padding = 56.25
+    when '4:3'
+      assign ratio_padding = 75
+    when '1:1'
+      assign ratio_padding = 100
+    else
+      assign ratio_padding = 56.25
+  endcase
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .video-embed-block-{{ unique }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: {{ ratio_padding }}%;
+    height: 0;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .video-embed-block-{{ unique }} iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-embed-block-{{ unique }}__error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="video-embed-block-{{ unique }}" {{ block.shopify_attributes }}>
+  {%- if video_id != blank and video_type != blank -%}
+    {%- if video_type == 'youtube' -%}
+      <iframe
+        src="https://www.youtube.com/embed/{{ video_id }}?rel=0{% if autoplay %}&autoplay=1{% endif %}{% if mute %}&mute=1{% endif %}{% if loop_video %}&loop=1&playlist={{ video_id }}{% endif %}"
+        title="YouTube video"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+    {%- elsif video_type == 'vimeo' -%}
+      <iframe
+        src="https://player.vimeo.com/video/{{ video_id }}?{% if autoplay %}autoplay=1&{% endif %}{% if mute %}muted=1&{% endif %}{% if loop_video %}loop=1&{% endif %}title=0&byline=0&portrait=0"
+        title="Vimeo video"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+    {%- endif -%}
+  {%- else -%}
+    <div class="video-embed-block-{{ unique }}__error">
+      <p>Please enter a valid YouTube or Vimeo URL</p>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Video Embed",
+  "class": "video-embed-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL",
+      "info": "Enter a YouTube or Vimeo URL",
+      "placeholder": "https://www.youtube.com/watch?v=..."
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Aspect ratio",
+      "options": [
+        {"value": "16:9", "label": "16:9 (Widescreen)"},
+        {"value": "4:3", "label": "4:3 (Standard)"},
+        {"value": "1:1", "label": "1:1 (Square)"}
+      ],
+      "default": "16:9"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "info": "Video will be muted if autoplay is enabled",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "mute",
+      "label": "Mute",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop video",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Embed"
+    }
+  ]
+}
+{% endschema %}

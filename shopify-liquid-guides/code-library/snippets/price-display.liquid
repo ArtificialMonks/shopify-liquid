@@ -1,0 +1,158 @@
+{%- comment -%}
+  Price Display Snippet
+
+  Displays product prices with proper formatting, sale indicators,
+  and accessibility support. Essential for all Shopify themes.
+
+  Parameters:
+  - product: Product object (required)
+  - variant: Specific variant (optional, uses product.selected_or_first_available_variant if not provided)
+  - show_compare_at: Show compare at price (optional, default: true)
+  - show_currency: Show currency code (optional, default: false)
+  - class: CSS class for wrapper (optional)
+  - format: Price format - 'default', 'short', or 'long' (optional, default: 'default')
+
+  Usage:
+  {% render 'price-display',
+     product: product,
+     variant: product.selected_or_first_available_variant,
+     show_compare_at: true,
+     class: 'product-price',
+     format: 'default' %}
+{%- endcomment -%}
+
+{%- liquid
+  # Parameter validation and defaults
+  assign product_object = product
+  assign variant_object = variant | default: product_object.selected_or_first_available_variant
+  assign show_compare_price = show_compare_at | default: true
+  assign show_currency_code = show_currency | default: false
+  assign css_class = class | default: 'price-display'
+  assign price_format = format | default: 'default'
+
+  # Validate required parameters
+  unless product_object
+    assign has_error = true
+    assign error_message = 'Product object is required'
+  endunless
+
+  unless variant_object
+    assign has_error = true
+    assign error_message = 'No available variant found'
+  endunless
+
+  # Price calculations
+  unless has_error
+    assign current_price = variant_object.price
+    assign compare_price = variant_object.compare_at_price
+    assign has_sale = false
+
+    if compare_price and compare_price > current_price
+      assign has_sale = true
+      assign savings_amount = compare_price | minus: current_price
+      assign savings_percentage = savings_amount | times: 100 | divided_by: compare_price | round
+    endif
+
+    # Format prices based on format parameter
+    case price_format
+      when 'short'
+        assign formatted_price = current_price | money_without_trailing_zeros
+        assign formatted_compare_price = compare_price | money_without_trailing_zeros
+      when 'long'
+        assign formatted_price = current_price | money_with_currency
+        assign formatted_compare_price = compare_price | money_with_currency
+      else
+        assign formatted_price = current_price | money
+        assign formatted_compare_price = compare_price | money
+    endcase
+
+    # Add currency code if requested
+    if show_currency_code and price_format != 'long'
+      assign currency_code = cart.currency.iso_code
+      assign formatted_price = formatted_price | append: ' ' | append: currency_code
+      assign formatted_compare_price = formatted_compare_price | append: ' ' | append: currency_code
+    endif
+
+    # Availability check
+    assign is_available = variant_object.available
+  endunless
+-%}
+
+{%- if has_error -%}
+  <div class="price-error" style="background: #ffe6e6; border: 1px solid #ff9999; padding: 8px; border-radius: 4px; color: #cc0000; font-size: 14px;">
+    Price Error: {{ error_message }}
+  </div>
+{%- else -%}
+  <div
+    class="{{ css_class }}{% if has_sale %} {{ css_class }}--on-sale{% endif %}{% unless is_available %} {{ css_class }}--sold-out{% endunless %}"
+    data-price="{{ current_price }}"
+    {%- if compare_price %} data-compare-price="{{ compare_price }}"{% endif %}
+  >
+    {%- comment -%} Current Price {%- endcomment -%}
+    <span
+      class="{{ css_class }}__current"
+      {%- if has_sale %} aria-label="Sale price {{ formatted_price }}"{% else %} aria-label="Price {{ formatted_price }}"{% endif %}
+    >
+      {{ formatted_price }}
+    </span>
+
+    {%- comment -%} Compare At Price {%- endcomment -%}
+    {%- if has_sale and show_compare_price -%}
+      <span
+        class="{{ css_class }}__compare"
+        aria-label="Original price {{ formatted_compare_price }}"
+      >
+        {{ formatted_compare_price }}
+      </span>
+
+      {%- comment -%} Sale Badge {%- endcomment -%}
+      <span
+        class="{{ css_class }}__badge"
+        aria-label="Save {{ savings_percentage }}%"
+      >
+        -{{ savings_percentage }}%
+      </span>
+    {%- endif -%}
+
+    {%- comment -%} Availability Status {%- endcomment -%}
+    {%- unless is_available -%}
+      <span
+        class="{{ css_class }}__availability"
+        aria-label="Sold out"
+      >
+        {{ 'products.product.sold_out' | t }}
+      </span>
+    {%- endunless -%}
+
+    {%- comment -%} Unit Price (if applicable) {%- endcomment -%}
+    {%- if variant_object.unit_price_measurement -%}
+      <div class="{{ css_class }}__unit">
+        <span class="{{ css_class }}__unit-price">
+          {{ variant_object.unit_price | money }}
+        </span>
+        <span class="{{ css_class }}__unit-measure">
+          {%- if variant_object.unit_price_measurement.reference_value != 1 -%}
+            {{ variant_object.unit_price_measurement.reference_value }}
+          {%- endif -%}
+          {{ variant_object.unit_price_measurement.reference_unit }}
+        </span>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Tax Information {%- endcomment -%}
+    {%- if shop.taxes_included -%}
+      <small class="{{ css_class }}__tax-info">
+        {{ 'products.product.include_taxes' | t }}
+      </small>
+    {%- endif -%}
+
+    {%- comment -%} Shipping Information {%- endcomment -%}
+    {%- if shop.shipping_policy.body != blank -%}
+      <small class="{{ css_class }}__shipping-info">
+        <a href="{{ shop.shipping_policy.url }}" target="_blank" rel="noopener">
+          {{ 'products.product.shipping_policy_html' | t }}
+        </a>
+      </small>
+    {%- endif -%}
+  </div>
+{%- endif -%}

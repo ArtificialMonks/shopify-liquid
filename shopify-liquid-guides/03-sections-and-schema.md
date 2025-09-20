@@ -2,6 +2,8 @@
 
 Master Shopify section creation and schema configuration. Learn how to build flexible, merchant-friendly sections that integrate seamlessly with the theme editor.
 
+> **🚨 Important**: Before implementing any schema, review the **[Schema Validation Guidelines](./schema-validation/schema-guidelines.md)** to prevent common validation errors and ensure Theme Store compliance.
+
 ## Section Architecture
 
 ### The Three Components
@@ -13,20 +15,26 @@ Every Shopify section consists of:
 3. **Schema** - JSON that defines settings and behavior
 
 ```liquid
-<!-- 1. Template Logic -->
-<section class="custom-section">
+<!-- 1. Template Logic with CSS Scoping -->
+{% assign unique = section.id | replace: '_', '' | downcase %}
+
+<section class="custom-section-{{ unique }}">
+  {% style %}
+    .custom-section-{{ unique }} {
+      padding: {{ section.settings.padding }}px;
+      background: {{ section.settings.bg_color }};
+    }
+
+    .custom-section__title-{{ unique }} {
+      margin: 0 0 20px 0;
+      color: {{ section.settings.title_color | default: '#333' }};
+    }
+  {% endstyle %}
+
   {% if section.settings.title != blank %}
-    <h2>{{ section.settings.title | escape }}</h2>
+    <h2 class="custom-section__title-{{ unique }}">{{ section.settings.title | escape }}</h2>
   {% endif %}
 </section>
-
-<!-- 2. Styling -->
-<style>
-  .custom-section {
-    padding: {{ section.settings.padding }}px;
-    background: {{ section.settings.bg_color }};
-  }
-</style>
 
 <!-- 3. Schema -->
 {% schema %}
@@ -35,7 +43,7 @@ Every Shopify section consists of:
   "settings": [
     {"type": "text", "id": "title", "label": "Section Title"},
     {"type": "color", "id": "bg_color", "label": "Background Color"},
-    {"type": "range", "id": "padding", "min": 0, "max": 100, "default": 20}
+    {"type": "range", "id": "padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 20}
   ]
 }
 {% endschema %}
@@ -703,6 +711,9 @@ Every Shopify section consists of:
 ✅ **Group related settings with headers**
 ✅ **Keep max_blocks reasonable (≤50)**
 ✅ **Use appropriate input types for data**
+✅ **Follow schema validation rules** - See [Schema Guidelines](./schema-validation/schema-guidelines.md)
+✅ **Validate range step calculations** - Ensure `(max - min) / step ≤ 101`
+✅ **Use correct setting types** - `video` not `file` for video uploads
 
 ### Template Implementation
 ✅ **Always escape user input** with `| escape`
@@ -722,6 +733,10 @@ Every Shopify section consists of:
 ## Common Pitfalls
 
 ❌ **Invalid JSON in schema** - Breaks theme editor
+❌ **Schema validation errors** - See [Schema Guidelines](./schema-validation/schema-guidelines.md) for prevention
+❌ **Invalid setting types** - Using `file` instead of `video` for video uploads
+❌ **Range step violations** - Exceeding 101 steps in range settings
+❌ **Invalid section attributes** - Using `enabled_on` in sections (app blocks only)
 ❌ **Missing escape filters** - Security vulnerability
 ❌ **No content guards** - Displays empty elements
 ❌ **Hardcoded values** - Reduces flexibility
@@ -730,7 +745,29 @@ Every Shopify section consists of:
 
 ## Next Steps
 
+Continue your learning journey:
 - **[Blocks & CSS Scoping](./04-blocks-and-css-scoping.md)** - Advanced component patterns
 - **[Performance & Accessibility](./05-performance-and-accessibility.md)** - Optimization strategies
 - **[Code Library](./code-library/sections/)** - Production-ready examples
 - **[Troubleshooting](./06-troubleshooting.md)** - Common issues and solutions
+
+## Essential References
+
+### Critical Validation (Always Required)
+- **[Schema Validation Guidelines](./schema-validation/schema-guidelines.md)** - **ESSENTIAL for all development**
+- **[CSS Scoping Methodology](./04-blocks-and-css-scoping.md)** - Prevent style conflicts
+
+### Architecture & Implementation
+- **[Theme Architecture](./docs/architecture/theme-overview.md)** - Complete theme structure
+- **[File Taxonomy](./docs/architecture/file-taxonomy.md)** - All 7 Shopify file types
+- **[Best Practices 2025](./docs/architecture/best-practices-2025.md)** - Current standards
+
+### Configuration Patterns
+- **[Settings Schema](./docs/config/settings-schema.md)** - Global theme configuration
+- **[Block Configuration](./docs/config/blocks-config.md)** - Component-level settings
+- **[Section Groups](./docs/config/section-groups.md)** - Layout area management
+
+### Advanced Development
+- **[Advanced Features](./docs/advanced-features/)** - AI blocks, PWA, metaobjects
+- **[Asset Optimization](./docs/assets/)** - CSS, JS, images, fonts
+- **[Internationalization](./docs/locales/)** - Multi-language support

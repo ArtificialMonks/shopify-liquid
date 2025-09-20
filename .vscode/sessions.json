@@ -1,54 +1,64 @@
 {
   "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v11/terminal-keeper.json",
   "theme": "tribe",
-  "active": "default",
+  "active": "shopify-dev",
   "activateOnStartup": true,
   "keepExistingTerminals": false,
   "sessions": {
-    "default": [
+    "shopify-dev": [
       {
-        "name": "hello",
-        "autoExecuteCommands": true,
-        "icon": "person",
+        "name": "shopify-dev",
+        "autoExecuteCommands": false,
+        "icon": "terminal",
+        "color": "terminal.ansiCyan",
+        "commands": [
+          "echo 'Shopify Liquid Documentation Repository'",
+          "echo 'Available commands:'",
+          "echo '  - theme-check: Run Theme Check validation'",
+          "echo '  - shopify theme serve: Start development server'",
+          "echo '  - shopify theme check: Validate theme files'",
+          "echo ''",
+          "echo 'Documentation structure:'",
+          "echo '  - shopify-liquid-guides/docs/ - Comprehensive docs'",
+          "echo '  - shopify-liquid-guides/code-library/ - Production code'",
+          "echo '  - shopify-liquid-guides/examples/ - Complete templates'",
+          "echo ''"
+        ]
+      }
+    ],
+    "theme-development": [
+      {
+        "name": "theme-check",
+        "autoExecuteCommands": false,
+        "icon": "check",
         "color": "terminal.ansiGreen",
         "commands": [
-          "echo hello"
+          "cd shopify-liquid-guides/code-library",
+          "theme-check ."
         ]
       },
-      [
-        {
-          "name": "docker:ros",
-          "commands": [
-            ""
-          ]
-        },
-        {
-          "name": "docker:k8s",
-          "commands": [
-            ""
-          ]
-        }
-      ],
-      [
-        {
-          "name": "docker:nats",
-          "commands": [
-            ""
-          ]
-        },
-        {
-          "name": "docker:fleet",
-          "commands": [
-            ""
-          ]
-        }
-      ]
-    ],
-    "saved-session": [
       {
-        "name": "connect",
+        "name": "serve",
+        "autoExecuteCommands": false,
+        "icon": "globe",
+        "color": "terminal.ansiYellow",
         "commands": [
-          ""
+          "echo 'Ready for: shopify theme serve'"
+        ]
+      }
+    ],
+    "documentation": [
+      {
+        "name": "docs-browse",
+        "autoExecuteCommands": false,
+        "icon": "book",
+        "color": "terminal.ansiMagenta",
+        "commands": [
+          "echo 'Documentation structure:'",
+          "ls -la shopify-liquid-guides/docs/",
+          "echo ''",
+          "echo 'Code library:'",
+          "ls -la shopify-liquid-guides/code-library/"
         ]
       }
     ]

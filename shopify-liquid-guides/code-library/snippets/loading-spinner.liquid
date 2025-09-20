@@ -1,0 +1,144 @@
+{%- comment -%}
+  Loading Spinner Snippet
+
+  Accessible loading spinner with customizable styling and
+  proper ARIA attributes for screen readers.
+
+  Parameters:
+  - size: Spinner size - 'small', 'medium', 'large', or pixel value (optional, default: 'medium')
+  - color: Spinner color (optional, default: 'currentColor')
+  - class: CSS class (optional)
+  - label: Custom loading label (optional, default: 'Loading...')
+  - visible: Show spinner immediately (optional, default: false)
+
+  Usage:
+  {% render 'loading-spinner',
+     size: 'large',
+     color: '#007cba',
+     class: 'cart-loading',
+     label: 'Adding to cart...',
+     visible: true %}
+{%- endcomment -%}
+
+{%- liquid
+  # Parameter validation and defaults
+  assign spinner_size = size | default: 'medium'
+  assign spinner_color = color | default: 'currentColor'
+  assign css_class = class | default: 'loading-spinner'
+  assign loading_label = label | default: 'Loading...'
+  assign is_visible = visible | default: false
+
+  # Convert size to pixel values
+  case spinner_size
+    when 'small'
+      assign size_value = '16'
+    when 'medium'
+      assign size_value = '24'
+    when 'large'
+      assign size_value = '32'
+    else
+      # Custom pixel value
+      assign size_value = spinner_size | remove: 'px'
+  endcase
+
+  # Calculate stroke width based on size
+  assign size_int = size_value | plus: 0
+  if size_int <= 16
+    assign stroke_width = '2'
+  elsif size_int <= 24
+    assign stroke_width = '2.5'
+  else
+    assign stroke_width = '3'
+  endif
+-%}
+
+<div
+  class="{{ css_class }}{% unless is_visible %} {{ css_class }}--hidden{% endunless %}"
+  role="status"
+  aria-live="polite"
+  aria-label="{{ loading_label | escape }}"
+  style="--spinner-size: {{ size_value }}px; --spinner-color: {{ spinner_color }};"
+>
+  <svg
+    class="{{ css_class }}__icon"
+    width="{{ size_value }}"
+    height="{{ size_value }}"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="{{ spinner_color }}"
+    stroke-width="{{ stroke_width }}"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      stroke-dasharray="31.416"
+      stroke-dashoffset="31.416"
+      opacity="0.3"
+    />
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      stroke-dasharray="31.416"
+      stroke-dashoffset="23.562"
+      transform-origin="center"
+      style="animation: spinner-rotate 1s linear infinite;"
+    />
+  </svg>
+
+  <span class="{{ css_class }}__label visually-hidden">
+    {{ loading_label | escape }}
+  </span>
+</div>
+
+<style>
+  .{{ css_class }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .{{ css_class }}--hidden {
+    display: none;
+  }
+
+  .{{ css_class }}__icon {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .{{ css_class }}__label.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  @keyframes spinner-rotate {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .{{ css_class }}__icon {
+      animation: none !important;
+    }
+
+    .{{ css_class }}__icon circle:last-child {
+      animation: none !important;
+      stroke-dashoffset: 15.708; /* 50% of circle */
+    }
+  }
+</style>

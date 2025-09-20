@@ -1,0 +1,506 @@
+{%- comment -%}
+  Comparison Table Block - Advanced Theme Block
+
+  Product or feature comparison table with responsive design.
+  Converts to accordion layout on mobile for better usability.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/comparison-table.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Table settings
+  assign title = block.settings.title
+  assign description = block.settings.description
+  assign mobile_layout = block.settings.mobile_layout | default: 'accordion'
+
+  # Column settings (simplified for single block - normally would use nested blocks)
+  assign column1_title = block.settings.column1_title | default: 'Basic'
+  assign column2_title = block.settings.column2_title | default: 'Premium'
+  assign column3_title = block.settings.column3_title | default: 'Pro'
+  assign highlight_column = block.settings.highlight_column | default: 2
+
+  # Features (simplified list)
+  assign features = 'Feature 1,Feature 2,Feature 3,Feature 4,Feature 5' | split: ','
+  assign col1_values = block.settings.col1_values | default: 'Yes,No,Basic,5GB,Email' | split: ','
+  assign col2_values = block.settings.col2_values | default: 'Yes,Yes,Advanced,50GB,Email + Chat' | split: ','
+  assign col3_values = block.settings.col3_values | default: 'Yes,Yes,Premium,Unlimited,24/7 Support' | split: ','
+
+  # Style settings
+  assign header_color = block.settings.header_color | default: '#ffffff'
+  assign header_bg = block.settings.header_bg | default: '#000000'
+  assign highlight_color = block.settings.highlight_color | default: '#4CAF50'
+  assign border_color = block.settings.border_color | default: '#e0e0e0'
+  assign text_color = block.settings.text_color | default: '#333333'
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .comparison-table-{{ unique }} {
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  .comparison-table-{{ unique }}__header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .comparison-table-{{ unique }}__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: {{ text_color }};
+    margin: 0 0 12px;
+  }
+
+  .comparison-table-{{ unique }}__description {
+    font-size: 16px;
+    color: {{ text_color }};
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  .comparison-table-{{ unique }}__table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid {{ border_color }};
+  }
+
+  .comparison-table-{{ unique }}__row {
+    border-bottom: 1px solid {{ border_color }};
+  }
+
+  .comparison-table-{{ unique }}__row:last-child {
+    border-bottom: none;
+  }
+
+  .comparison-table-{{ unique }}__cell {
+    padding: 16px 20px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .comparison-table-{{ unique }}__cell--header {
+    background: {{ header_bg }};
+    color: {{ header_color }};
+    font-weight: 600;
+    font-size: 18px;
+    padding: 24px 20px;
+  }
+
+  .comparison-table-{{ unique }}__cell--feature {
+    background: #f8f9fa;
+    text-align: left;
+    font-weight: 500;
+    color: {{ text_color }};
+  }
+
+  .comparison-table-{{ unique }}__cell--highlight {
+    background: {{ highlight_color }}10;
+    position: relative;
+  }
+
+  .comparison-table-{{ unique }}__cell--highlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: {{ highlight_color }};
+  }
+
+  .comparison-table-{{ unique }}__check {
+    color: #4CAF50;
+    font-weight: 600;
+  }
+
+  .comparison-table-{{ unique }}__cross {
+    color: #f44336;
+    font-weight: 600;
+  }
+
+  .comparison-table-{{ unique }}__badge {
+    display: inline-block;
+    background: {{ highlight_color }};
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* Mobile accordion layout */
+  .comparison-table-{{ unique }}__mobile {
+    display: none;
+  }
+
+  .comparison-table-{{ unique }}__accordion {
+    border: 1px solid {{ border_color }};
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .comparison-table-{{ unique }}__accordion-header {
+    background: {{ header_bg }};
+    color: {{ header_color }};
+    padding: 20px;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    position: relative;
+  }
+
+  .comparison-table-{{ unique }}__accordion--highlight .comparison-table-{{ unique }}__accordion-header {
+    background: {{ highlight_color }};
+  }
+
+  .comparison-table-{{ unique }}__accordion-content {
+    background: #ffffff;
+  }
+
+  .comparison-table-{{ unique }}__accordion-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid {{ border_color }};
+  }
+
+  .comparison-table-{{ unique }}__accordion-row:last-child {
+    border-bottom: none;
+  }
+
+  .comparison-table-{{ unique }}__accordion-feature {
+    font-weight: 500;
+    color: {{ text_color }};
+  }
+
+  .comparison-table-{{ unique }}__accordion-value {
+    font-weight: 600;
+    color: {{ text_color }};
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .comparison-table-{{ unique }}__title {
+      font-size: 24px;
+    }
+
+    .comparison-table-{{ unique }}__description {
+      font-size: 14px;
+    }
+
+    {% if mobile_layout == 'accordion' %}
+      .comparison-table-{{ unique }}__table {
+        display: none;
+      }
+
+      .comparison-table-{{ unique }}__mobile {
+        display: block;
+      }
+    {% else %}
+      .comparison-table-{{ unique }}__table {
+        font-size: 14px;
+      }
+
+      .comparison-table-{{ unique }}__cell {
+        padding: 12px 8px;
+      }
+
+      .comparison-table-{{ unique }}__cell--header {
+        padding: 16px 8px;
+        font-size: 16px;
+      }
+
+      .comparison-table-{{ unique }}__cell--feature {
+        font-size: 13px;
+      }
+    {% endif %}
+  }
+
+  /* Print styles */
+  @media print {
+    .comparison-table-{{ unique }}__mobile {
+      display: none;
+    }
+
+    .comparison-table-{{ unique }}__table {
+      display: table;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="comparison-table-{{ unique }}" {{ block.shopify_attributes }}>
+  {%- if title != blank or description != blank -%}
+    <div class="comparison-table-{{ unique }}__header">
+      {%- if title != blank -%}
+        <h2 class="comparison-table-{{ unique }}__title">{{ title | escape }}</h2>
+      {%- endif -%}
+      {%- if description != blank -%}
+        <p class="comparison-table-{{ unique }}__description">{{ description | escape }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Desktop table layout {%- endcomment -%}
+  <table class="comparison-table-{{ unique }}__table">
+    <thead>
+      <tr class="comparison-table-{{ unique }}__row">
+        <th class="comparison-table-{{ unique }}__cell comparison-table-{{ unique }}__cell--header comparison-table-{{ unique }}__cell--feature">Features</th>
+        <th class="comparison-table-{{ unique }}__cell comparison-table-{{ unique }}__cell--header{% if highlight_column == 1 %} comparison-table-{{ unique }}__cell--highlight{% endif %}">
+          {% if highlight_column == 1 %}<div class="comparison-table-{{ unique }}__badge">Popular</div>{% endif %}
+          {{ column1_title | escape }}
+        </th>
+        <th class="comparison-table-{{ unique }}__cell comparison-table-{{ unique }}__cell--header{% if highlight_column == 2 %} comparison-table-{{ unique }}__cell--highlight{% endif %}">
+          {% if highlight_column == 2 %}<div class="comparison-table-{{ unique }}__badge">Popular</div>{% endif %}
+          {{ column2_title | escape }}
+        </th>
+        <th class="comparison-table-{{ unique }}__cell comparison-table-{{ unique }}__cell--header{% if highlight_column == 3 %} comparison-table-{{ unique }}__cell--highlight{% endif %}">
+          {% if highlight_column == 3 %}<div class="comparison-table-{{ unique }}__badge">Popular</div>{% endif %}
+          {{ column3_title | escape }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {%- for feature in features -%}
+        {%- assign index = forloop.index0 -%}
+        <tr class="comparison-table-{{ unique }}__row">
+          <td class="comparison-table-{{ unique }}__cell comparison-table-{{ unique }}__cell--feature">{{ feature | escape }}</td>
+          <td class="comparison-table-{{ unique }}__cell{% if highlight_column == 1 %} comparison-table-{{ unique }}__cell--highlight{% endif %}">
+            {%- assign value = col1_values[index] | default: '-' -%}
+            {%- if value == 'Yes' -%}
+              <span class="comparison-table-{{ unique }}__check">✓</span>
+            {%- elsif value == 'No' -%}
+              <span class="comparison-table-{{ unique }}__cross">✗</span>
+            {%- else -%}
+              {{ value | escape }}
+            {%- endif -%}
+          </td>
+          <td class="comparison-table-{{ unique }}__cell{% if highlight_column == 2 %} comparison-table-{{ unique }}__cell--highlight{% endif %}">
+            {%- assign value = col2_values[index] | default: '-' -%}
+            {%- if value == 'Yes' -%}
+              <span class="comparison-table-{{ unique }}__check">✓</span>
+            {%- elsif value == 'No' -%}
+              <span class="comparison-table-{{ unique }}__cross">✗</span>
+            {%- else -%}
+              {{ value | escape }}
+            {%- endif -%}
+          </td>
+          <td class="comparison-table-{{ unique }}__cell{% if highlight_column == 3 %} comparison-table-{{ unique }}__cell--highlight{% endif %}">
+            {%- assign value = col3_values[index] | default: '-' -%}
+            {%- if value == 'Yes' -%}
+              <span class="comparison-table-{{ unique }}__check">✓</span>
+            {%- elsif value == 'No' -%}
+              <span class="comparison-table-{{ unique }}__cross">✗</span>
+            {%- else -%}
+              {{ value | escape }}
+            {%- endif -%}
+          </td>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+
+  {%- comment -%} Mobile accordion layout {%- endcomment -%}
+  <div class="comparison-table-{{ unique }}__mobile">
+    {%- assign columns = column1_title | append: '|' | append: column2_title | append: '|' | append: column3_title | split: '|' -%}
+
+    {%- for column in columns -%}
+      {%- assign col_index = forloop.index -%}
+      <div class="comparison-table-{{ unique }}__accordion{% if highlight_column == col_index %} comparison-table-{{ unique }}__accordion--highlight{% endif %}">
+        <div class="comparison-table-{{ unique }}__accordion-header">
+          {% if highlight_column == col_index %}<div class="comparison-table-{{ unique }}__badge">Popular</div>{% endif %}
+          {{ column | escape }}
+        </div>
+        <div class="comparison-table-{{ unique }}__accordion-content">
+          {%- for feature in features -%}
+            {%- assign feature_index = forloop.index0 -%}
+            <div class="comparison-table-{{ unique }}__accordion-row">
+              <div class="comparison-table-{{ unique }}__accordion-feature">{{ feature | escape }}</div>
+              <div class="comparison-table-{{ unique }}__accordion-value">
+                {%- case col_index -%}
+                  {%- when 1 -%}
+                    {%- assign value = col1_values[feature_index] | default: '-' -%}
+                  {%- when 2 -%}
+                    {%- assign value = col2_values[feature_index] | default: '-' -%}
+                  {%- when 3 -%}
+                    {%- assign value = col3_values[feature_index] | default: '-' -%}
+                {%- endcase -%}
+                {%- if value == 'Yes' -%}
+                  <span class="comparison-table-{{ unique }}__check">✓</span>
+                {%- elsif value == 'No' -%}
+                  <span class="comparison-table-{{ unique }}__cross">✗</span>
+                {%- else -%}
+                  {{ value | escape }}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison Table",
+  "class": "comparison-table-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Compare Plans"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Choose the plan that's right for you"
+    },
+    {
+      "type": "header",
+      "content": "Columns"
+    },
+    {
+      "type": "text",
+      "id": "column1_title",
+      "label": "Column 1 title",
+      "default": "Basic"
+    },
+    {
+      "type": "text",
+      "id": "column2_title",
+      "label": "Column 2 title",
+      "default": "Premium"
+    },
+    {
+      "type": "text",
+      "id": "column3_title",
+      "label": "Column 3 title",
+      "default": "Pro"
+    },
+    {
+      "type": "select",
+      "id": "highlight_column",
+      "label": "Highlight column",
+      "options": [
+        {"value": "1", "label": "Column 1"},
+        {"value": "2", "label": "Column 2"},
+        {"value": "3", "label": "Column 3"}
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Features & Values"
+    },
+    {
+      "type": "textarea",
+      "id": "col1_values",
+      "label": "Column 1 values",
+      "info": "Comma-separated values (Yes,No,Basic,5GB,Email)",
+      "default": "Yes,No,Basic,5GB,Email"
+    },
+    {
+      "type": "textarea",
+      "id": "col2_values",
+      "label": "Column 2 values",
+      "info": "Comma-separated values (Yes,Yes,Advanced,50GB,Email + Chat)",
+      "default": "Yes,Yes,Advanced,50GB,Email + Chat"
+    },
+    {
+      "type": "textarea",
+      "id": "col3_values",
+      "label": "Column 3 values",
+      "info": "Comma-separated values (Yes,Yes,Premium,Unlimited,24/7 Support)",
+      "default": "Yes,Yes,Premium,Unlimited,24/7 Support"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        {"value": "accordion", "label": "Accordion cards"},
+        {"value": "table", "label": "Scrollable table"}
+      ],
+      "default": "accordion"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "header_bg",
+      "label": "Header background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Header text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight color",
+      "default": "#4CAF50"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#333333"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison Table",
+      "settings": {
+        "title": "Compare Our Plans",
+        "description": "Find the perfect plan for your needs"
+      }
+    },
+    {
+      "name": "Product Comparison",
+      "settings": {
+        "title": "Product Features",
+        "column1_title": "Standard",
+        "column2_title": "Deluxe",
+        "column3_title": "Premium"
+      }
+    }
+  ]
+}
+{% endschema %}

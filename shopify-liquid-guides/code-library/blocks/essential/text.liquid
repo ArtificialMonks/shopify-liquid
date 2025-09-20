@@ -1,0 +1,397 @@
+{%- comment -%}
+  Text Block - Essential Theme Block
+
+  The foundational content block for any Shopify theme.
+  Provides rich text editing with full typography control,
+  alignment options, and responsive sizing.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/text.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Content settings
+  assign heading = block.settings.heading
+  assign heading_size = block.settings.heading_size | default: 'h2'
+  assign text = block.settings.text
+  assign text_style = block.settings.text_style | default: 'body'
+  assign text_size = block.settings.text_size | default: 'medium'
+
+  # Layout settings
+  assign alignment = block.settings.alignment | default: 'left'
+  assign max_width = block.settings.max_width | default: 100
+  assign padding_top = block.settings.padding_top | default: 20
+  assign padding_bottom = block.settings.padding_bottom | default: 20
+
+  # Style settings
+  assign text_color = block.settings.text_color | default: settings.colors_text | default: '#333333'
+  assign heading_color = block.settings.heading_color | default: settings.colors_heading | default: '#000000'
+  assign highlight_color = block.settings.highlight_color
+  assign use_gradient = block.settings.use_gradient | default: false
+
+  # Mobile settings
+  assign mobile_alignment = block.settings.mobile_alignment | default: alignment
+  assign mobile_text_size = block.settings.mobile_text_size | default: 'small'
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .text-block-{{ unique }} {
+    padding-top: {{ padding_top }}px;
+    padding-bottom: {{ padding_bottom }}px;
+    text-align: {{ alignment }};
+    max-width: {{ max_width }}%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .text-block-{{ unique }}__heading {
+    color: {{ heading_color }};
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+
+    {%- if use_gradient and highlight_color != blank -%}
+      background: linear-gradient(90deg, {{ heading_color }}, {{ highlight_color }});
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    {%- endif -%}
+  }
+
+  .text-block-{{ unique }}__heading--h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+  }
+
+  .text-block-{{ unique }}__heading--h2 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
+  }
+
+  .text-block-{{ unique }}__heading--h3 {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 600;
+  }
+
+  .text-block-{{ unique }}__heading--h4 {
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-weight: 500;
+  }
+
+  .text-block-{{ unique }}__text {
+    color: {{ text_color }};
+    line-height: 1.6;
+  }
+
+  .text-block-{{ unique }}__text--body {
+    font-weight: 400;
+  }
+
+  .text-block-{{ unique }}__text--subtitle {
+    font-weight: 500;
+    opacity: 0.9;
+  }
+
+  .text-block-{{ unique }}__text--caption {
+    font-weight: 400;
+    opacity: 0.8;
+    font-style: italic;
+  }
+
+  /* Text size variants */
+  .text-block-{{ unique }}__text--small {
+    font-size: 14px;
+  }
+
+  .text-block-{{ unique }}__text--medium {
+    font-size: 16px;
+  }
+
+  .text-block-{{ unique }}__text--large {
+    font-size: 18px;
+  }
+
+  .text-block-{{ unique }}__text--xlarge {
+    font-size: 20px;
+  }
+
+  /* Rich text content styling */
+  .text-block-{{ unique }}__text p {
+    margin: 0 0 1em 0;
+  }
+
+  .text-block-{{ unique }}__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .text-block-{{ unique }}__text strong {
+    font-weight: 600;
+    color: {{ heading_color }};
+  }
+
+  .text-block-{{ unique }}__text a {
+    color: {{ highlight_color | default: text_color }};
+    text-decoration: underline;
+    transition: opacity 0.2s ease;
+  }
+
+  .text-block-{{ unique }}__text a:hover {
+    opacity: 0.8;
+  }
+
+  .text-block-{{ unique }}__text ul,
+  .text-block-{{ unique }}__text ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+  }
+
+  .text-block-{{ unique }}__text li {
+    margin-bottom: 0.5em;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .text-block-{{ unique }} {
+      text-align: {{ mobile_alignment }};
+      max-width: 100%;
+      padding-top: {{ padding_top | times: 0.75 }}px;
+      padding-bottom: {{ padding_bottom | times: 0.75 }}px;
+    }
+
+    .text-block-{{ unique }}__heading--h1 {
+      font-size: 28px;
+    }
+
+    .text-block-{{ unique }}__heading--h2 {
+      font-size: 24px;
+    }
+
+    .text-block-{{ unique }}__heading--h3 {
+      font-size: 20px;
+    }
+
+    .text-block-{{ unique }}__heading--h4 {
+      font-size: 18px;
+    }
+
+    .text-block-{{ unique }}__text--{{ mobile_text_size }} {
+      font-size: {% case mobile_text_size %}
+        {% when 'small' %}13px{% when 'medium' %}15px{% when 'large' %}17px{% else %}15px
+      {% endcase %};
+    }
+  }
+
+  /* Accessibility - Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .text-block-{{ unique }} * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="text-block-{{ unique }}" {{ block.shopify_attributes }}>
+  {%- if heading != blank -%}
+    <{{ heading_size }} class="text-block-{{ unique }}__heading text-block-{{ unique }}__heading--{{ heading_size }}">
+      {{ heading | escape }}
+    </{{ heading_size }}>
+  {%- endif -%}
+
+  {%- if text != blank -%}
+    <div class="text-block-{{ unique }}__text text-block-{{ unique }}__text--{{ text_style }} text-block-{{ unique }}__text--{{ text_size }}">
+      {{ text }}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Text",
+  "class": "text-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Talk about your brand"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        {"value": "h1", "label": "Extra large (H1)"},
+        {"value": "h2", "label": "Large (H2)"},
+        {"value": "h3", "label": "Medium (H3)"},
+        {"value": "h4", "label": "Small (H4)"}
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Text style",
+      "options": [
+        {"value": "body", "label": "Body"},
+        {"value": "subtitle", "label": "Subtitle"},
+        {"value": "caption", "label": "Caption"}
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {"value": "small", "label": "Small"},
+        {"value": "medium", "label": "Medium"},
+        {"value": "large", "label": "Large"},
+        {"value": "xlarge", "label": "Extra large"}
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 50,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight color",
+      "info": "Used for links and gradient effect"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_gradient",
+      "label": "Gradient heading",
+      "info": "Apply gradient effect to heading using highlight color",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "label": "Mobile alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_size",
+      "label": "Mobile text size",
+      "options": [
+        {"value": "small", "label": "Small"},
+        {"value": "medium", "label": "Medium"},
+        {"value": "large", "label": "Large"}
+      ],
+      "default": "small"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text",
+      "settings": {
+        "heading": "Welcome to our store",
+        "text": "<p>Use this text block to show store announcements, advertise products and collections, or simply welcome visitors to your store.</p>"
+      }
+    },
+    {
+      "name": "Heading",
+      "settings": {
+        "heading": "Section Heading",
+        "heading_size": "h2",
+        "text": "",
+        "alignment": "center"
+      }
+    },
+    {
+      "name": "Paragraph",
+      "settings": {
+        "heading": "",
+        "text": "<p>Add a short description for this section</p>",
+        "text_style": "body",
+        "alignment": "left"
+      }
+    }
+  ]
+}
+{% endschema %}

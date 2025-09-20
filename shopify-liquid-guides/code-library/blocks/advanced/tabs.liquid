@@ -1,0 +1,488 @@
+{%- comment -%}
+  Tabs Block - Advanced Theme Block
+
+  Tabbed content interface for organizing information.
+  Supports multiple tabs with smooth transitions and accessibility.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/tabs.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Tab settings
+  assign tab_title = block.settings.tab_title | default: 'Tab'
+  assign tab_content = block.settings.tab_content
+  assign tab_icon = block.settings.tab_icon | default: 'none'
+  assign default_active = block.settings.default_active | default: false
+
+  # Style settings
+  assign tab_style = block.settings.tab_style | default: 'underline'
+  assign active_color = block.settings.active_color | default: '#000000'
+  assign inactive_color = block.settings.inactive_color | default: '#666666'
+  assign border_color = block.settings.border_color | default: '#e0e0e0'
+  assign background_color = block.settings.background_color | default: '#ffffff'
+
+  # Layout settings
+  assign tab_position = block.settings.tab_position | default: 'top'
+  assign tab_alignment = block.settings.tab_alignment | default: 'left'
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .tabs-block-{{ unique }} {
+    width: 100%;
+    background: {{ background_color }};
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .tabs-block-{{ unique }}__list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2px;
+    {% case tab_alignment %}
+      {% when 'center' %}
+        justify-content: center;
+      {% when 'right' %}
+        justify-content: flex-end;
+      {% else %}
+        justify-content: flex-start;
+    {% endcase %}
+    {% if tab_style == 'boxed' %}
+      background: #f5f5f5;
+      padding: 4px;
+      border-radius: 8px 8px 0 0;
+    {% elsif tab_style == 'underline' %}
+      border-bottom: 2px solid {{ border_color }};
+    {% elsif tab_style == 'pills' %}
+      gap: 8px;
+      padding: 8px;
+    {% endif %}
+  }
+
+  .tabs-block-{{ unique }}__tab {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .tabs-block-{{ unique }}__button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    color: {{ inactive_color }};
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-family: inherit;
+    line-height: 1.2;
+
+    {% if tab_style == 'boxed' %}
+      border-radius: 4px 4px 0 0;
+    {% elsif tab_style == 'pills' %}
+      border-radius: 24px;
+      background: #f0f0f0;
+    {% endif %}
+  }
+
+  .tabs-block-{{ unique }}__button:hover {
+    {% if tab_style == 'pills' %}
+      background: #e0e0e0;
+    {% else %}
+      color: {{ active_color }};
+    {% endif %}
+  }
+
+  .tabs-block-{{ unique }}__button--active {
+    color: {{ active_color }};
+
+    {% if tab_style == 'boxed' %}
+      background: {{ background_color }};
+      border: 1px solid {{ border_color }};
+      border-bottom-color: {{ background_color }};
+      margin-bottom: -2px;
+      z-index: 1;
+    {% elsif tab_style == 'underline' %}
+      position: relative;
+    {% elsif tab_style == 'pills' %}
+      background: {{ active_color }};
+      color: #ffffff;
+    {% endif %}
+  }
+
+  {% if tab_style == 'underline' %}
+    .tabs-block-{{ unique }}__button--active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: {{ active_color }};
+    }
+  {% endif %}
+
+  .tabs-block-{{ unique }}__icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tabs-block-{{ unique }}__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  .tabs-block-{{ unique }}__content {
+    padding: 20px;
+    display: none;
+    animation: fadeIn-{{ unique }} 0.3s ease;
+  }
+
+  .tabs-block-{{ unique }}__content--active {
+    display: block;
+  }
+
+  @keyframes fadeIn-{{ unique }} {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Vertical tabs layout */
+  {% if tab_position == 'left' or tab_position == 'right' %}
+    .tabs-block-{{ unique }} {
+      display: flex;
+      {% if tab_position == 'right' %}
+        flex-direction: row-reverse;
+      {% endif %}
+    }
+
+    .tabs-block-{{ unique }}__list {
+      flex-direction: column;
+      width: 200px;
+      border-bottom: none;
+      {% if tab_position == 'left' %}
+        border-right: 2px solid {{ border_color }};
+      {% else %}
+        border-left: 2px solid {{ border_color }};
+      {% endif %}
+    }
+
+    .tabs-block-{{ unique }}__button {
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    {% if tab_style == 'underline' %}
+      .tabs-block-{{ unique }}__button--active::after {
+        top: 0;
+        bottom: 0;
+        {% if tab_position == 'left' %}
+          left: auto;
+          right: -2px;
+          width: 2px;
+          height: auto;
+        {% else %}
+          left: -2px;
+          right: auto;
+          width: 2px;
+          height: auto;
+        {% endif %}
+      }
+    {% endif %}
+
+    .tabs-block-{{ unique }}__content {
+      flex: 1;
+    }
+  {% endif %}
+
+  /* Focus styles */
+  .tabs-block-{{ unique }}__button:focus-visible {
+    outline: 2px solid {{ active_color }};
+    outline-offset: 2px;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    {% if tab_position == 'left' or tab_position == 'right' %}
+      .tabs-block-{{ unique }} {
+        flex-direction: column;
+      }
+
+      .tabs-block-{{ unique }}__list {
+        width: 100%;
+        flex-direction: row;
+        border-right: none;
+        border-left: none;
+        border-bottom: 2px solid {{ border_color }};
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    {% endif %}
+
+    .tabs-block-{{ unique }}__list {
+      gap: 0;
+    }
+
+    .tabs-block-{{ unique }}__button {
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+
+    .tabs-block-{{ unique }}__icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .tabs-block-{{ unique }}__content {
+      padding: 16px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .tabs-block-{{ unique }}__button,
+    .tabs-block-{{ unique }}__content {
+      transition: none;
+      animation: none;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} JavaScript for tab functionality {%- endcomment -%}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabsContainer{{ unique | remove: '-' }} = document.querySelector('.tabs-block-{{ unique }}');
+    const tabButton{{ unique | remove: '-' }} = tabsContainer{{ unique | remove: '-' }}.querySelector('.tabs-block-{{ unique }}__button[data-tab="{{ unique }}"]');
+    const tabContent{{ unique | remove: '-' }} = tabsContainer{{ unique | remove: '-' }}.querySelector('.tabs-block-{{ unique }}__content[data-tab-content="{{ unique }}"]');
+
+    {% if default_active %}
+      tabButton{{ unique | remove: '-' }}.classList.add('tabs-block-{{ unique }}__button--active');
+      tabButton{{ unique | remove: '-' }}.setAttribute('aria-selected', 'true');
+      tabContent{{ unique | remove: '-' }}.classList.add('tabs-block-{{ unique }}__content--active');
+    {% endif %}
+
+    // Tab click handler
+    tabButton{{ unique | remove: '-' }}.addEventListener('click', function() {
+      const parent = this.closest('[data-section-id]');
+      if (!parent) return;
+
+      // Deactivate all tabs in the same container
+      parent.querySelectorAll('.tabs-block-{{ unique }}__button').forEach(btn => {
+        btn.classList.remove('tabs-block-{{ unique }}__button--active');
+        btn.setAttribute('aria-selected', 'false');
+      });
+
+      parent.querySelectorAll('.tabs-block-{{ unique }}__content').forEach(content => {
+        content.classList.remove('tabs-block-{{ unique }}__content--active');
+      });
+
+      // Activate clicked tab
+      this.classList.add('tabs-block-{{ unique }}__button--active');
+      this.setAttribute('aria-selected', 'true');
+      tabContent{{ unique | remove: '-' }}.classList.add('tabs-block-{{ unique }}__content--active');
+    });
+
+    // Keyboard navigation
+    tabButton{{ unique | remove: '-' }}.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+  });
+</script>
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="tabs-block-{{ unique }}" {{ block.shopify_attributes }}>
+  <ul class="tabs-block-{{ unique }}__list" role="tablist">
+    <li class="tabs-block-{{ unique }}__tab" role="presentation">
+      <button
+        class="tabs-block-{{ unique }}__button"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-panel-{{ unique }}"
+        data-tab="{{ unique }}">
+
+        {%- if tab_icon != 'none' -%}
+          <span class="tabs-block-{{ unique }}__icon" aria-hidden="true">
+            {%- case tab_icon -%}
+              {%- when 'info' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+              {%- when 'settings' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                </svg>
+              {%- when 'features' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6v-4zm6-6h4v3h-4V7zM6 7h5v5H6V7zm6 4h4v6h-4v-6z"/>
+                </svg>
+              {%- when 'star' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              {%- when 'document' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+            {%- endcase -%}
+          </span>
+        {%- endif -%}
+
+        <span>{{ tab_title | escape }}</span>
+      </button>
+    </li>
+  </ul>
+
+  <div
+    class="tabs-block-{{ unique }}__content"
+    role="tabpanel"
+    id="tab-panel-{{ unique }}"
+    data-tab-content="{{ unique }}">
+    {{ tab_content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tab",
+  "class": "tabs-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "tab_title",
+      "label": "Tab title",
+      "default": "Tab"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_content",
+      "label": "Tab content",
+      "default": "<p>Add your tab content here. This content will be shown when the tab is active.</p>"
+    },
+    {
+      "type": "select",
+      "id": "tab_icon",
+      "label": "Tab icon",
+      "options": [
+        {"value": "none", "label": "None"},
+        {"value": "info", "label": "Info"},
+        {"value": "settings", "label": "Settings"},
+        {"value": "features", "label": "Features"},
+        {"value": "star", "label": "Star"},
+        {"value": "document", "label": "Document"}
+      ],
+      "default": "none"
+    },
+    {
+      "type": "checkbox",
+      "id": "default_active",
+      "label": "Active by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "tab_style",
+      "label": "Tab style",
+      "options": [
+        {"value": "underline", "label": "Underline"},
+        {"value": "boxed", "label": "Boxed"},
+        {"value": "pills", "label": "Pills"}
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "select",
+      "id": "tab_position",
+      "label": "Tab position",
+      "options": [
+        {"value": "top", "label": "Top"},
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "top"
+    },
+    {
+      "type": "select",
+      "id": "tab_alignment",
+      "label": "Tab alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "active_color",
+      "label": "Active tab color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "inactive_color",
+      "label": "Inactive tab color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Content background",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tab",
+      "settings": {
+        "tab_title": "Description",
+        "tab_content": "<p>Add product description or information here.</p>"
+      }
+    },
+    {
+      "name": "Info Tab",
+      "settings": {
+        "tab_title": "Information",
+        "tab_icon": "info",
+        "tab_style": "pills"
+      }
+    }
+  ]
+}
+{% endschema %}

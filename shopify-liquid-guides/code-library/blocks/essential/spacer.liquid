@@ -1,0 +1,238 @@
+{%- comment -%}
+  Spacer Block - Essential Theme Block
+
+  Flexible spacing block for precise layout control.
+  Allows different spacing values for desktop and mobile.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/spacer.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Spacing settings
+  assign desktop_height = block.settings.desktop_height | default: 50
+  assign mobile_height = block.settings.mobile_height | default: 30
+  assign background_color = block.settings.background_color | default: 'transparent'
+
+  # Divider settings
+  assign show_divider = block.settings.show_divider | default: false
+  assign divider_color = block.settings.divider_color | default: '#e0e0e0'
+  assign divider_style = block.settings.divider_style | default: 'solid'
+  assign divider_width = block.settings.divider_width | default: 1
+  assign divider_alignment = block.settings.divider_alignment | default: 'center'
+  assign divider_max_width = block.settings.divider_max_width | default: 100
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .spacer-block-{{ unique }} {
+    height: {{ desktop_height }}px;
+    background-color: {{ background_color }};
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .spacer-block-{{ unique }}__divider {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: {{ divider_max_width }}%;
+    height: {{ divider_width }}px;
+    border-top: {{ divider_width }}px {{ divider_style }} {{ divider_color }};
+
+    {% case divider_alignment %}
+      {% when 'left' %}
+        left: 0;
+      {% when 'right' %}
+        right: 0;
+      {% else %}
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    {% endcase %}
+  }
+
+  /* Divider style variants */
+  .spacer-block-{{ unique }}__divider--dashed {
+    border-top-style: dashed;
+  }
+
+  .spacer-block-{{ unique }}__divider--dotted {
+    border-top-style: dotted;
+  }
+
+  .spacer-block-{{ unique }}__divider--double {
+    border-top-style: double;
+    height: {{ divider_width | times: 3 }}px;
+    border-top-width: {{ divider_width | times: 3 }}px;
+  }
+
+  .spacer-block-{{ unique }}__divider--gradient {
+    border: none;
+    height: {{ divider_width }}px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      {{ divider_color }} 20%,
+      {{ divider_color }} 80%,
+      transparent 100%);
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .spacer-block-{{ unique }} {
+      height: {{ mobile_height }}px;
+    }
+  }
+
+  /* Print styles - hide spacers when printing */
+  @media print {
+    .spacer-block-{{ unique }} {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="spacer-block-{{ unique }}" {{ block.shopify_attributes }} role="presentation" aria-hidden="true">
+  {%- if show_divider -%}
+    <div class="spacer-block-{{ unique }}__divider{% if divider_style == 'gradient' %} spacer-block-{{ unique }}__divider--gradient{% endif %}"></div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Spacer",
+  "class": "spacer-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "transparent"
+    },
+    {
+      "type": "header",
+      "content": "Optional Divider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider line",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "divider_style",
+      "label": "Divider style",
+      "options": [
+        {"value": "solid", "label": "Solid"},
+        {"value": "dashed", "label": "Dashed"},
+        {"value": "dotted", "label": "Dotted"},
+        {"value": "double", "label": "Double"},
+        {"value": "gradient", "label": "Gradient fade"}
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Divider thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "divider_alignment",
+      "label": "Divider alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "divider_max_width",
+      "label": "Divider width",
+      "min": 10,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Spacer",
+      "settings": {
+        "desktop_height": 50,
+        "mobile_height": 30
+      }
+    },
+    {
+      "name": "Small Gap",
+      "settings": {
+        "desktop_height": 20,
+        "mobile_height": 15
+      }
+    },
+    {
+      "name": "Large Gap",
+      "settings": {
+        "desktop_height": 100,
+        "mobile_height": 60
+      }
+    },
+    {
+      "name": "Divider",
+      "settings": {
+        "desktop_height": 40,
+        "mobile_height": 30,
+        "show_divider": true,
+        "divider_style": "solid"
+      }
+    }
+  ]
+}
+{% endschema %}

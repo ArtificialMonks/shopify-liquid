@@ -1,0 +1,513 @@
+{%- comment -%}
+  Divider Block - Essential Theme Block
+
+  Visual separator with multiple styles and customization options.
+  More advanced than the simple divider in spacer block.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/divider.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Divider settings
+  assign divider_type = block.settings.divider_type | default: 'line'
+  assign divider_style = block.settings.divider_style | default: 'solid'
+  assign divider_color = block.settings.divider_color | default: '#e0e0e0'
+  assign divider_thickness = block.settings.divider_thickness | default: 1
+  assign divider_width = block.settings.divider_width | default: 100
+  assign divider_alignment = block.settings.divider_alignment | default: 'center'
+
+  # Icon settings
+  assign icon_type = block.settings.icon_type | default: 'star'
+  assign icon_size = block.settings.icon_size | default: 24
+  assign icon_color = block.settings.icon_color | default: divider_color
+
+  # Text settings
+  assign divider_text = block.settings.divider_text
+  assign text_color = block.settings.text_color | default: '#666666'
+  assign text_size = block.settings.text_size | default: 14
+  assign text_background = block.settings.text_background | default: '#ffffff'
+
+  # Spacing settings
+  assign margin_top = block.settings.margin_top | default: 20
+  assign margin_bottom = block.settings.margin_bottom | default: 20
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .divider-block-{{ unique }} {
+    margin-top: {{ margin_top }}px;
+    margin-bottom: {{ margin_bottom }}px;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: {{ divider_alignment }};
+  }
+
+  /* Line divider */
+  .divider-block-{{ unique }}--line {
+    height: {{ divider_thickness }}px;
+    background: {{ divider_color }};
+    width: {{ divider_width }}%;
+    {% if divider_alignment == 'left' %}
+      margin-right: auto;
+    {% elsif divider_alignment == 'right' %}
+      margin-left: auto;
+    {% else %}
+      margin-left: auto;
+      margin-right: auto;
+    {% endif %}
+  }
+
+  .divider-block-{{ unique }}--line.divider-block--dashed {
+    background: none;
+    border-top: {{ divider_thickness }}px dashed {{ divider_color }};
+    height: 0;
+  }
+
+  .divider-block-{{ unique }}--line.divider-block--dotted {
+    background: none;
+    border-top: {{ divider_thickness }}px dotted {{ divider_color }};
+    height: 0;
+  }
+
+  .divider-block-{{ unique }}--line.divider-block--double {
+    height: {{ divider_thickness | times: 3 }}px;
+    border-top: {{ divider_thickness }}px solid {{ divider_color }};
+    border-bottom: {{ divider_thickness }}px solid {{ divider_color }};
+    background: none;
+  }
+
+  .divider-block-{{ unique }}--line.divider-block--gradient {
+    background: linear-gradient(90deg,
+      transparent 0%,
+      {{ divider_color }} 10%,
+      {{ divider_color }} 90%,
+      transparent 100%);
+  }
+
+  .divider-block-{{ unique }}--line.divider-block--fade {
+    background: linear-gradient(90deg,
+      transparent 0%,
+      {{ divider_color }} 50%,
+      transparent 100%);
+  }
+
+  /* Icon divider */
+  .divider-block-{{ unique }}--icon {
+    position: relative;
+    width: 100%;
+    text-align: center;
+  }
+
+  .divider-block-{{ unique }}--icon::before,
+  .divider-block-{{ unique }}--icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: {{ divider_thickness }}px;
+    background: {{ divider_color }};
+    width: calc({{ divider_width }}% / 2 - {{ icon_size | plus: 20 }}px);
+  }
+
+  .divider-block-{{ unique }}--icon::before {
+    left: {% if divider_alignment == 'center' %}calc(50% - {{ divider_width }}% / 2){% elsif divider_alignment == 'right' %}calc(100% - {{ divider_width }}%){% else %}0{% endif %};
+  }
+
+  .divider-block-{{ unique }}--icon::after {
+    right: {% if divider_alignment == 'center' %}calc(50% - {{ divider_width }}% / 2){% elsif divider_alignment == 'left' %}calc(100% - {{ divider_width }}%){% else %}0{% endif %};
+  }
+
+  .divider-block-{{ unique }}__icon {
+    display: inline-block;
+    width: {{ icon_size }}px;
+    height: {{ icon_size }}px;
+    color: {{ icon_color }};
+    position: relative;
+    z-index: 1;
+    background: {{ text_background }};
+    padding: 0 10px;
+  }
+
+  .divider-block-{{ unique }}__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  /* Text divider */
+  .divider-block-{{ unique }}--text {
+    position: relative;
+    width: 100%;
+    text-align: center;
+  }
+
+  .divider-block-{{ unique }}--text::before,
+  .divider-block-{{ unique }}--text::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: {{ divider_thickness }}px;
+    background: {{ divider_color }};
+    width: calc({{ divider_width }}% / 2 - 60px);
+  }
+
+  .divider-block-{{ unique }}--text::before {
+    left: {% if divider_alignment == 'center' %}calc(50% - {{ divider_width }}% / 2){% elsif divider_alignment == 'right' %}calc(100% - {{ divider_width }}%){% else %}0{% endif %};
+  }
+
+  .divider-block-{{ unique }}--text::after {
+    right: {% if divider_alignment == 'center' %}calc(50% - {{ divider_width }}% / 2){% elsif divider_alignment == 'left' %}calc(100% - {{ divider_width }}%){% else %}0{% endif %};
+  }
+
+  .divider-block-{{ unique }}__text {
+    display: inline-block;
+    font-size: {{ text_size }}px;
+    color: {{ text_color }};
+    position: relative;
+    z-index: 1;
+    background: {{ text_background }};
+    padding: 0 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* Pattern divider */
+  .divider-block-{{ unique }}--pattern {
+    height: 20px;
+    width: {{ divider_width }}%;
+    {% if divider_alignment == 'left' %}
+      margin-right: auto;
+    {% elsif divider_alignment == 'right' %}
+      margin-left: auto;
+    {% else %}
+      margin-left: auto;
+      margin-right: auto;
+    {% endif %}
+  }
+
+  .divider-block-{{ unique }}--pattern.divider-block--dots {
+    background-image: radial-gradient(circle, {{ divider_color }} 25%, transparent 25%);
+    background-size: 10px 10px;
+    background-position: center;
+  }
+
+  .divider-block-{{ unique }}--pattern.divider-block--diamonds {
+    background-image: repeating-linear-gradient(
+      45deg,
+      {{ divider_color }},
+      {{ divider_color }} 2px,
+      transparent 2px,
+      transparent 8px
+    );
+  }
+
+  .divider-block-{{ unique }}--pattern.divider-block--waves {
+    background: repeating-linear-gradient(
+      90deg,
+      {{ divider_color }},
+      {{ divider_color }} 10px,
+      transparent 10px,
+      transparent 20px
+    );
+    height: 2px;
+    position: relative;
+  }
+
+  .divider-block-{{ unique }}--pattern.divider-block--waves::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 5px;
+    right: -5px;
+    height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      {{ divider_color }},
+      {{ divider_color }} 10px,
+      transparent 10px,
+      transparent 20px
+    );
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .divider-block-{{ unique }} {
+      margin-top: {{ margin_top | times: 0.75 }}px;
+      margin-bottom: {{ margin_bottom | times: 0.75 }}px;
+    }
+
+    .divider-block-{{ unique }}--icon::before,
+    .divider-block-{{ unique }}--icon::after,
+    .divider-block-{{ unique }}--text::before,
+    .divider-block-{{ unique }}--text::after {
+      width: calc(50% - 40px);
+    }
+
+    .divider-block-{{ unique }}__text {
+      font-size: {{ text_size | minus: 2 }}px;
+      padding: 0 15px;
+    }
+
+    .divider-block-{{ unique }}__icon {
+      width: {{ icon_size | times: 0.85 }}px;
+      height: {{ icon_size | times: 0.85 }}px;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .divider-block-{{ unique }} {
+      opacity: 0.5;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="divider-block-{{ unique }} divider-block-{{ unique }}--{{ divider_type }}{% if divider_type == 'line' or divider_type == 'pattern' %} divider-block--{{ divider_style }}{% endif %}" {{ block.shopify_attributes }} role="separator" aria-orientation="horizontal">
+  {%- case divider_type -%}
+    {%- when 'icon' -%}
+      <span class="divider-block-{{ unique }}__icon" aria-hidden="true">
+        {%- case icon_type -%}
+          {%- when 'star' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          {%- when 'dot' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          {%- when 'diamond' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2L2 12l10 10 10-10L12 2z"/>
+            </svg>
+          {%- when 'plus' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+          {%- when 'flower' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 9c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3zm0 2c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm-6-2c1.65 0 3-1.35 3-3S7.65 3 6 3 3 4.35 3 6s1.35 3 3 3zm12 0c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3z"/>
+            </svg>
+          {%- when 'heart' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        {%- endcase -%}
+      </span>
+    {%- when 'text' -%}
+      {%- if divider_text != blank -%}
+        <span class="divider-block-{{ unique }}__text">{{ divider_text | escape }}</span>
+      {%- endif -%}
+  {%- endcase -%}
+</div>
+
+{% schema %}
+{
+  "name": "Divider",
+  "class": "divider-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "divider_type",
+      "label": "Divider type",
+      "options": [
+        {"value": "line", "label": "Line"},
+        {"value": "icon", "label": "Icon"},
+        {"value": "text", "label": "Text"},
+        {"value": "pattern", "label": "Pattern"}
+      ],
+      "default": "line"
+    },
+    {
+      "type": "select",
+      "id": "divider_style",
+      "label": "Line style",
+      "options": [
+        {"value": "solid", "label": "Solid"},
+        {"value": "dashed", "label": "Dashed"},
+        {"value": "dotted", "label": "Dotted"},
+        {"value": "double", "label": "Double"},
+        {"value": "gradient", "label": "Gradient"},
+        {"value": "fade", "label": "Fade"},
+        {"value": "dots", "label": "Dots pattern"},
+        {"value": "diamonds", "label": "Diamonds pattern"},
+        {"value": "waves", "label": "Waves pattern"}
+      ],
+      "default": "solid",
+      "info": "Applies to line and pattern types"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "label": "Thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Width",
+      "min": 10,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "divider_alignment",
+      "label": "Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "select",
+      "id": "icon_type",
+      "label": "Icon",
+      "options": [
+        {"value": "star", "label": "Star"},
+        {"value": "dot", "label": "Dot"},
+        {"value": "diamond", "label": "Diamond"},
+        {"value": "plus", "label": "Plus"},
+        {"value": "flower", "label": "Flower"},
+        {"value": "heart", "label": "Heart"}
+      ],
+      "default": "star",
+      "info": "Only for icon divider type"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color"
+    },
+    {
+      "type": "header",
+      "content": "Text Settings"
+    },
+    {
+      "type": "text",
+      "id": "divider_text",
+      "label": "Text",
+      "default": "OR",
+      "info": "Only for text divider type"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "text_background",
+      "label": "Text background",
+      "default": "#ffffff",
+      "info": "Should match section background"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top margin",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Divider",
+      "settings": {
+        "divider_type": "line",
+        "divider_style": "solid"
+      }
+    },
+    {
+      "name": "Icon Divider",
+      "settings": {
+        "divider_type": "icon",
+        "icon_type": "star"
+      }
+    },
+    {
+      "name": "Text Divider",
+      "settings": {
+        "divider_type": "text",
+        "divider_text": "OR"
+      }
+    },
+    {
+      "name": "Pattern Divider",
+      "settings": {
+        "divider_type": "pattern",
+        "divider_style": "dots"
+      }
+    }
+  ]
+}
+{% endschema %}

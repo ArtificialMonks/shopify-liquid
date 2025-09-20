@@ -1,0 +1,161 @@
+{
+  "folders": [
+    {
+      "name": "📁 Root",
+      "path": ".."
+    },
+    {
+      "name": "📚 Guides & Learning",
+      "path": "../shopify-liquid-guides"
+    },
+    {
+      "name": "🏗️ Architecture Docs",
+      "path": "../shopify-liquid-guides/docs/architecture"
+    },
+    {
+      "name": "🎨 Assets Documentation",
+      "path": "../shopify-liquid-guides/docs/assets"
+    },
+    {
+      "name": "⚙️ Configuration Docs",
+      "path": "../shopify-liquid-guides/docs/config"
+    },
+    {
+      "name": "🌍 Locales Documentation",
+      "path": "../shopify-liquid-guides/docs/locales"
+    },
+    {
+      "name": "🚀 Advanced Features",
+      "path": "../shopify-liquid-guides/docs/advanced-features"
+    },
+    {
+      "name": "🔧 Production Code",
+      "path": "../shopify-liquid-guides/code-library"
+    },
+    {
+      "name": "📋 Complete Examples",
+      "path": "../shopify-liquid-guides/examples"
+    },
+    {
+      "name": "🛡️ Schema Validation",
+      "path": "../shopify-liquid-guides/schema-validation"
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "*.liquid": "liquid",
+      "*.schema": "json"
+    },
+    "liquid.format.enable": true,
+    "liquid.completion.enable": true,
+    "liquid.hover.enable": true,
+    "liquid.links.enable": true,
+    "liquid.validation.enable": true,
+    "themeCheck.checkOnSave": true,
+    "themeCheck.checkOnOpen": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Shopify.theme-check-vscode",
+    "workbench.colorCustomizations": {
+      "titleBar.activeBackground": "#8B5A2B",
+      "titleBar.activeForeground": "#ffffff",
+      "titleBar.inactiveBackground": "#8B5A2B80",
+      "titleBar.inactiveForeground": "#ffffff80"
+    },
+    "workbench.editor.labelFormat": "medium",
+    "breadcrumbs.enabled": true,
+    "explorer.sortOrder": "type",
+    "files.exclude": {
+      "**/.git": true,
+      "**/node_modules": true,
+      "**/_archive": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.git": true,
+      "**/_archive": true
+    }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Theme Check - Full Repository",
+        "type": "shell",
+        "command": "theme-check",
+        "args": ["."],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Theme Check - Code Library Only",
+        "type": "shell",
+        "command": "theme-check",
+        "args": ["shopify-liquid-guides/code-library"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Validate Schema Guidelines",
+        "type": "shell",
+        "command": "echo",
+        "args": ["'Schema validation: Check shopify-liquid-guides/schema-validation/schema-guidelines.md'"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "Browse Documentation Structure",
+        "type": "shell",
+        "command": "find",
+        "args": ["shopify-liquid-guides/docs", "-name", "*.md", "-type", "f"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": []
+  },
+  "extensions": {
+    "recommendations": [
+      "Shopify.theme-check-vscode",
+      "yzhang.markdown-all-in-one",
+      "shd101wyy.markdown-preview-enhanced",
+      "DavidAnson.vscode-markdownlint",
+      "bierner.markdown-mermaid",
+      "ms-vscode.vscode-json",
+      "redhat.vscode-yaml",
+      "formulahendry.auto-rename-tag",
+      "christian-kohler.path-intellisense",
+      "usernamehw.errorlens",
+      "bradlc.vscode-tailwindcss"
+    ]
+  }
+}

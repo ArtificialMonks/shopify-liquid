@@ -1,0 +1,58 @@
+{%- comment -%}
+  Liquid Block - Legacy Theme Block
+
+  Custom Liquid code execution block for backward compatibility.
+  Allows merchants to add custom Liquid code.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/liquid.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Liquid settings
+  assign custom_liquid = block.settings.custom_liquid
+  assign wrapper_class = block.settings.wrapper_class
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .liquid-block-{{ unique }} {
+    position: relative;
+    width: 100%;
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="liquid-block-{{ unique }}{% if wrapper_class != blank %} {{ wrapper_class | escape }}{% endif %}" {{ block.shopify_attributes }}>
+  {{ custom_liquid }}
+</div>
+
+{% schema %}
+{
+  "name": "Custom Liquid",
+  "class": "liquid-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom Liquid code",
+      "info": "Add Liquid code to access Shopify objects"
+    },
+    {
+      "type": "text",
+      "id": "wrapper_class",
+      "label": "Wrapper class",
+      "info": "Optional CSS class for the wrapper"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Liquid"
+    }
+  ]
+}
+{% endschema %}

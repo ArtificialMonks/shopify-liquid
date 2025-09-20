@@ -14,19 +14,46 @@ This unified guide combines the best practices, code examples, and CSS methodolo
 5. **[Performance & Accessibility](./05-performance-and-accessibility.md)** - Best practices and optimization
 6. **[Troubleshooting](./06-troubleshooting.md)** - Common issues and solutions
 
+### 🔍 Schema Validation
+- **[Schema Guidelines](./schema-validation/schema-guidelines.md)** - Comprehensive validation rules and error prevention
+
 ### 🔧 Code Library (Copy & Paste Ready)
 - **[Sections](./code-library/sections/)** - Complete section templates
 - **[Blocks](./code-library/blocks/)** - Reusable block components
 - **[Snippets](./code-library/snippets/)** - Utility components
 - **[CSS Patterns](./code-library/css-patterns/)** - Styling methodologies
+- **[Schema Validation](./schema-validation/)** - Validation guidelines and error prevention
 
 ### 💡 Working Examples
 - **[Complete Implementations](./examples/)** - Full page layouts and JSON templates
 
+### 📚 Comprehensive Documentation (All File Types)
+- **[Complete Shopify Architecture Guide](./docs/)** - Exhaustive coverage of all 7 Shopify file types
+  - **[Layouts Guide](./docs/layouts/)** - Theme foundation, required objects, HTML structure
+  - **[Templates Guide](./docs/templates/)** - All template types, JSON vs Liquid, metaobjects
+  - **[Assets Guide](./docs/assets/)** - Resource optimization, CDN delivery, performance
+  - **[Config Guide](./docs/config/)** - Settings schema, configuration management
+  - **[Locales Guide](./docs/locales/)** - Internationalization, translations, multi-language
+  - **[Section Groups Guide](./docs/section-groups/)** - Online Store 2.0 dynamic layouts
+
 ### 📋 Repository Reference
 - **[Complete File Structure](../STRUCTURE.md)** - Detailed file tree and navigation guide
+- **[AI Assistant Project Guide](../.claude/project-guide.md)** - Comprehensive development workflows for Claude agents
 
 ## What Makes This Guide Different
+
+### Complete Shopify Theme Coverage
+This guide provides **comprehensive coverage of all 7 Shopify theme file types** - the only resource that covers the complete architecture:
+
+- **Layouts** (`layout/`) - Theme foundation and HTML structure
+- **Templates** (`templates/`) - Page-specific content and routing
+- **Sections** (`sections/`) - Modular content components
+- **Blocks** (`blocks/`) - Reusable content elements
+- **Assets** (`assets/`) - Resources, styles, scripts, and media
+- **Config** (`config/`) - Settings, schema, and configuration
+- **Locales** (`locales/`) - Translations and internationalization
+
+Plus **advanced features** like section groups, metaobject templates, and Online Store 2.0 patterns.
 
 ### Production-Ready Code
 Every example is tested, follows Shopify best practices, and can be used immediately in production themes.
@@ -102,6 +129,13 @@ All code in this guide follows these standards:
 - Guard optional settings: `{% if setting != blank %}`
 - Use semantic HTML and ARIA labels
 - Optimize images with responsive sizing
+
+### Schema Validation Requirements
+- Follow the comprehensive **[Schema Guidelines](./schema-validation/schema-guidelines.md)**
+- Validate all JSON syntax before deployment
+- Use correct setting types and ranges
+- Implement proper range step calculations: `(max - min) / step ≤ 101`
+- Avoid invalid attributes like `enabled_on` in sections
 
 ### CSS Standards
 - Mobile-first responsive design

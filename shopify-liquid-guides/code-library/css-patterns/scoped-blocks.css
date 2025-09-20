@@ -1,15 +1,30 @@
 /* Scoped Blocks CSS Pattern
  *
- * This demonstrates the CSS methodology for block scoping used throughout
- * the Shopify Liquid guides. Use this as a reference for building isolated,
- * reusable components.
+ * Production-ready CSS scoping methodology for Shopify Liquid themes.
+ * Prevents style conflicts and enables true component modularity.
+ *
+ * USAGE IN LIQUID:
+ * {% assign unique = section.id | replace: '_', '' | downcase %}
+ * <div class="media-text-{{ unique }}">
+ *   {% style %}
+ *     .media-text-{{ unique }} { /* styles */ }
+ *   {% endstyle %}
+ * </div>
  */
 
 /* ========================================
  * BASIC SCOPED BLOCK PATTERN
  * ======================================== */
 
-/* Generated in Liquid with unique suffix */
+/* LIQUID IMPLEMENTATION:
+ * {% assign unique = section.id | replace: '_', '' | downcase %}
+ * {% style %}
+ *   .media-text-{{ unique }} { ... }
+ * {% endstyle %}
+ *
+ * GENERATED CSS EXAMPLE (unique = "abc123"):
+ * .media-text-abc123 { ... }
+ */
 .media-text-UNIQUEID {
   display: flex;
   gap: var(--gap, 24px);
@@ -39,10 +54,11 @@
 }
 
 /* ========================================
- * RESPONSIVE PATTERN
+ * RESPONSIVE PATTERN - SHOPIFY BREAKPOINTS
  * ======================================== */
 
-@media (max-width: 749px) {
+/* Shopify's standard mobile breakpoint */
+@media screen and (max-width: 749px) {
   .media-text-UNIQUEID {
     flex-direction: column;
     gap: var(--gap-mobile, 16px);
@@ -249,14 +265,44 @@
  * ======================================== */
 
 /*
-1. Always append -UNIQUEID to every class name
-2. Use CSS custom properties for dynamic values
-3. Include responsive breakpoints in same scoped block
-4. Use BEM methodology: .block-UNIQUEID, .block__element-UNIQUEID, .block--modifier-UNIQUEID
-5. Group related styles together
-6. Use semantic class names that describe function, not appearance
-7. Include hover/focus states for interactive elements
-8. Provide fallback values with var(--property, fallback)
-9. Keep specificity low - avoid nested selectors when possible
-10. Use consistent naming patterns across all components
+SCOPED CSS METHODOLOGY - PRODUCTION IMPLEMENTATION:
+
+1. UNIQUE ID GENERATION:
+   {% assign unique = section.id | replace: '_', '' | downcase %}
+
+2. LIQUID CSS INTEGRATION:
+   {% style %}
+     .block-{{ unique }} {
+       background: {{ section.settings.color | default: '#ffffff' }};
+     }
+   {% endstyle %}
+
+3. BEM WITH SCOPING:
+   .block-{{ unique }}           // Block
+   .block__element-{{ unique }}  // Element
+   .block--modifier-{{ unique }} // Modifier
+
+4. SHOPIFY BREAKPOINTS:
+   - Mobile: max-width: 749px
+   - Tablet: 750px - 989px
+   - Desktop: min-width: 990px
+   - Large: min-width: 1200px
+
+5. PERFORMANCE BEST PRACTICES:
+   - Use `contain: layout style` for scoped components
+   - Add `will-change` for animated elements
+   - Minimize reflows with transform/opacity animations
+   - Use CSS custom properties for theme settings integration
+
+6. ACCESSIBILITY REQUIREMENTS:
+   - 4.5:1 contrast ratio for normal text
+   - 3:1 contrast ratio for large text (18px+)
+   - 44px minimum touch targets
+   - Respect prefers-reduced-motion
+
+7. THEME STORE COMPLIANCE:
+   - No global style overwrites
+   - Self-contained component styles
+   - Graceful degradation for older browsers
+   - Performance-optimized animations
 */

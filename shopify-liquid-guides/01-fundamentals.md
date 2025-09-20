@@ -316,10 +316,29 @@ Now that you understand Liquid fundamentals, you're ready to learn how to build 
 
 - **[Quick Start Guide](./02-quick-start.md)** - Build your first section
 - **[Sections & Schema](./03-sections-and-schema.md)** - Learn section configuration
+- **[CSS Scoping Methodology](./04-blocks-and-css-scoping.md)** - Essential CSS conflict prevention
 - **[Code Library](./code-library/)** - See these concepts in action
+
+## Essential Documentation
+
+### Core Architecture
+- **[Theme Overview](./docs/architecture/theme-overview.md)** - Complete theme architecture
+- **[File Taxonomy](./docs/architecture/file-taxonomy.md)** - All 7 Shopify file types explained
+- **[Best Practices 2025](./docs/architecture/best-practices-2025.md)** - Current standards
+
+### Schema Development
+- **[Schema Validation](./schema-validation/schema-guidelines.md)** - **CRITICAL: Always validate against this**
+- **[Settings Configuration](./docs/config/settings-schema.md)** - Global theme configuration
+- **[Block Configuration](./docs/config/blocks-config.md)** - Component-level settings
+
+### Modern Development
+- **[Advanced Features](./docs/advanced-features/)** - AI blocks, PWA, metaobjects
+- **[Performance Optimization](./docs/assets/)** - CSS, JS, images, fonts
+- **[Internationalization](./docs/locales/)** - Multi-language support
 
 ## References
 
 - [Shopify Liquid Reference](https://shopify.dev/docs/api/liquid)
 - [Liquid Template Language](https://shopify.github.io/liquid/)
 - [Shopify Objects Documentation](https://shopify.dev/docs/api/liquid/objects)
+- [Theme Store Requirements](https://shopify.dev/themes/store/requirements)

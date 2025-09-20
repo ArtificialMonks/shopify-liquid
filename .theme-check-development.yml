@@ -1,0 +1,59 @@
+# Development Theme Check Configuration
+# Optimized for fast development with essential error checking
+# Documentation: https://shopify.dev/docs/themes/tools/theme-check
+
+# Set root to the code library directory
+root: "shopify-liquid-guides/code-library"
+
+# Use recommended preset for development
+extends:
+  - "theme-check:recommended"
+
+# Files/directories to exclude from checking
+ignore:
+  - "node_modules/**"
+  - "dist/**"
+  - "build/**"
+  - "_archive/**"
+  - ".git/**"
+  - ".claude/**"
+  - ".vscode/**"
+  - "shopify-liquid-guides/examples/*.json"
+  - "shopify-liquid-guides/docs/**/*.md"
+  - "shopify-liquid-guides/docs/layouts/**/*.liquid"
+
+# Focus on critical errors only during development
+# Translation checks disabled for faster development
+TranslationKeyExists:
+  enabled: false
+
+DefaultLocale:
+  enabled: false
+
+MatchingTranslations:
+  enabled: false
+
+MatchingSchemaTranslations:
+  enabled: false
+
+# Allow undefined objects for documentation examples
+UndefinedObject:
+  enabled: false
+
+# Allow unused assigns for educational examples
+UnusedAssign:
+  enabled: false
+
+# Allow unused snippets for snippet library
+UnusedSnippet:
+  enabled: false
+
+# Missing template files not required for documentation
+MissingRequiredTemplateFiles:
+  enabled: false
+
+RequiredDirectories:
+  enabled: false
+
+RequiredLayoutThemeObject:
+  enabled: false

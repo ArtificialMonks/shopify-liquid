@@ -1,0 +1,981 @@
+<!-- Feature Grid Section - Product Highlights & Benefits -->
+{%- liquid
+  assign unique = section.id | replace: '_', '' | downcase
+  assign grid_layout = section.settings.grid_layout
+  assign text_alignment = section.settings.text_alignment
+  assign color_scheme = section.settings.color_scheme
+  assign section_padding_top = section.settings.section_padding_top
+  assign section_padding_bottom = section.settings.section_padding_bottom
+  assign max_width = section.settings.max_width
+  assign enable_animations = section.settings.enable_animations
+  assign feature_style = section.settings.feature_style
+  assign icon_size = section.settings.icon_size
+  assign show_numbers = section.settings.show_numbers
+-%}
+
+<section
+  id="feature-grid-{{ unique }}"
+  class="feature-grid-section feature-grid-{{ unique }} color-scheme-{{ color_scheme }} layout-{{ grid_layout }} style-{{ feature_style }}"
+  style="
+    padding-top: {{ section_padding_top }}px;
+    padding-bottom: {{ section_padding_bottom }}px;
+  "
+  data-section-id="{{ section.id }}"
+  data-section-type="feature-grid"
+  {% if section.settings.heading != blank %}aria-labelledby="feature-grid-heading-{{ unique }}"{% endif %}
+>
+  <div class="feature-grid-container" style="max-width: {{ max_width }}px;">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="feature-grid-header text-{{ text_alignment }}">
+        {%- if section.settings.heading != blank -%}
+          <h2
+            id="feature-grid-heading-{{ unique }}"
+            class="feature-grid-heading h2"
+          >
+            {{ section.settings.heading | escape }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.subheading != blank -%}
+          <div class="feature-grid-subheading rte">
+            {{ section.settings.subheading }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div
+        class="feature-grid"
+        role="list"
+        {% if enable_animations %}data-animation="fade-up"{% endif %}
+      >
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'feature' -%}
+              <div
+                class="feature-item"
+                role="listitem"
+                {% if enable_animations %}
+                  data-animation-delay="{{ forloop.index0 | times: 100 }}ms"
+                {% endif %}
+                {{ block.shopify_attributes }}
+              >
+                {%- if show_numbers -%}
+                  <div class="feature-number" aria-hidden="true">
+                    {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.icon != blank or block.settings.image != blank -%}
+                  <div class="feature-icon">
+                    {%- if block.settings.image != blank -%}
+                      <picture>
+                        <img
+                          src="{{ block.settings.image | image_url: width: icon_size }}"
+                          alt="{{ block.settings.image.alt | escape }}"
+                          loading="lazy"
+                          width="{{ icon_size }}"
+                          height="{{ icon_size }}"
+                          class="feature-image"
+                        >
+                      </picture>
+                    {%- elsif block.settings.icon != blank -%}
+                      <div class="feature-icon-svg">
+                        {%- case block.settings.icon -%}
+                          {%- when 'shipping' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M19 7h-3V6a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h1.05A3 3 0 0 0 11 18a3 3 0 0 0 5.95.05H18a3 3 0 0 0 3-3v-5a1 1 0 0 0-.29-.71l-2-2A1 1 0 0 0 19 7zm-8 11a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM6 7h8v6H6V7zm12 11a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm1-3h-.05A3 3 0 0 0 16 14a3 3 0 0 0-3 1H9a3 3 0 0 0-5 0H3v-1h1V9h1V7a1 1 0 0 1 1-1h10v1h2.59l1.41 1.41V15z"/>
+                            </svg>
+
+                          {%- when 'support' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9zm0-13c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2s2-.9 2-2V10c0-1.1-.9-2-2-2zm0-2c.83 0 1.5-.67 1.5-1.5S12.83 4.5 12 4.5 10.5 5.17 10.5 6 11.17 7.5 12 7.5z"/>
+                            </svg>
+
+                          {%- when 'quality' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+
+                          {%- when 'security' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 18.5c-3.86-.93-6.5-4.5-6.5-8.59V6.3l6.5-2.3 6.5 2.3v5.61c0 4.09-2.64 7.66-6.5 8.59z"/>
+                            </svg>
+
+                          {%- when 'returns' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+
+                          {%- when 'eco-friendly' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+
+                          {%- when 'warranty' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                            </svg>
+
+                          {%- when 'money-back' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                            </svg>
+
+                          {%- when 'handcrafted' -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M10.5 13H8v-3h2.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5zm0-5H8V6h2.5C11.33 6 12 6.67 12 7.5S11.33 9 10.5 9zm3.5 6.5H12v-1.5h2c.55 0 1 .45 1 1v.5z"/>
+                            </svg>
+
+                          {%- else -%}
+                            <svg width="{{ icon_size }}" height="{{ icon_size }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        {%- endcase -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                <div class="feature-content">
+                  {%- if block.settings.heading != blank -%}
+                    <h3 class="feature-heading">
+                      {{ block.settings.heading | escape }}
+                    </h3>
+                  {%- endif -%}
+
+                  {%- if block.settings.text != blank -%}
+                    <div class="feature-text rte">
+                      {{ block.settings.text }}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if block.settings.link_text != blank and block.settings.link_url != blank -%}
+                    <a
+                      href="{{ block.settings.link_url }}"
+                      class="feature-link"
+                      {% if block.settings.link_url contains 'http' %}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      {% endif %}
+                    >
+                      {{ block.settings.link_text | escape }}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_text != blank and section.settings.cta_url != blank -%}
+      <div class="feature-grid-cta text-{{ text_alignment }}">
+        <a
+          href="{{ section.settings.cta_url }}"
+          class="btn btn-{{ section.settings.cta_style }}"
+          {% if section.settings.cta_url contains 'http' %}
+            target="_blank"
+            rel="noopener noreferrer"
+          {% endif %}
+        >
+          {{ section.settings.cta_text | escape }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+/* Feature Grid Section - {{ unique }} */
+.feature-grid-{{ unique }} {
+  position: relative;
+  isolation: isolate;
+}
+
+.feature-grid-{{ unique }} .feature-grid-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header Styling */
+.feature-grid-{{ unique }} .feature-grid-header {
+  margin-bottom: 48px;
+}
+
+.feature-grid-{{ unique }} .feature-grid-heading {
+  margin: 0 0 16px 0;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.feature-grid-{{ unique }} .feature-grid-subheading {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Grid Layouts */
+.feature-grid-{{ unique }} .feature-grid {
+  display: grid;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+/* 2 Column Layout */
+.feature-grid-{{ unique }}.layout-2-columns .feature-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* 3 Column Layout */
+.feature-grid-{{ unique }}.layout-3-columns .feature-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* 4 Column Layout */
+.feature-grid-{{ unique }}.layout-4-columns .feature-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Single Column Layout */
+.feature-grid-{{ unique }}.layout-1-column .feature-grid {
+  grid-template-columns: 1fr;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Feature Item Styling */
+.feature-grid-{{ unique }} .feature-item {
+  position: relative;
+  padding: 32px 24px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+/* Card Style */
+.feature-grid-{{ unique }}.style-cards .feature-item {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.feature-grid-{{ unique }}.style-cards .feature-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Minimal Style */
+.feature-grid-{{ unique }}.style-minimal .feature-item {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 24px 0;
+}
+
+.feature-grid-{{ unique }}.style-minimal .feature-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Bordered Style */
+.feature-grid-{{ unique }}.style-bordered .feature-item {
+  background: transparent;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+}
+
+.feature-grid-{{ unique }}.style-bordered .feature-item:hover {
+  border-color: var(--color-primary, #007bff);
+  transform: translateY(-2px);
+}
+
+/* Feature Numbers */
+.feature-grid-{{ unique }} .feature-number {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary, #007bff);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 1;
+}
+
+/* Icon Styling */
+.feature-grid-{{ unique }} .feature-icon {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.feature-grid-{{ unique }} .feature-icon-svg {
+  color: var(--color-primary, #007bff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-grid-{{ unique }} .feature-image {
+  border-radius: 8px;
+}
+
+/* Content Styling */
+.feature-grid-{{ unique }} .feature-content {
+  position: relative;
+  z-index: 2;
+}
+
+.feature-grid-{{ unique }} .feature-heading {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 600;
+  color: inherit;
+}
+
+.feature-grid-{{ unique }} .feature-text {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.feature-grid-{{ unique }} .feature-text p:last-child {
+  margin-bottom: 0;
+}
+
+.feature-grid-{{ unique }} .feature-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary, #007bff);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.feature-grid-{{ unique }} .feature-link:hover {
+  gap: 8px;
+  text-decoration: underline;
+}
+
+.feature-grid-{{ unique }} .feature-link svg {
+  transition: transform 0.2s ease;
+}
+
+.feature-grid-{{ unique }} .feature-link:hover svg {
+  transform: translateX(2px);
+}
+
+/* CTA Styling */
+.feature-grid-{{ unique }} .feature-grid-cta {
+  margin-top: 48px;
+}
+
+.feature-grid-{{ unique }} .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 50px;
+}
+
+.feature-grid-{{ unique }} .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.feature-grid-{{ unique }} .btn-primary {
+  background: var(--color-primary, #007bff);
+  color: white;
+}
+
+.feature-grid-{{ unique }} .btn-secondary {
+  background: var(--color-secondary, #6c757d);
+  color: white;
+}
+
+.feature-grid-{{ unique }} .btn-outline {
+  background: transparent;
+  color: var(--color-primary, #007bff);
+  border-color: var(--color-primary, #007bff);
+}
+
+/* Color Schemes */
+.feature-grid-{{ unique }}.color-scheme-light {
+  background: #ffffff;
+  color: #333333;
+}
+
+.feature-grid-{{ unique }}.color-scheme-dark {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.feature-grid-{{ unique }}.color-scheme-dark.style-cards .feature-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.feature-grid-{{ unique }}.color-scheme-dark .feature-text {
+  opacity: 0.9;
+}
+
+/* Text Alignment */
+.feature-grid-{{ unique }} .text-left {
+  text-align: left;
+}
+
+.feature-grid-{{ unique }} .text-center {
+  text-align: center;
+}
+
+.feature-grid-{{ unique }} .text-center .feature-icon {
+  justify-content: center;
+}
+
+.feature-grid-{{ unique }} .text-right {
+  text-align: right;
+}
+
+.feature-grid-{{ unique }} .text-right .feature-icon {
+  justify-content: flex-end;
+}
+
+/* Animation Support */
+.feature-grid-{{ unique }} [data-animation="fade-up"] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.feature-grid-{{ unique }} [data-animation="fade-up"].animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 990px) {
+  .feature-grid-{{ unique }}.layout-4-columns .feature-grid,
+  .feature-grid-{{ unique }}.layout-3-columns .feature-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 749px) {
+  .feature-grid-{{ unique }} .feature-grid-container {
+    padding: 0 16px;
+  }
+
+  .feature-grid-{{ unique }} .feature-grid-header {
+    margin-bottom: 32px;
+  }
+
+  .feature-grid-{{ unique }} .feature-grid {
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .feature-grid-{{ unique }} .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-grid-{{ unique }} .feature-item {
+    padding: 24px 20px;
+  }
+
+  .feature-grid-{{ unique }} .feature-heading {
+    font-size: 18px;
+  }
+
+  .feature-grid-{{ unique }} .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .feature-grid-{{ unique }} .feature-number {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+    top: 12px;
+    right: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .feature-grid-{{ unique }} .feature-grid-container {
+    padding: 0 12px;
+  }
+
+  .feature-grid-{{ unique }} .feature-item {
+    padding: 20px 16px;
+    border-radius: 8px;
+  }
+
+  .feature-grid-{{ unique }} .feature-icon {
+    margin-bottom: 16px;
+  }
+}
+
+/* Focus styles for accessibility */
+.feature-grid-{{ unique }} .btn:focus,
+.feature-grid-{{ unique }} .feature-link:focus {
+  outline: 2px solid var(--color-primary, #007bff);
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .feature-grid-{{ unique }}.style-cards .feature-item {
+    border-width: 2px;
+    border-color: currentColor;
+  }
+
+  .feature-grid-{{ unique }} .feature-number {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .feature-grid-{{ unique }} * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .feature-grid-{{ unique }} .feature-item:hover {
+    transform: none;
+  }
+}
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  const sectionId = '{{ unique }}';
+  const section = document.getElementById(`feature-grid-${sectionId}`);
+
+  if (!section) return;
+
+  // Animation support
+  const animatedElements = section.querySelectorAll('[data-animation]');
+
+  if (animatedElements.length > 0 && 'IntersectionObserver' in window) {
+    const observerOptions = {
+      rootMargin: '0px 0px -100px 0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = entry.target.dataset.animationDelay || '0ms';
+
+          setTimeout(() => {
+            entry.target.classList.add('animate');
+          }, parseInt(delay));
+
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    animatedElements.forEach(element => {
+      observer.observe(element);
+    });
+  }
+
+  // Enhanced keyboard navigation for feature links
+  const featureLinks = section.querySelectorAll('.feature-link');
+
+  featureLinks.forEach(link => {
+    link.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        this.click();
+      }
+    });
+  });
+
+  // Analytics tracking for feature interactions
+  const features = section.querySelectorAll('.feature-item');
+
+  features.forEach((feature, index) => {
+    const link = feature.querySelector('.feature-link');
+    const heading = feature.querySelector('.feature-heading');
+
+    if (link && heading) {
+      link.addEventListener('click', function() {
+        // Google Analytics tracking (if available)
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'feature_click', {
+            'event_category': 'engagement',
+            'event_label': heading.textContent.trim(),
+            'feature_position': index + 1
+          });
+        }
+
+        // Facebook Pixel tracking (if available)
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'ViewContent', {
+            content_name: heading.textContent.trim(),
+            content_category: 'Feature'
+          });
+        }
+      });
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Feature grid",
+  "tag": "section",
+  "class": "section-feature-grid",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why choose us"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Discover what makes our products and service exceptional</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "grid_layout",
+      "label": "Grid layout",
+      "options": [
+        {
+          "value": "1-column",
+          "label": "1 column"
+        },
+        {
+          "value": "2-columns",
+          "label": "2 columns"
+        },
+        {
+          "value": "3-columns",
+          "label": "3 columns"
+        },
+        {
+          "value": "4-columns",
+          "label": "4 columns"
+        }
+      ],
+      "default": "3-columns"
+    },
+    {
+      "type": "select",
+      "id": "feature_style",
+      "label": "Feature style",
+      "options": [
+        {
+          "value": "cards",
+          "label": "Cards"
+        },
+        {
+          "value": "minimal",
+          "label": "Minimal"
+        },
+        {
+          "value": "bordered",
+          "label": "Bordered"
+        }
+      ],
+      "default": "cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Show feature numbers",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 32,
+      "max": 80,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable animations",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "shipping",
+              "label": "Free Shipping"
+            },
+            {
+              "value": "support",
+              "label": "24/7 Support"
+            },
+            {
+              "value": "quality",
+              "label": "Premium Quality"
+            },
+            {
+              "value": "security",
+              "label": "Secure Payment"
+            },
+            {
+              "value": "returns",
+              "label": "Easy Returns"
+            },
+            {
+              "value": "eco-friendly",
+              "label": "Eco Friendly"
+            },
+            {
+              "value": "warranty",
+              "label": "Warranty"
+            },
+            {
+              "value": "money-back",
+              "label": "Money Back"
+            },
+            {
+              "value": "handcrafted",
+              "label": "Handcrafted"
+            }
+          ],
+          "default": "shipping"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom icon image",
+          "info": "Overrides the selected icon above"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Free shipping"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description",
+          "default": "<p>Free shipping on all orders over $50. Fast and reliable delivery worldwide.</p>"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link text"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Feature grid",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shipping",
+            "heading": "Free shipping",
+            "text": "<p>Free shipping on all orders over $50. Fast and reliable delivery worldwide.</p>"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "support",
+            "heading": "24/7 Support",
+            "text": "<p>Our customer support team is available around the clock to help you.</p>"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "quality",
+            "heading": "Premium Quality",
+            "text": "<p>Only the finest materials and craftsmanship go into every product.</p>"
+          }
+        }
+      ],
+      "settings": {
+        "heading": "Why choose us",
+        "subheading": "<p>Discover what makes our products and service exceptional</p>",
+        "grid_layout": "3-columns",
+        "feature_style": "cards",
+        "text_alignment": "left",
+        "color_scheme": "light",
+        "enable_animations": true,
+        "section_padding_top": 60,
+        "section_padding_bottom": 60
+      }
+    }
+  ]
+}
+{% endschema %}

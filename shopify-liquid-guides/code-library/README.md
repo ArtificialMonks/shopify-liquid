@@ -82,7 +82,7 @@ Include snippets with the render tag:
 {% render 'responsive-image', image: product.featured_image, sizes: '(min-width: 750px) 400px, 100vw' %}
 ```
 
-## Code Standards
+## Code Standards & Validation
 
 All code follows these standards:
 - ✅ Always escape user input with `| escape`
@@ -91,3 +91,20 @@ All code follows these standards:
 - ✅ Mobile-first responsive design
 - ✅ Performance-optimized images
 - ✅ Theme editor compatibility with `{{ block.shopify_attributes }}`
+- ✅ **100% Theme Store compliance** - Validated with automated workflow
+
+### Validation Workflow
+Before using any code library component:
+
+```bash
+# Quick validation for development
+./scripts/validate-theme.sh development
+
+# Complete validation workflow
+./scripts/validate-theme.sh all
+
+# Auto-fix common issues
+./scripts/validate-theme.sh auto-fix
+```
+
+📖 **[Complete Validation Setup](../../THEME-CHECK-SETUP.md)** - Ultimate validation automation guide

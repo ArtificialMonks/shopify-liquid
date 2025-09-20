@@ -1,7 +1,85 @@
-{%- comment -%} Render a product metafield safely {%- endcomment -%}
-{%- if product.metafields.custom.size_guide != blank -%}
-  <div class="size-guide">
-    {{ product.metafields.custom.size_guide | metafield_tag }}
+{%- comment -%}
+  Metafield Render Snippet  Safely renders any metafield with proper fallbacks, validation,
+  and flexible output formatting.
+
+  Parameters:
+  - object: Object containing metafields (product, collection, etc.) (required)
+  - namespace: Metafield namespace (required)
+  - key: Metafield key (required)
+  - fallback: Fallback content if metafield is empty (optional)
+  - wrapper: HTML wrapper tag (optional, default: 'div')
+  - class: CSS class for wrapper (optional)
+  - format: Output format - 'tag', 'value', or 'raw' (optional, default: 'tag')
+
+  Usage:
+  {% render 'metafield-render',
+     object: product,
+     namespace: 'custom',
+     key: 'description',
+     fallback: 'No custom description available',
+     wrapper: 'section',
+     class: 'product-metafield',
+     format: 'tag' %}
+{%- endcomment -%}
+
+{%- liquid
+  # Parameter validation and defaults
+  assign meta_object = object
+  assign meta_namespace = namespace
+  assign meta_key = key
+  assign fallback_content = fallback
+  assign wrapper_tag = wrapper | default: 'div'
+  assign css_class = class
+  assign output_format = format | default: 'tag'
+
+  # Validate required parameters
+  unless meta_object and meta_namespace and meta_key
+    assign has_error = true
+    assign error_message = 'Missing required parameters: object, namespace, and key are required'
+  endunless
+
+  # Get the metafield
+  unless has_error
+    assign metafield_value = meta_object.metafields[meta_namespace][meta_key]
+  endunless
+
+  # Determine if we have valid content
+  assign has_content = false
+  if metafield_value != blank and metafield_value != empty
+    assign has_content = true
+  endif
+-%}
+
+{%- if has_error -%}
+  {%- comment -%} Development error output {%- endcomment -%}
+  <div class="metafield-error" style="background: #ffe6e6; border: 1px solid #ff9999; padding: 12px; border-radius: 4px; color: #cc0000; font-family: monospace; font-size: 14px;">
+    <strong>Metafield Render Error:</strong> {{ error_message }}
   </div>
+{%- elsif has_content -%}
+  {%- comment -%} Render the metafield content {%- endcomment -%}
+  <{{ wrapper_tag }}
+    {%- if css_class != blank %} class="{{ css_class }}"{% endif %}
+    data-metafield="{{ meta_namespace }}.{{ meta_key }}"
+  >
+    {%- case output_format -%}
+      {%- when 'tag' -%}
+        {{- metafield_value | metafield_tag -}}
+      {%- when 'value' -%}
+        {{- metafield_value.value | escape -}}
+      {%- when 'raw' -%}
+        {{- metafield_value.value -}}
+      {%- else -%}
+        {{- metafield_value | metafield_tag -}}
+    {%- endcase -%}
+  </{{ wrapper_tag }}>
+{%- elsif fallback_content != blank -%}
+  {%- comment -%} Render fallback content {%- endcomment -%}
+  <{{ wrapper_tag }}
+    {%- if css_class != blank %} class="{{ css_class }} {{ css_class }}--fallback"{% else %} class="metafield-fallback"{% endif %}
+    data-metafield="{{ meta_namespace }}.{{ meta_key }}"
+    data-fallback="true"
+  >
+    {{ fallback_content }}
+  </{{ wrapper_tag }}>
 {%- endif -%}
 

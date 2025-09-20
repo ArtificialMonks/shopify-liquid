@@ -1,0 +1,559 @@
+{%- comment -%}
+  Sticky Banner Block - Advanced Theme Block
+
+  Persistent announcement bar that sticks to top or bottom of viewport.
+  Perfect for promotions, announcements, and important notices.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/sticky-banner.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Content settings
+  assign message = block.settings.message | default: 'Free shipping on orders over $50!'
+  assign button_text = block.settings.button_text
+  assign button_link = block.settings.button_link
+  assign show_icon = block.settings.show_icon | default: true
+  assign icon_type = block.settings.icon_type | default: 'announcement'
+
+  # Position and behavior
+  assign position = block.settings.position | default: 'top'
+  assign dismissible = block.settings.dismissible | default: true
+  assign auto_hide = block.settings.auto_hide | default: false
+  assign auto_hide_delay = block.settings.auto_hide_delay | default: 10
+
+  # Style settings
+  assign background_color = block.settings.background_color | default: '#1a1a1a'
+  assign text_color = block.settings.text_color | default: '#ffffff'
+  assign button_color = block.settings.button_color | default: '#ffffff'
+  assign button_bg_color = block.settings.button_bg_color | default: '#ff6b35'
+  assign height = block.settings.height | default: 'compact'
+
+  # Animation settings
+  assign slide_in = block.settings.slide_in | default: true
+  assign slide_direction = block.settings.slide_direction | default: 'down'
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .sticky-banner-{{ unique }} {
+    position: fixed;
+    {% if position == 'top' %}
+      top: 0;
+    {% else %}
+      bottom: 0;
+    {% endif %}
+    left: 0;
+    right: 0;
+    background: {{ background_color }};
+    color: {{ text_color }};
+    z-index: 1000;
+    {% case height %}
+      {% when 'compact' %}
+        padding: 12px 20px;
+      {% when 'medium' %}
+        padding: 16px 20px;
+      {% when 'large' %}
+        padding: 20px 20px;
+    {% endcase %}
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    transform: translateY({% if position == 'top' %}-100%{% else %}100%{% endif %});
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sticky-banner-{{ unique }}.is-visible {
+    transform: translateY(0);
+  }
+
+  {% if slide_in %}
+    .sticky-banner-{{ unique }}.slide-in {
+      animation: slideIn{{ slide_direction | capitalize }}-{{ unique }} 0.5s ease-out forwards;
+    }
+
+    @keyframes slideInDown-{{ unique }} {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes slideInUp-{{ unique }} {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes slideInLeft-{{ unique }} {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
+    }
+
+    @keyframes slideInRight-{{ unique }} {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+  {% endif %}
+
+  .sticky-banner-{{ unique }}__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .sticky-banner-{{ unique }}__icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  .sticky-banner-{{ unique }}__message {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: center;
+    margin: 0;
+  }
+
+  .sticky-banner-{{ unique }}__button {
+    background: {{ button_bg_color }};
+    color: {{ button_color }};
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-height: 44px;
+  }
+
+  .sticky-banner-{{ unique }}__button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    opacity: 0.9;
+  }
+
+  .sticky-banner-{{ unique }}__button:focus {
+    outline: 2px solid {{ text_color }};
+    outline-offset: 2px;
+  }
+
+  .sticky-banner-{{ unique }}__close {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: {{ text_color }};
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 18px;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sticky-banner-{{ unique }}__close:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .sticky-banner-{{ unique }}__close:focus {
+    outline: 2px solid {{ text_color }};
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  .sticky-banner-{{ unique }}__close-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .sticky-banner-{{ unique }} {
+      padding: 10px 16px;
+    }
+
+    .sticky-banner-{{ unique }}__content {
+      gap: 8px;
+      {% if dismissible %}
+        padding-right: 60px;
+      {% endif %}
+    }
+
+    .sticky-banner-{{ unique }}__message {
+      font-size: 13px;
+    }
+
+    .sticky-banner-{{ unique }}__button {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .sticky-banner-{{ unique }}__close {
+      right: 12px;
+      padding: 6px;
+    }
+
+    .sticky-banner-{{ unique }}__icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* Very small screens - stack content */
+  @media screen and (max-width: 480px) {
+    .sticky-banner-{{ unique }}__content {
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 0;
+    }
+
+    .sticky-banner-{{ unique }}__close {
+      top: 8px;
+      right: 8px;
+      transform: none;
+    }
+  }
+
+  /* Hide banner when dismissed */
+  .sticky-banner-{{ unique }}.is-hidden {
+    transform: translateY({% if position == 'top' %}-100%{% else %}100%{% endif %});
+    pointer-events: none;
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="sticky-banner-{{ unique }}{% if slide_in %} slide-in{% endif %}"
+     id="sticky-banner-{{ unique }}"
+     data-position="{{ position }}"
+     data-auto-hide="{{ auto_hide }}"
+     data-auto-hide-delay="{{ auto_hide_delay }}"
+     {{ block.shopify_attributes }}
+     role="banner"
+     aria-label="Announcement banner">
+
+  <div class="sticky-banner-{{ unique }}__content">
+    {%- if show_icon -%}
+      <svg class="sticky-banner-{{ unique }}__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+        {%- case icon_type -%}
+          {%- when 'announcement' -%}
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          {%- when 'sale' -%}
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          {%- when 'shipping' -%}
+            <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+          {%- when 'info' -%}
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          {%- when 'gift' -%}
+            <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-2 .89-2 2v4c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm6 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM4 22v-7h16v7H4z"/>
+          {%- else -%}
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        {%- endcase -%}
+      </svg>
+    {%- endif -%}
+
+    <p class="sticky-banner-{{ unique }}__message">{{ message | escape }}</p>
+
+    {%- if button_text != blank and button_link != blank -%}
+      <a href="{{ button_link }}" class="sticky-banner-{{ unique }}__button">
+        {{ button_text | escape }}
+      </a>
+    {%- endif -%}
+
+    {%- if dismissible -%}
+      <button type="button"
+              class="sticky-banner-{{ unique }}__close"
+              onclick="dismissStickyBanner('{{ unique }}')"
+              aria-label="Close banner">
+        <svg class="sticky-banner-{{ unique }}__close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- comment -%} JavaScript for banner functionality {%- endcomment -%}
+<script>
+  (function() {
+    // Initialize banner
+    function initStickyBanner() {
+      const banner = document.getElementById('sticky-banner-{{ unique }}');
+      if (!banner) return;
+
+      const bannerKey = 'sticky-banner-{{ unique }}-dismissed';
+      const isDismissed = localStorage.getItem(bannerKey);
+
+      if (isDismissed) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      // Show banner
+      setTimeout(() => {
+        banner.classList.add('is-visible');
+      }, 100);
+
+      // Auto-hide functionality
+      const autoHide = banner.dataset.autoHide === 'true';
+      const autoHideDelay = parseInt(banner.dataset.autoHideDelay) * 1000;
+
+      if (autoHide && autoHideDelay > 0) {
+        setTimeout(() => {
+          dismissStickyBanner('{{ unique }}');
+        }, autoHideDelay);
+      }
+
+      // Adjust body padding to prevent content overlap
+      adjustBodyPadding();
+    }
+
+    // Dismiss banner function
+    window.dismissStickyBanner = function(uniqueId) {
+      const banner = document.getElementById(`sticky-banner-${uniqueId}`);
+      if (!banner) return;
+
+      banner.classList.add('is-hidden');
+
+      // Store dismissal in localStorage
+      const bannerKey = `sticky-banner-${uniqueId}-dismissed`;
+      localStorage.setItem(bannerKey, 'true');
+
+      // Reset body padding after animation
+      setTimeout(() => {
+        adjustBodyPadding();
+      }, 300);
+    };
+
+    // Adjust body padding to prevent content overlap
+    function adjustBodyPadding() {
+      const banner = document.getElementById('sticky-banner-{{ unique }}');
+      if (!banner) return;
+
+      const isVisible = banner.classList.contains('is-visible') && !banner.classList.contains('is-hidden');
+      const position = banner.dataset.position;
+      const bannerHeight = isVisible ? banner.offsetHeight : 0;
+
+      if (position === 'top') {
+        document.body.style.paddingTop = bannerHeight + 'px';
+      } else {
+        document.body.style.paddingBottom = bannerHeight + 'px';
+      }
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initStickyBanner);
+    } else {
+      initStickyBanner();
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', adjustBodyPadding);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Sticky Banner",
+  "class": "sticky-banner-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Banner message",
+      "default": "🎉 Free shipping on orders over $50! Limited time offer.",
+      "info": "Keep it concise for better mobile display"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "placeholder": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show icon",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "icon_type",
+      "label": "Icon type",
+      "options": [
+        {"value": "announcement", "label": "Announcement"},
+        {"value": "sale", "label": "Sale"},
+        {"value": "shipping", "label": "Shipping"},
+        {"value": "info", "label": "Info"},
+        {"value": "gift", "label": "Gift"}
+      ],
+      "default": "announcement"
+    },
+    {
+      "type": "header",
+      "content": "Position & Behavior"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "options": [
+        {"value": "top", "label": "Top"},
+        {"value": "bottom", "label": "Bottom"}
+      ],
+      "default": "top"
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Allow dismiss",
+      "default": true,
+      "info": "Users can close the banner and it won't show again"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_hide",
+      "label": "Auto hide",
+      "default": false,
+      "info": "Automatically hide banner after delay"
+    },
+    {
+      "type": "range",
+      "id": "auto_hide_delay",
+      "label": "Auto hide delay (seconds)",
+      "min": 3,
+      "max": 30,
+      "step": 1,
+      "default": 10,
+      "info": "Only applies if auto hide is enabled"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "slide_in",
+      "label": "Slide in animation",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "slide_direction",
+      "label": "Slide direction",
+      "options": [
+        {"value": "down", "label": "Down"},
+        {"value": "up", "label": "Up"},
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "down",
+      "info": "Only applies if slide in is enabled"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        {"value": "compact", "label": "Compact"},
+        {"value": "medium", "label": "Medium"},
+        {"value": "large", "label": "Large"}
+      ],
+      "default": "compact"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#ff6b35"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promotion Banner",
+      "settings": {
+        "message": "🔥 Flash Sale: 30% off everything! Use code FLASH30",
+        "button_text": "Shop Sale",
+        "icon_type": "sale",
+        "position": "top"
+      }
+    },
+    {
+      "name": "Shipping Notice",
+      "settings": {
+        "message": "Free shipping on orders over $75 worldwide",
+        "icon_type": "shipping",
+        "position": "top",
+        "background_color": "#2563eb"
+      }
+    },
+    {
+      "name": "Announcement",
+      "settings": {
+        "message": "New collection now available - Limited quantities",
+        "button_text": "Explore",
+        "icon_type": "announcement",
+        "position": "bottom",
+        "background_color": "#059669"
+      }
+    }
+  ]
+}
+{% endschema %}

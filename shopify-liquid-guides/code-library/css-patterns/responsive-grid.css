@@ -1,7 +1,13 @@
 /* Responsive Grid Patterns
  *
- * Modern CSS Grid patterns for building responsive, flexible layouts
- * that work across all screen sizes and device types.
+ * Production-ready CSS Grid patterns optimized for Shopify themes.
+ * Implements Shopify's standard breakpoints and Theme Store requirements.
+ *
+ * SHOPIFY BREAKPOINTS:
+ * - Mobile: max-width: 749px
+ * - Tablet: 750px - 989px
+ * - Desktop: 990px - 1199px
+ * - Large Desktop: 1200px+
  */
 
 /* ========================================
@@ -38,8 +44,8 @@
   padding: var(--grid-padding-mobile, 16px);
 }
 
-/* Tablet breakpoint */
-@media (min-width: 750px) {
+/* Shopify tablet breakpoint */
+@media screen and (min-width: 750px) {
   .grid-responsive-UNIQUEID {
     grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
     gap: var(--grid-gap-tablet, 24px);
@@ -47,8 +53,8 @@
   }
 }
 
-/* Desktop breakpoint */
-@media (min-width: 990px) {
+/* Shopify desktop breakpoint */
+@media screen and (min-width: 990px) {
   .grid-responsive-UNIQUEID {
     grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
     gap: var(--grid-gap-desktop, 32px);
@@ -56,8 +62,8 @@
   }
 }
 
-/* Large desktop breakpoint */
-@media (min-width: 1400px) {
+/* Shopify large desktop breakpoint */
+@media screen and (min-width: 1200px) {
   .grid-responsive-UNIQUEID {
     grid-template-columns: repeat(var(--columns-large, 4), 1fr);
     gap: var(--grid-gap-large, 40px);
@@ -83,6 +89,8 @@
   border-radius: var(--card-radius, 8px);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  contain: layout style;
+  will-change: transform;
 }
 
 .product-grid-UNIQUEID .product-card:hover {
@@ -183,8 +191,8 @@
   grid-template-columns: 1fr;
 }
 
-/* Desktop layout with featured item */
-@media (min-width: 990px) {
+/* Shopify desktop layout with featured item */
+@media screen and (min-width: 990px) {
   .featured-grid-UNIQUEID {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: repeat(var(--featured-rows, 2), 1fr);
@@ -257,7 +265,7 @@
   grid-template-columns: 1fr;
 }
 
-@media (min-width: 750px) {
+@media screen and (min-width: 750px) {
   .asymmetric-grid-UNIQUEID {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 200px);
@@ -473,14 +481,39 @@
  * ======================================== */
 
 /*
-1. Use CSS Grid for two-dimensional layouts
-2. Combine with Flexbox for one-dimensional alignment within grid items
-3. Always include fallbacks for older browsers
-4. Use container queries for truly responsive components
-5. Maintain semantic HTML structure regardless of visual layout
-6. Test with various content lengths and screen sizes
-7. Ensure keyboard navigation and screen reader accessibility
-8. Use CSS custom properties for dynamic values from Liquid
-9. Scope all classes with unique identifiers to prevent conflicts
-10. Consider performance impact of complex grid layouts
+RESPONSIVE GRID BEST PRACTICES FOR SHOPIFY:
+
+1. SHOPIFY BREAKPOINTS (Required for Theme Store):
+   - Mobile: max-width: 749px
+   - Tablet: 750px - 989px
+   - Desktop: 990px - 1199px
+   - Large: 1200px+
+
+2. GRID IMPLEMENTATION:
+   {% assign unique = section.id | replace: '_', '' | downcase %}
+   {% style %}
+     .grid-{{ unique }} {
+       --columns-mobile: {{ section.settings.columns_mobile | default: 1 }};
+       --columns-tablet: {{ section.settings.columns_tablet | default: 2 }};
+       --columns-desktop: {{ section.settings.columns_desktop | default: 3 }};
+     }
+   {% endstyle %}
+
+3. PERFORMANCE OPTIMIZATION:
+   - Use `contain: layout style` for grid containers
+   - Add `will-change: transform` for animated items
+   - Implement container queries with fallbacks
+   - Optimize for Core Web Vitals (LCP, CLS)
+
+4. ACCESSIBILITY COMPLIANCE:
+   - Maintain semantic HTML structure
+   - Ensure keyboard navigation works
+   - Test with screen readers
+   - Respect prefers-reduced-motion
+
+5. THEME STORE REQUIREMENTS:
+   - Mobile-first responsive design
+   - Performance optimized animations
+   - Graceful degradation for older browsers
+   - No layout shifts during load
 */

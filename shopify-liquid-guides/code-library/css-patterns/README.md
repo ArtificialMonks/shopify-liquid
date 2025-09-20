@@ -9,6 +9,7 @@ Production-ready CSS patterns and methodologies for Shopify Liquid development.
 | `scoped-blocks.css` | CSS scoping methodology for blocks | Prevent style collisions |
 | `responsive-grid.css` | Responsive grid system patterns | Mobile-first layouts |
 | `accessibility.css` | Accessibility-focused CSS patterns | WCAG 2.1 AA compliance |
+| `performance-optimization.css` | Core Web Vitals optimization patterns | Theme Store performance requirements |
 
 ## CSS Scoping Methodology
 
@@ -73,4 +74,19 @@ CSS patterns are designed to work with:
 - Responsive breakpoints aligned with Shopify's image sizing
 - Theme Store performance requirements
 
-For implementation guidance, see [04-blocks-and-css-scoping.md](../../04-blocks-and-css-scoping.md) and [05-performance-and-accessibility.md](../../05-performance-and-accessibility.md).
+## Implementation References
+
+### Critical Guidelines
+- **[Schema Validation](../../schema-validation/schema-guidelines.md)** - **ESSENTIAL: Validate all schema configurations**
+- **[CSS Scoping Guide](../../04-blocks-and-css-scoping.md)** - Complete scoping methodology
+- **[Performance & Accessibility](../../05-performance-and-accessibility.md)** - Production optimization
+
+### Asset Management
+- **[CSS Assets Documentation](../../docs/assets/css-assets.md)** - Styling organization and optimization
+- **[Asset Optimization](../../docs/assets/)** - Complete asset management strategy
+- **[Advanced Performance](../../docs/advanced-features/advanced-performance.md)** - Cutting-edge optimization
+
+### Architecture Integration
+- **[Theme Architecture](../../docs/architecture/theme-overview.md)** - How CSS fits in theme structure
+- **[Best Practices 2025](../../docs/architecture/best-practices-2025.md)** - Current CSS standards
+- **[Block Configuration](../../docs/config/blocks-config.md)** - Schema patterns for styled components

@@ -65,4 +65,33 @@ Templates work with sections from:
 - [code-library/blocks/](../code-library/blocks/) - Block components
 - [code-library/snippets/](../code-library/snippets/) - Utility functions
 
-For implementation guidance, see [02-quick-start.md](../02-quick-start.md) and [03-sections-and-schema.md](../03-sections-and-schema.md).
+## Implementation References
+
+### Critical Guidelines
+- **[Validation Automation](../../THEME-CHECK-SETUP.md)** - **ESSENTIAL: Run validation before implementation**
+- **[Schema Validation](../schema-validation/schema-guidelines.md)** - **ESSENTIAL: Always validate before implementation**
+- **[CSS Scoping Methodology](../04-blocks-and-css-scoping.md)** - Prevent style conflicts
+
+### Validation Workflow
+Before implementing any template:
+
+```bash
+# Quick validation check
+./scripts/validate-theme.sh development
+
+# Complete validation with Theme Store compliance
+./scripts/validate-theme.sh all
+
+# Auto-fix common issues
+./scripts/validate-theme.sh auto-fix
+```
+
+### Learning Resources
+- **[Quick Start Guide](../02-quick-start.md)** - Build your first section
+- **[Sections & Schema](../03-sections-and-schema.md)** - Section configuration patterns
+- **[Performance & Accessibility](../05-performance-and-accessibility.md)** - Production optimization
+
+### Architecture Understanding
+- **[Theme Overview](../docs/architecture/theme-overview.md)** - Complete theme structure
+- **[Template Documentation](../docs/templates/)** - JSON vs Liquid templates
+- **[Best Practices 2025](../docs/architecture/best-practices-2025.md)** - Current standards

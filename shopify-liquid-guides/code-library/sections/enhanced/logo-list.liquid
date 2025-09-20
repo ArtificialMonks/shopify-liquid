@@ -1,0 +1,911 @@
+<!-- Logo List Section - Brand Trust & Partners -->
+{%- liquid
+  assign unique = section.id | replace: '_', '' | downcase
+  assign layout_style = section.settings.layout_style
+  assign text_alignment = section.settings.text_alignment
+  assign color_scheme = section.settings.color_scheme
+  assign section_padding_top = section.settings.section_padding_top
+  assign section_padding_bottom = section.settings.section_padding_bottom
+  assign max_width = section.settings.max_width
+  assign enable_carousel = section.settings.enable_carousel
+  assign logo_height = section.settings.logo_height
+  assign enable_grayscale = section.settings.enable_grayscale
+  assign show_border = section.settings.show_border
+-%}
+
+<section
+  id="logo-list-{{ unique }}"
+  class="logo-list-section logo-list-{{ unique }} color-scheme-{{ color_scheme }} layout-{{ layout_style }}"
+  style="
+    padding-top: {{ section_padding_top }}px;
+    padding-bottom: {{ section_padding_bottom }}px;
+  "
+  data-section-id="{{ section.id }}"
+  data-section-type="logo-list"
+  {% if section.settings.heading != blank %}aria-labelledby="logo-list-heading-{{ unique }}"{% endif %}
+>
+  <div class="logo-list-container" style="max-width: {{ max_width }}px;">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="logo-list-header text-{{ text_alignment }}">
+        {%- if section.settings.heading != blank -%}
+          <h2
+            id="logo-list-heading-{{ unique }}"
+            class="logo-list-heading h2"
+          >
+            {{ section.settings.heading | escape }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.subheading != blank -%}
+          <div class="logo-list-subheading rte">
+            {{ section.settings.subheading }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div
+        class="logo-list-wrapper{% if enable_carousel %} logo-carousel{% endif %}"
+        {% if enable_carousel %}
+          data-carousel
+          data-autoplay="{{ section.settings.autoplay_speed }}"
+        {% endif %}
+      >
+        <div
+          class="logo-list"
+          role="list"
+          aria-label="{% if section.settings.heading != blank %}{{ section.settings.heading | escape }}{% else %}Partner logos{% endif %}"
+        >
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'logo' -%}
+                <div
+                  class="logo-item"
+                  role="listitem"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if block.settings.logo != blank -%}
+                    {%- if block.settings.url != blank -%}
+                      <a
+                        href="{{ block.settings.url }}"
+                        class="logo-link"
+                        {% if block.settings.url contains 'http' %}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        {% endif %}
+                        {% if block.settings.company_name != blank %}
+                          aria-label="{{ block.settings.company_name | escape }}"
+                        {% endif %}
+                      >
+                    {%- endif -%}
+
+                    <picture class="logo-picture">
+                      <source
+                        media="(max-width: 749px)"
+                        srcset="
+                          {{ block.settings.logo | image_url: width: 120 }} 120w,
+                          {{ block.settings.logo | image_url: width: 240 }} 240w
+                        "
+                        sizes="120px"
+                      >
+                      <source
+                        media="(min-width: 750px)"
+                        srcset="
+                          {{ block.settings.logo | image_url: width: logo_height }} {{ logo_height }}w,
+                          {{ block.settings.logo | image_url: width: logo_height | times: 2 }} {{ logo_height | times: 2 }}w
+                        "
+                        sizes="{{ logo_height }}px"
+                      >
+                      <img
+                        src="{{ block.settings.logo | image_url: width: logo_height }}"
+                        alt="{{ block.settings.logo.alt | default: block.settings.company_name | escape }}"
+                        loading="lazy"
+                        width="{{ logo_height }}"
+                        height="{{ logo_height }}"
+                        class="logo-image"
+                        style="max-height: {{ logo_height }}px;"
+                      >
+                    </picture>
+
+                    {%- if block.settings.url != blank -%}
+                      </a>
+                    {%- endif -%}
+
+                    {%- if block.settings.company_name != blank and section.settings.show_names -%}
+                      <div class="logo-name">
+                        {{ block.settings.company_name | escape }}
+                      </div>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if enable_carousel and section.blocks.size > 4 -%}
+          <div class="logo-carousel-controls">
+            <button
+              type="button"
+              class="carousel-btn carousel-prev"
+              aria-label="Previous logos"
+              data-carousel-prev
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="carousel-btn carousel-next"
+              aria-label="Next logos"
+              data-carousel-next
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+/* Logo List Section - {{ unique }} */
+.logo-list-{{ unique }} {
+  position: relative;
+  isolation: isolate;
+}
+
+.logo-list-{{ unique }} .logo-list-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header Styling */
+.logo-list-{{ unique }} .logo-list-header {
+  margin-bottom: 48px;
+}
+
+.logo-list-{{ unique }} .logo-list-heading {
+  margin: 0 0 16px 0;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.logo-list-{{ unique }} .logo-list-subheading {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+/* Logo List Wrapper */
+.logo-list-{{ unique }} .logo-list-wrapper {
+  position: relative;
+}
+
+/* Logo List Grid */
+.logo-list-{{ unique }} .logo-list {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+  justify-items: center;
+}
+
+/* Grid Layout Styles */
+.logo-list-{{ unique }}.layout-grid .logo-list {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.logo-list-{{ unique }}.layout-flexible .logo-list {
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 24px;
+}
+
+.logo-list-{{ unique }}.layout-single-row .logo-list {
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 40px;
+}
+
+/* Carousel Layout */
+.logo-list-{{ unique }} .logo-carousel .logo-list {
+  display: flex;
+  gap: 40px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 20px 0;
+  margin: -20px 0;
+}
+
+.logo-list-{{ unique }} .logo-carousel .logo-list::-webkit-scrollbar {
+  display: none;
+}
+
+.logo-list-{{ unique }} .logo-carousel .logo-item {
+  flex: 0 0 auto;
+  min-width: 120px;
+}
+
+/* Logo Item Styling */
+.logo-list-{{ unique }} .logo-item {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.logo-list-{{ unique }} .logo-link {
+  display: block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 16px;
+  {% if show_border %}
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  {% endif %}
+}
+
+.logo-list-{{ unique }} .logo-link:hover {
+  transform: translateY(-2px);
+  {% if show_border %}
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.2);
+  {% endif %}
+}
+
+.logo-list-{{ unique }} .logo-link:focus {
+  outline: 2px solid var(--color-primary, #007bff);
+  outline-offset: 2px;
+}
+
+/* Logo Picture and Image */
+.logo-list-{{ unique }} .logo-picture {
+  display: block;
+  line-height: 0;
+}
+
+.logo-list-{{ unique }} .logo-image {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  transition: all 0.3s ease;
+  {% if enable_grayscale %}
+    filter: grayscale(100%);
+  {% endif %}
+}
+
+.logo-list-{{ unique }} .logo-item:hover .logo-image {
+  {% if enable_grayscale %}
+    filter: grayscale(0%);
+  {% endif %}
+  transform: scale(1.05);
+}
+
+/* Logo Names */
+.logo-list-{{ unique }} .logo-name {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Carousel Controls */
+.logo-list-{{ unique }} .logo-carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.logo-list-{{ unique }} .carousel-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.logo-list-{{ unique }} .carousel-btn:hover {
+  background: var(--color-primary, #007bff);
+  color: white;
+  border-color: var(--color-primary, #007bff);
+  transform: translateY(-1px);
+}
+
+.logo-list-{{ unique }} .carousel-btn:focus {
+  outline: 2px solid var(--color-primary, #007bff);
+  outline-offset: 2px;
+}
+
+.logo-list-{{ unique }} .carousel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Color Schemes */
+.logo-list-{{ unique }}.color-scheme-light {
+  background: #ffffff;
+  color: #333333;
+}
+
+.logo-list-{{ unique }}.color-scheme-dark {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.logo-list-{{ unique }}.color-scheme-dark .logo-link {
+  {% if show_border %}
+    border-color: rgba(255, 255, 255, 0.1);
+  {% endif %}
+}
+
+.logo-list-{{ unique }}.color-scheme-dark .logo-link:hover {
+  {% if show_border %}
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  {% endif %}
+}
+
+.logo-list-{{ unique }}.color-scheme-dark .carousel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Text Alignment */
+.logo-list-{{ unique }} .text-left {
+  text-align: left;
+}
+
+.logo-list-{{ unique }} .text-center {
+  text-align: center;
+}
+
+.logo-list-{{ unique }} .text-right {
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 990px) {
+  .logo-list-{{ unique }}.layout-single-row .logo-list {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 24px;
+  }
+
+  .logo-list-{{ unique }} .logo-carousel .logo-list {
+    gap: 24px;
+  }
+
+  .logo-list-{{ unique }} .logo-carousel .logo-item {
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 749px) {
+  .logo-list-{{ unique }} .logo-list-container {
+    padding: 0 16px;
+  }
+
+  .logo-list-{{ unique }} .logo-list-header {
+    margin-bottom: 32px;
+  }
+
+  .logo-list-{{ unique }} .logo-list {
+    gap: 20px;
+  }
+
+  .logo-list-{{ unique }}.layout-grid .logo-list,
+  .logo-list-{{ unique }}.layout-flexible .logo-list {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .logo-list-{{ unique }}.layout-single-row .logo-list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .logo-list-{{ unique }} .logo-carousel .logo-list {
+    gap: 20px;
+  }
+
+  .logo-list-{{ unique }} .logo-carousel .logo-item {
+    min-width: 80px;
+  }
+
+  .logo-list-{{ unique }} .logo-link {
+    padding: 12px;
+  }
+
+  .logo-list-{{ unique }} .logo-image {
+    max-height: 40px;
+  }
+
+  .logo-list-{{ unique }} .carousel-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-list-{{ unique }} .logo-list-container {
+    padding: 0 12px;
+  }
+
+  .logo-list-{{ unique }}.layout-single-row .logo-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .logo-list-{{ unique }} .logo-link {
+    padding: 8px;
+  }
+
+  .logo-list-{{ unique }} .logo-image {
+    max-height: 32px;
+  }
+
+  .logo-list-{{ unique }} .logo-carousel-controls {
+    gap: 12px;
+    margin-top: 24px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .logo-list-{{ unique }} .logo-link {
+    border: 2px solid currentColor;
+  }
+
+  .logo-list-{{ unique }} .carousel-btn {
+    border-width: 2px;
+    border-color: currentColor;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .logo-list-{{ unique }} * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .logo-list-{{ unique }} .logo-item:hover .logo-image {
+    transform: none;
+  }
+
+  .logo-list-{{ unique }} .logo-link:hover {
+    transform: none;
+  }
+
+  .logo-list-{{ unique }} .logo-list {
+    scroll-behavior: auto;
+  }
+}
+
+/* Print styles */
+@media print {
+  .logo-list-{{ unique }} .logo-carousel-controls {
+    display: none;
+  }
+
+  .logo-list-{{ unique }} .logo-image {
+    filter: none !important;
+  }
+}
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  const sectionId = '{{ unique }}';
+  const section = document.getElementById(`logo-list-${sectionId}`);
+
+  if (!section) return;
+
+  // Carousel functionality
+  const carousel = section.querySelector('[data-carousel]');
+
+  if (carousel) {
+    const logoList = carousel.querySelector('.logo-list');
+    const prevBtn = section.querySelector('[data-carousel-prev]');
+    const nextBtn = section.querySelector('[data-carousel-next]');
+    const autoplaySpeed = parseInt(carousel.dataset.autoplay) || 0;
+
+    let autoplayInterval;
+
+    if (logoList && prevBtn && nextBtn) {
+      // Scroll functions
+      function scrollToPosition(position) {
+        logoList.scrollTo({
+          left: position,
+          behavior: 'smooth'
+        });
+      }
+
+      function scrollPrev() {
+        const scrollAmount = logoList.clientWidth * 0.8;
+        const newPosition = Math.max(0, logoList.scrollLeft - scrollAmount);
+        scrollToPosition(newPosition);
+      }
+
+      function scrollNext() {
+        const scrollAmount = logoList.clientWidth * 0.8;
+        const maxScroll = logoList.scrollWidth - logoList.clientWidth;
+        const newPosition = Math.min(maxScroll, logoList.scrollLeft + scrollAmount);
+        scrollToPosition(newPosition);
+      }
+
+      // Event listeners
+      prevBtn.addEventListener('click', () => {
+        scrollPrev();
+        stopAutoplay();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        scrollNext();
+        stopAutoplay();
+      });
+
+      // Keyboard navigation
+      prevBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          scrollPrev();
+          stopAutoplay();
+        }
+      });
+
+      nextBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          scrollNext();
+          stopAutoplay();
+        }
+      });
+
+      // Update button states
+      function updateButtons() {
+        const isAtStart = logoList.scrollLeft <= 0;
+        const isAtEnd = logoList.scrollLeft >= logoList.scrollWidth - logoList.clientWidth - 1;
+
+        prevBtn.disabled = isAtStart;
+        nextBtn.disabled = isAtEnd;
+      }
+
+      // Scroll event listener
+      logoList.addEventListener('scroll', updateButtons);
+
+      // Autoplay functionality
+      function startAutoplay() {
+        if (autoplaySpeed > 0) {
+          autoplayInterval = setInterval(() => {
+            const isAtEnd = logoList.scrollLeft >= logoList.scrollWidth - logoList.clientWidth - 1;
+            if (isAtEnd) {
+              scrollToPosition(0);
+            } else {
+              scrollNext();
+            }
+          }, autoplaySpeed);
+        }
+      }
+
+      function stopAutoplay() {
+        if (autoplayInterval) {
+          clearInterval(autoplayInterval);
+          autoplayInterval = null;
+        }
+      }
+
+      // Pause autoplay on hover
+      carousel.addEventListener('mouseenter', stopAutoplay);
+      carousel.addEventListener('mouseleave', startAutoplay);
+
+      // Pause autoplay on focus
+      carousel.addEventListener('focusin', stopAutoplay);
+      carousel.addEventListener('focusout', startAutoplay);
+
+      // Initialize
+      updateButtons();
+      startAutoplay();
+
+      // Handle resize
+      window.addEventListener('resize', updateButtons);
+    }
+  }
+
+  // Analytics tracking for logo clicks
+  const logoLinks = section.querySelectorAll('.logo-link');
+
+  logoLinks.forEach((link, index) => {
+    link.addEventListener('click', function() {
+      const logoName = this.getAttribute('aria-label') || `Logo ${index + 1}`;
+
+      // Google Analytics tracking (if available)
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'logo_click', {
+          'event_category': 'engagement',
+          'event_label': logoName,
+          'logo_position': index + 1
+        });
+      }
+
+      // Facebook Pixel tracking (if available)
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'ViewContent', {
+          content_name: logoName,
+          content_category: 'Partner Logo'
+        });
+      }
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Logo list",
+  "tag": "section",
+  "class": "section-logo-list",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Trusted by industry leaders"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Join thousands of satisfied customers and partners worldwide</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_names",
+      "label": "Show company names",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Layout style",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "flexible",
+          "label": "Flexible grid"
+        },
+        {
+          "value": "single-row",
+          "label": "Single row"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_carousel",
+      "label": "Enable carousel",
+      "default": false,
+      "info": "Adds horizontal scrolling with navigation controls"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay speed (ms)",
+      "min": 0,
+      "max": 10000,
+      "step": 1000,
+      "unit": "ms",
+      "default": 3000,
+      "info": "Set to 0 to disable autoplay"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_grayscale",
+      "label": "Enable grayscale effect",
+      "default": true,
+      "info": "Logos appear in grayscale and become colored on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show borders",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo image"
+        },
+        {
+          "type": "text",
+          "id": "company_name",
+          "label": "Company name",
+          "info": "Used for accessibility and optionally displayed"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Website URL",
+          "info": "Optional link to company website"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "presets": [
+    {
+      "name": "Logo list",
+      "blocks": [
+        {
+          "type": "logo",
+          "settings": {
+            "company_name": "Partner 1"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "company_name": "Partner 2"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "company_name": "Partner 3"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "company_name": "Partner 4"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "company_name": "Partner 5"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "company_name": "Partner 6"
+          }
+        }
+      ],
+      "settings": {
+        "heading": "Trusted by industry leaders",
+        "subheading": "<p>Join thousands of satisfied customers and partners worldwide</p>",
+        "layout_style": "grid",
+        "text_alignment": "center",
+        "color_scheme": "light",
+        "enable_grayscale": true,
+        "show_border": false,
+        "logo_height": 60,
+        "section_padding_top": 60,
+        "section_padding_bottom": 60
+      }
+    }
+  ]
+}
+{% endschema %}

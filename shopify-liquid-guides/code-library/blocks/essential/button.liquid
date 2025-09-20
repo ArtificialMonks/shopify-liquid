@@ -1,0 +1,710 @@
+{%- comment -%}
+  Button Block - Essential Theme Block
+
+  Versatile call-to-action button with multiple styles, sizes, and icons.
+  Supports both links and JavaScript actions with accessibility features.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/button.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Button settings
+  assign label = block.settings.label | default: 'Shop Now'
+  assign link = block.settings.link
+  assign button_style = block.settings.button_style | default: 'primary'
+  assign button_size = block.settings.button_size | default: 'medium'
+  assign button_width = block.settings.button_width | default: 'auto'
+
+  # Style settings
+  assign button_color = block.settings.button_color
+  assign text_color = block.settings.text_color
+  assign border_color = block.settings.border_color
+  assign hover_button_color = block.settings.hover_button_color
+  assign hover_text_color = block.settings.hover_text_color
+
+  # Icon settings
+  assign icon = block.settings.icon | default: 'none'
+  assign icon_position = block.settings.icon_position | default: 'left'
+
+  # Behavior settings
+  assign open_new_window = block.settings.open_new_window | default: false
+  assign alignment = block.settings.alignment | default: 'left'
+  assign disabled = block.settings.disabled | default: false
+
+  # Accessibility
+  assign aria_label = block.settings.aria_label | default: label
+
+  # Mobile settings
+  assign mobile_width = block.settings.mobile_width | default: 'auto'
+  assign mobile_size = block.settings.mobile_size | default: 'small'
+
+  # Animation settings
+  assign animation = block.settings.animation | default: 'none'
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .button-block-{{ unique }} {
+    text-align: {{ alignment }};
+    margin: 0;
+  }
+
+  .button-block-{{ unique }}__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    border-style: solid;
+    border-width: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    line-height: 1.2;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+
+    {% if button_width == 'full' %}
+      width: 100%;
+    {% elsif button_width == 'fixed' %}
+      width: 200px;
+    {% else %}
+      width: auto;
+    {% endif %}
+  }
+
+  /* Size variants */
+  .button-block-{{ unique }}__button--small {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    min-height: 36px;
+  }
+
+  .button-block-{{ unique }}__button--medium {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 6px;
+    min-height: 44px;
+  }
+
+  .button-block-{{ unique }}__button--large {
+    padding: 16px 32px;
+    font-size: 18px;
+    border-radius: 8px;
+    min-height: 52px;
+  }
+
+  /* Style variants with custom colors */
+  .button-block-{{ unique }}__button--primary {
+    background: {{ button_color | default: '#000000' }};
+    color: {{ text_color | default: '#ffffff' }};
+    border-color: {{ border_color | default: button_color | default: '#000000' }};
+  }
+
+  .button-block-{{ unique }}__button--primary:hover:not(:disabled) {
+    background: {{ hover_button_color | default: '#333333' }};
+    color: {{ hover_text_color | default: '#ffffff' }};
+    border-color: {{ hover_button_color | default: '#333333' }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .button-block-{{ unique }}__button--secondary {
+    background: transparent;
+    color: {{ button_color | default: '#000000' }};
+    border-color: {{ border_color | default: button_color | default: '#000000' }};
+  }
+
+  .button-block-{{ unique }}__button--secondary:hover:not(:disabled) {
+    background: {{ button_color | default: '#000000' }};
+    color: {{ text_color | default: '#ffffff' }};
+    border-color: {{ button_color | default: '#000000' }};
+  }
+
+  .button-block-{{ unique }}__button--ghost {
+    background: transparent;
+    color: {{ button_color | default: '#000000' }};
+    border-color: transparent;
+    text-decoration: underline;
+  }
+
+  .button-block-{{ unique }}__button--ghost:hover:not(:disabled) {
+    color: {{ hover_button_color | default: '#333333' }};
+    text-decoration: none;
+  }
+
+  /* Icon styles */
+  .button-block-{{ unique }}__icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .button-block-{{ unique }}__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  .button-block-{{ unique }}__button--icon-right {
+    flex-direction: row-reverse;
+  }
+
+  /* Disabled state */
+  .button-block-{{ unique }}__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Animation effects */
+  .button-block-{{ unique }}__button--pulse {
+    animation: pulse-{{ unique }} 2s infinite;
+  }
+
+  @keyframes pulse-{{ unique }} {
+    0% { box-shadow: 0 0 0 0 {{ button_color | default: '#000' }}40; }
+    70% { box-shadow: 0 0 0 10px {{ button_color | default: '#000' }}00; }
+    100% { box-shadow: 0 0 0 0 {{ button_color | default: '#000' }}00; }
+  }
+
+  .button-block-{{ unique }}__button--slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: {{ hover_button_color | default: 'rgba(255,255,255,0.2)' }};
+    transition: left 0.3s ease;
+  }
+
+  .button-block-{{ unique }}__button--slide:hover::before {
+    left: 0;
+  }
+
+  .button-block-{{ unique }}__button--glow:hover {
+    box-shadow: 0 0 20px {{ button_color | default: '#000' }}40;
+  }
+
+  /* Focus styles for accessibility */
+  .button-block-{{ unique }}__button:focus-visible {
+    outline: 2px solid {{ button_color | default: '#000000' }};
+    outline-offset: 2px;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .button-block-{{ unique }}__button {
+      {% if mobile_width == 'full' %}
+        width: 100%;
+      {% elsif mobile_width == 'fixed' %}
+        width: 160px;
+      {% else %}
+        width: auto;
+      {% endif %}
+    }
+
+    .button-block-{{ unique }}__button--{{ mobile_size }} {
+      {% case mobile_size %}
+        {% when 'small' %}
+          padding: 8px 16px;
+          font-size: 14px;
+          min-height: 36px;
+        {% when 'medium' %}
+          padding: 10px 20px;
+          font-size: 15px;
+          min-height: 40px;
+        {% when 'large' %}
+          padding: 14px 28px;
+          font-size: 16px;
+          min-height: 48px;
+      {% endcase %}
+    }
+
+    .button-block-{{ unique }}__icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .button-block-{{ unique }}__button {
+      border-width: 3px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .button-block-{{ unique }}__button {
+      transition: none;
+      animation: none;
+    }
+
+    .button-block-{{ unique }}__button:hover {
+      transform: none;
+    }
+
+    .button-block-{{ unique }}__button--slide::before {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="button-block-{{ unique }}" {{ block.shopify_attributes }}>
+  {%- if link != blank -%}
+    <a
+      href="{{ link }}"
+      class="button-block-{{ unique }}__button button-block-{{ unique }}__button--{{ button_style }} button-block-{{ unique }}__button--{{ button_size }}{% if icon_position == 'right' %} button-block-{{ unique }}__button--icon-right{% endif %}{% if animation != 'none' %} button-block-{{ unique }}__button--{{ animation }}{% endif %}"
+      {% if open_new_window %}target="_blank" rel="noopener"{% endif %}
+      {% if disabled %}disabled aria-disabled="true"{% endif %}
+      aria-label="{{ aria_label | escape }}">
+
+      {%- if icon != 'none' and icon_position == 'left' -%}
+        <span class="button-block-{{ unique }}__icon" aria-hidden="true">
+          {%- case icon -%}
+            {%- when 'arrow' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              </svg>
+            {%- when 'cart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            {%- when 'check' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            {%- when 'download' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+            {%- when 'external' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+              </svg>
+            {%- when 'play' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            {%- when 'plus' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            {%- when 'search' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            {%- when 'star' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            {%- when 'heart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+          {%- endcase -%}
+        </span>
+      {%- endif -%}
+
+      <span class="button-block-{{ unique }}__label">{{ label | escape }}</span>
+
+      {%- if icon != 'none' and icon_position == 'right' -%}
+        <span class="button-block-{{ unique }}__icon" aria-hidden="true">
+          {%- case icon -%}
+            {%- when 'arrow' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              </svg>
+            {%- when 'cart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            {%- when 'check' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            {%- when 'download' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+            {%- when 'external' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+              </svg>
+            {%- when 'play' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            {%- when 'plus' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            {%- when 'search' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            {%- when 'star' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            {%- when 'heart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+          {%- endcase -%}
+        </span>
+      {%- endif -%}
+    </a>
+  {%- else -%}
+    <button
+      type="button"
+      class="button-block-{{ unique }}__button button-block-{{ unique }}__button--{{ button_style }} button-block-{{ unique }}__button--{{ button_size }}{% if icon_position == 'right' %} button-block-{{ unique }}__button--icon-right{% endif %}{% if animation != 'none' %} button-block-{{ unique }}__button--{{ animation }}{% endif %}"
+      {% if disabled %}disabled aria-disabled="true"{% endif %}
+      aria-label="{{ aria_label | escape }}">
+
+      {%- if icon != 'none' and icon_position == 'left' -%}
+        <span class="button-block-{{ unique }}__icon" aria-hidden="true">
+          {%- case icon -%}
+            {%- when 'arrow' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              </svg>
+            {%- when 'cart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            {%- when 'check' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            {%- when 'download' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+            {%- when 'external' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+              </svg>
+            {%- when 'play' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            {%- when 'plus' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            {%- when 'search' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            {%- when 'star' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            {%- when 'heart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+          {%- endcase -%}
+        </span>
+      {%- endif -%}
+
+      <span class="button-block-{{ unique }}__label">{{ label | escape }}</span>
+
+      {%- if icon != 'none' and icon_position == 'right' -%}
+        <span class="button-block-{{ unique }}__icon" aria-hidden="true">
+          {%- case icon -%}
+            {%- when 'arrow' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              </svg>
+            {%- when 'cart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            {%- when 'check' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            {%- when 'download' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+            {%- when 'external' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+              </svg>
+            {%- when 'play' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            {%- when 'plus' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            {%- when 'search' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            {%- when 'star' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            {%- when 'heart' -%}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+          {%- endcase -%}
+        </span>
+      {%- endif -%}
+    </button>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Button",
+  "class": "button-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style",
+      "options": [
+        {"value": "primary", "label": "Primary"},
+        {"value": "secondary", "label": "Secondary"},
+        {"value": "ghost", "label": "Ghost"}
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Size",
+      "options": [
+        {"value": "small", "label": "Small"},
+        {"value": "medium", "label": "Medium"},
+        {"value": "large", "label": "Large"}
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "select",
+      "id": "button_width",
+      "label": "Width",
+      "options": [
+        {"value": "auto", "label": "Auto"},
+        {"value": "full", "label": "Full width"},
+        {"value": "fixed", "label": "Fixed (200px)"}
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color"
+    },
+    {
+      "type": "color",
+      "id": "hover_button_color",
+      "label": "Hover button color"
+    },
+    {
+      "type": "color",
+      "id": "hover_text_color",
+      "label": "Hover text color"
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icon",
+      "options": [
+        {"value": "none", "label": "None"},
+        {"value": "arrow", "label": "Arrow"},
+        {"value": "cart", "label": "Cart"},
+        {"value": "check", "label": "Check"},
+        {"value": "download", "label": "Download"},
+        {"value": "external", "label": "External link"},
+        {"value": "heart", "label": "Heart"},
+        {"value": "play", "label": "Play"},
+        {"value": "plus", "label": "Plus"},
+        {"value": "search", "label": "Search"},
+        {"value": "star", "label": "Star"}
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Icon position",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Effects"
+    },
+    {
+      "type": "select",
+      "id": "animation",
+      "label": "Animation",
+      "options": [
+        {"value": "none", "label": "None"},
+        {"value": "pulse", "label": "Pulse"},
+        {"value": "slide", "label": "Slide"},
+        {"value": "glow", "label": "Glow"}
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_new_window",
+      "label": "Open in new window",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "disabled",
+      "label": "Disabled state",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile width",
+      "options": [
+        {"value": "auto", "label": "Auto"},
+        {"value": "full", "label": "Full width"},
+        {"value": "fixed", "label": "Fixed (160px)"}
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "select",
+      "id": "mobile_size",
+      "label": "Mobile size",
+      "options": [
+        {"value": "small", "label": "Small"},
+        {"value": "medium", "label": "Medium"},
+        {"value": "large", "label": "Large"}
+      ],
+      "default": "small"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "ARIA label",
+      "info": "Screen reader text (if different from label)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Button"
+    },
+    {
+      "name": "Primary CTA",
+      "settings": {
+        "label": "Shop Now",
+        "button_style": "primary",
+        "button_size": "large",
+        "icon": "arrow",
+        "icon_position": "right"
+      }
+    },
+    {
+      "name": "Add to Cart",
+      "settings": {
+        "label": "Add to Cart",
+        "button_style": "primary",
+        "icon": "cart",
+        "icon_position": "left"
+      }
+    },
+    {
+      "name": "Learn More",
+      "settings": {
+        "label": "Learn More",
+        "button_style": "ghost",
+        "icon": "arrow",
+        "icon_position": "right"
+      }
+    }
+  ]
+}
+{% endschema %}

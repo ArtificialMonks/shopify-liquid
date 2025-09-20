@@ -683,6 +683,30 @@ window.addEventListener('load', trackWebVitals);
 
 ## Next Steps
 
+Complete your learning journey:
 - **[Troubleshooting](./06-troubleshooting.md)** - Debug performance and accessibility issues
 - **[Code Library](./code-library/)** - See optimized examples in action
-- **[CSS Patterns](./code-library/css-patterns/)** - Performance-focused styling techniques
+- **[Advanced Features](./docs/advanced-features/)** - Modern performance patterns
+
+## Essential References
+
+### Performance Architecture
+- **[Advanced Performance](./docs/advanced-features/advanced-performance.md)** - Cutting-edge optimization
+- **[Asset Optimization](./docs/assets/)** - Complete asset management strategy
+- **[CSS Assets](./docs/assets/css-assets.md)** - Styling performance patterns
+- **[Image Assets](./docs/assets/image-assets.md)** - Responsive image optimization
+
+### Core Web Vitals Implementation
+- **[JavaScript Assets](./docs/assets/javascript-assets.md)** - Modern JS patterns and bundling
+- **[Font Assets](./docs/assets/font-assets.md)** - Typography loading strategies
+- **[Theme Architecture](./docs/architecture/theme-overview.md)** - Performance-first structure
+
+### Accessibility Standards
+- **[Best Practices 2025](./docs/architecture/best-practices-2025.md)** - Current accessibility standards
+- **[Schema Validation](./schema-validation/schema-guidelines.md)** - Accessible schema patterns
+- **[CSS Patterns](./code-library/css-patterns/accessibility.css)** - WCAG compliance patterns
+
+### Advanced Features
+- **[Progressive Web App](./docs/advanced-features/progressive-web-app.md)** - App-like performance
+- **[AI-Generated Blocks](./docs/advanced-features/ai-generated-blocks.md)** - Automated optimization
+- **[Section Groups](./docs/section-groups/)** - Dynamic layout performance

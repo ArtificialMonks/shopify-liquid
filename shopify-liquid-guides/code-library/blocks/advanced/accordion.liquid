@@ -1,0 +1,402 @@
+{%- comment -%}
+  Accordion Block - Advanced Theme Block
+
+  Collapsible content sections with smooth animations.
+  Supports multiple items with open/close functionality.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/accordion.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Accordion settings
+  assign title = block.settings.title | default: 'Click to expand'
+  assign content = block.settings.content
+  assign icon_position = block.settings.icon_position | default: 'right'
+  assign default_open = block.settings.default_open | default: false
+  assign allow_multiple = block.settings.allow_multiple | default: false
+
+  # Style settings
+  assign border_style = block.settings.border_style | default: 'solid'
+  assign border_color = block.settings.border_color | default: '#e0e0e0'
+  assign background_color = block.settings.background_color | default: '#ffffff'
+  assign active_background = block.settings.active_background | default: '#f5f5f5'
+  assign title_color = block.settings.title_color | default: '#000000'
+  assign content_color = block.settings.content_color | default: '#666666'
+
+  # Animation settings
+  assign animation_duration = block.settings.animation_duration | default: 300
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .accordion-block-{{ unique }} {
+    border: 1px {{ border_style }} {{ border_color }};
+    border-radius: 8px;
+    overflow: hidden;
+    background: {{ background_color }};
+    margin-bottom: 10px;
+  }
+
+  .accordion-block-{{ unique }}__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    background: {{ background_color }};
+    color: {{ title_color }};
+    transition: background-color 0.3s ease;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    position: relative;
+  }
+
+  .accordion-block-{{ unique }}__header:hover {
+    background: {{ active_background }};
+  }
+
+  .accordion-block-{{ unique }}__header--active {
+    background: {{ active_background }};
+  }
+
+  .accordion-block-{{ unique }}__title {
+    flex: 1;
+    margin: 0;
+    {% if icon_position == 'left' %}
+      padding-left: 30px;
+    {% else %}
+      padding-right: 30px;
+    {% endif %}
+  }
+
+  .accordion-block-{{ unique }}__icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform {{ animation_duration }}ms ease;
+    position: absolute;
+    {% if icon_position == 'left' %}
+      left: 20px;
+    {% else %}
+      right: 20px;
+    {% endif %}
+  }
+
+  .accordion-block-{{ unique }}__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: {{ title_color }};
+  }
+
+  .accordion-block-{{ unique }}__header--active .accordion-block-{{ unique }}__icon {
+    transform: rotate(180deg);
+  }
+
+  .accordion-block-{{ unique }}__content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height {{ animation_duration }}ms ease-out, padding {{ animation_duration }}ms ease-out;
+    color: {{ content_color }};
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .accordion-block-{{ unique }}__content--open {
+    max-height: 2000px;
+    padding: 0 20px 20px;
+    transition: max-height {{ animation_duration }}ms ease-in, padding {{ animation_duration }}ms ease-in;
+  }
+
+  .accordion-block-{{ unique }}__content-inner {
+    padding-top: 0;
+  }
+
+  /* Rich content styling */
+  .accordion-block-{{ unique }}__content p {
+    margin: 0 0 1em;
+  }
+
+  .accordion-block-{{ unique }}__content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .accordion-block-{{ unique }}__content ul,
+  .accordion-block-{{ unique }}__content ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+  }
+
+  .accordion-block-{{ unique }}__content li {
+    margin-bottom: 0.5em;
+  }
+
+  .accordion-block-{{ unique }}__content a {
+    color: {{ title_color }};
+    text-decoration: underline;
+  }
+
+  .accordion-block-{{ unique }}__content a:hover {
+    text-decoration: none;
+  }
+
+  /* Focus styles for accessibility */
+  .accordion-block-{{ unique }}__header:focus-visible {
+    outline: 2px solid {{ title_color }};
+    outline-offset: -2px;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .accordion-block-{{ unique }}__header {
+      padding: 14px 16px;
+      font-size: 15px;
+    }
+
+    .accordion-block-{{ unique }}__content {
+      font-size: 14px;
+    }
+
+    .accordion-block-{{ unique }}__content--open {
+      padding: 0 16px 16px;
+    }
+
+    .accordion-block-{{ unique }}__icon {
+      width: 18px;
+      height: 18px;
+      {% if icon_position == 'left' %}
+        left: 16px;
+      {% else %}
+        right: 16px;
+      {% endif %}
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-block-{{ unique }}__header,
+    .accordion-block-{{ unique }}__content,
+    .accordion-block-{{ unique }}__icon {
+      transition: none;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} JavaScript for accordion functionality {%- endcomment -%}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const accordion{{ unique | remove: '-' }} = document.querySelector('.accordion-block-{{ unique }}');
+    const header{{ unique | remove: '-' }} = accordion{{ unique | remove: '-' }}.querySelector('.accordion-block-{{ unique }}__header');
+    const content{{ unique | remove: '-' }} = accordion{{ unique | remove: '-' }}.querySelector('.accordion-block-{{ unique }}__content');
+
+    {% if default_open %}
+      header{{ unique | remove: '-' }}.classList.add('accordion-block-{{ unique }}__header--active');
+      content{{ unique | remove: '-' }}.classList.add('accordion-block-{{ unique }}__content--open');
+      header{{ unique | remove: '-' }}.setAttribute('aria-expanded', 'true');
+    {% endif %}
+
+    header{{ unique | remove: '-' }}.addEventListener('click', function() {
+      const isOpen = this.classList.contains('accordion-block-{{ unique }}__header--active');
+
+      {% unless allow_multiple %}
+        // Close other accordions in the same parent if allow_multiple is false
+        const parent = accordion{{ unique | remove: '-' }}.closest('[data-section-id]');
+        if (parent) {
+          parent.querySelectorAll('.accordion-block__header--active').forEach(function(openHeader) {
+            if (openHeader !== header{{ unique | remove: '-' }}) {
+              openHeader.classList.remove('accordion-block__header--active');
+              openHeader.setAttribute('aria-expanded', 'false');
+              const openContent = openHeader.nextElementSibling;
+              if (openContent) {
+                openContent.classList.remove('accordion-block__content--open');
+              }
+            }
+          });
+        }
+      {% endunless %}
+
+      // Toggle current accordion
+      this.classList.toggle('accordion-block-{{ unique }}__header--active');
+      content{{ unique | remove: '-' }}.classList.toggle('accordion-block-{{ unique }}__content--open');
+      this.setAttribute('aria-expanded', !isOpen);
+    });
+
+    // Keyboard support
+    header{{ unique | remove: '-' }}.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+  });
+</script>
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="accordion-block-{{ unique }}" {{ block.shopify_attributes }}>
+  <button
+    class="accordion-block-{{ unique }}__header{% if default_open %} accordion-block-{{ unique }}__header--active{% endif %}"
+    type="button"
+    aria-expanded="{% if default_open %}true{% else %}false{% endif %}"
+    aria-controls="accordion-content-{{ unique }}">
+
+    {%- if icon_position == 'left' -%}
+      <span class="accordion-block-{{ unique }}__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+        </svg>
+      </span>
+    {%- endif -%}
+
+    <span class="accordion-block-{{ unique }}__title">{{ title | escape }}</span>
+
+    {%- if icon_position == 'right' -%}
+      <span class="accordion-block-{{ unique }}__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+        </svg>
+      </span>
+    {%- endif -%}
+  </button>
+
+  <div
+    id="accordion-content-{{ unique }}"
+    class="accordion-block-{{ unique }}__content{% if default_open %} accordion-block-{{ unique }}__content--open{% endif %}">
+    <div class="accordion-block-{{ unique }}__content-inner">
+      {{ content }}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Accordion",
+  "class": "accordion-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Frequently Asked Question"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Add your collapsible content here. This content will be hidden until the user clicks on the accordion header.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "default_open",
+      "label": "Open by default",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_multiple",
+      "label": "Allow multiple open",
+      "info": "Allow multiple accordions to be open at once",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Icon position",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border style",
+      "options": [
+        {"value": "solid", "label": "Solid"},
+        {"value": "dashed", "label": "Dashed"},
+        {"value": "dotted", "label": "Dotted"},
+        {"value": "none", "label": "None"}
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "active_background",
+      "label": "Active background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "content_color",
+      "label": "Content color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "label": "Animation duration",
+      "min": 100,
+      "max": 1000,
+      "step": 100,
+      "unit": "ms",
+      "default": 300
+    }
+  ],
+  "presets": [
+    {
+      "name": "Accordion",
+      "settings": {
+        "title": "What is your return policy?",
+        "content": "<p>We offer a 30-day return policy for all items in their original condition.</p>"
+      }
+    },
+    {
+      "name": "FAQ Item",
+      "settings": {
+        "title": "Frequently Asked Question",
+        "default_open": false
+      }
+    }
+  ]
+}
+{% endschema %}

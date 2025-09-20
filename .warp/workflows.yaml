@@ -1,0 +1,305 @@
+# Advanced Warp Workflows for Shopify Liquid Development
+# Integrates with the enterprise-grade validation system
+
+workflows:
+  # === ADVANCED VALIDATION WORKFLOWS ===
+  
+  validation-dev:
+    name: "🚀 Development Validation"
+    description: "Fast validation with essential checks for active development"
+    command: |
+      echo "🔍 Running Development Validation (Fast)..."
+      ./scripts/validate-theme.sh development
+  
+  validation-comprehensive:
+    name: "🔎 Comprehensive Validation"
+    description: "Complete validation with all 50+ validation rules"
+    command: |
+      echo "📋 Running Comprehensive Validation..."
+      ./scripts/validate-theme.sh comprehensive
+  
+  validation-production:
+    name: "🎯 Production Validation"
+    description: "Theme Store submission readiness validation"
+    command: |
+      echo "🏆 Running Production Validation (Theme Store Ready)..."
+      ./scripts/validate-theme.sh production
+  
+  validation-all:
+    name: "✨ Complete Validation Suite"
+    description: "Ultimate validation workflow - development → auto-fix → comprehensive → production"
+    command: |
+      echo "🚀 Running Complete Validation Suite..."
+      ./scripts/validate-theme.sh all
+  
+  auto-fix:
+    name: "🔧 Auto-Fix Issues"
+    description: "Automatically correct fixable validation issues"
+    command: |
+      echo "🛠️ Running Auto-Fix for correctable issues..."
+      ./scripts/validate-theme.sh auto-fix
+  
+  validation-report:
+    name: "📊 Generate Validation Report"
+    description: "Create detailed JSON validation report for CI/CD"
+    command: |
+      echo "📈 Generating detailed validation report..."
+      ./scripts/validate-theme.sh report
+      echo "Report saved to: theme-validation-report.json"
+  
+  validation-presets:
+    name: "🎛️ Test Shopify Presets"
+    description: "Test different Shopify validation preset configurations"
+    command: |
+      echo "🧪 Testing Shopify validation presets..."
+      ./scripts/validate-theme.sh presets
+  
+  # === SHOPIFY CLI VALIDATION ===
+  
+  shopify-check-recommended:
+    name: "✅ Shopify Recommended Check"
+    description: "Run Shopify's recommended validation preset"
+    command: |
+      echo "🏅 Running Shopify recommended validation..."
+      shopify theme check --config theme-check:recommended
+  
+  shopify-check-all:
+    name: "🔍 Shopify All Checks"
+    description: "Run all available Shopify validation checks"
+    command: |
+      echo "🌐 Running all Shopify validation checks..."
+      shopify theme check --config theme-check:all
+  
+  shopify-auto-correct:
+    name: "🔧 Shopify Auto-Correct"
+    description: "Use Shopify CLI's built-in auto-correction"
+    command: |
+      echo "⚡ Running Shopify CLI auto-correction..."
+      shopify theme check --auto-correct
+  
+  # === LEGACY SUPPORT ===
+  
+  theme-check-legacy:
+    name: "🏛️ Legacy Theme Check"
+    description: "Run legacy theme-check gem on code library"
+    command: |
+      echo "📜 Running legacy Theme Check on code library..."
+      cd shopify-liquid-guides/code-library
+      if command -v theme-check &> /dev/null; then
+        theme-check .
+      else
+        echo "⚠️ theme-check gem not installed. Using Shopify CLI instead:"
+        shopify theme check
+      fi
+
+  # === DOCUMENTATION & NAVIGATION ===
+  
+  docs-browse:
+    name: "📚 Browse Documentation"
+    description: "Explore repository structure and code library contents"
+    command: |
+      echo "🗂️ Shopify Liquid Documentation Repository"
+      echo "=========================================="
+      echo ""
+      echo "📚 Documentation structure:"
+      ls -la shopify-liquid-guides/docs/
+      echo ""
+      echo "🔧 Code library (Production-ready):"
+      ls -la shopify-liquid-guides/code-library/
+      echo ""
+      echo "💡 Complete examples:"
+      ls -la shopify-liquid-guides/examples/
+      echo ""
+      echo "⚙️ Validation configurations:"
+      ls -la .theme-check*.yml scripts/
+  
+  validation-status:
+    name: "🔍 Validation Status"
+    description: "Show current validation setup and system status"
+    command: |
+      echo "🎯 Shopify Liquid Validation System Status"
+      echo "==========================================="
+      echo ""
+      echo "📦 Shopify CLI Version:"
+      shopify version
+      echo ""
+      echo "⚙️ Available Configurations:"
+      echo "  • Development: .theme-check-development.yml (Fast, essential checks)"
+      echo "  • Comprehensive: .theme-check.yml (All 50+ rules)"
+      echo "  • Production: .theme-check-production.yml (Theme Store ready)"
+      echo ""
+      echo "🚀 Available Validation Workflows:"
+      echo "  • ./scripts/validate-theme.sh development"
+      echo "  • ./scripts/validate-theme.sh comprehensive"
+      echo "  • ./scripts/validate-theme.sh production"
+      echo "  • ./scripts/validate-theme.sh all (Complete suite)"
+      echo ""
+      echo "📊 Last Validation Report:"
+      if [ -f "theme-validation-report.json" ]; then
+        echo "  ✅ Found: theme-validation-report.json"
+        echo "  Modified: $(stat -f %Sm theme-validation-report.json)"
+      else
+        echo "  📝 No report found. Run 'validation-report' workflow to generate."
+      fi
+
+  # === SHOPIFY DEVELOPMENT ===
+  
+  serve-theme:
+    name: "🌐 Serve Shopify Theme"
+    description: "Start Shopify theme development server (requires complete theme)"
+    parameters:
+      - name: theme_path
+        description: "Path to complete theme directory with all 7 file types"
+        required: true
+      - name: store
+        description: "Shopify store URL (optional if already authenticated)"
+        required: false
+    command: |
+      {% if store %}
+      echo "🔗 Authenticating with store: {{ store }}"
+      shopify login --store={{ store }}
+      {% endif %}
+      
+      echo "🚀 Starting theme server for: {{ theme_path }}"
+      cd {{ theme_path }}
+      
+      # Verify this is a complete theme
+      if [ ! -d "config" ] || [ ! -d "layout" ] || [ ! -d "sections" ]; then
+        echo "❌ Error: Not a complete theme directory!"
+        echo "📁 Required folders: config/, layout/, sections/, snippets/, templates/, assets/, locales/"
+        echo "📝 Use examples from shopify-liquid-guides/examples/ as reference"
+        exit 1
+      fi
+      
+      echo "✅ Theme structure verified - all required directories found"
+      shopify theme serve
+  
+  shopify-auth:
+    name: "🔐 Shopify Authentication"
+    description: "Login to Shopify store and verify authentication"
+    parameters:
+      - name: store
+        description: "Shopify store URL (e.g., your-store.myshopify.com)"
+        required: true
+    command: |
+      echo "🔑 Authenticating with Shopify store: {{ store }}"
+      shopify login --store={{ store }}
+      echo ""
+      echo "✅ Authentication status:"
+      shopify whoami
+
+  shopify-theme-check:
+    name: "✅ Shopify Theme Check"
+    description: "Run Shopify CLI theme validation on complete theme directory"
+    parameters:
+      - name: theme_path
+        description: "Path to complete theme directory"
+        required: true
+    command: |
+      echo "🔍 Running Shopify theme check on: {{ theme_path }}"
+      cd {{ theme_path }}
+      shopify theme check
+  
+  # === SCHEMA & DOCUMENTATION ===
+  
+  schema-validate:
+    name: "📋 Schema Validation Guide"
+    description: "Display critical schema validation rules and guidelines"
+    command: |
+      echo "🎯 Schema Validation Quick Reference"
+      echo "==================================="
+      echo ""
+      echo "🔴 Critical validation rules to remember:"
+      echo "  • Range step calculation: (max - min) / step ≤ 101"
+      echo "  • Use 'video' not 'file' for video uploads"
+      echo "  • No 'enabled_on' in section schemas (app blocks only)"
+      echo "  • Step values ≥ 0.1 for all ranges"
+      echo "  • Valid JSON syntax (no trailing commas)"
+      echo "  • Unique setting IDs within each section"
+      echo ""
+      echo "📚 Complete guidelines at:"
+      echo "  → shopify-liquid-guides/schema-validation/schema-guidelines.md"
+      echo ""
+      echo "📝 Additional resources:"
+      echo "  → THEME-CHECK-SETUP.md - Complete validation system guide"
+      echo "  → shopify-liquid-guides/04-blocks-and-css-scoping.md - CSS patterns"
+  
+  # === ENVIRONMENT SETUP ===
+
+  quick-setup:
+    name: "⚡ Quick Environment Setup"
+    description: "Install and verify required tools for Shopify development with advanced validation"
+    command: |
+      echo "🚀 Advanced Shopify Development Environment Setup"
+      echo "================================================"
+      echo ""
+      
+      # Update Homebrew
+      echo "🍺 Updating Homebrew..."
+      /opt/homebrew/bin/brew update
+      
+      # Install essential tools
+      echo "📦 Installing Node.js and Shopify CLI..."
+      /opt/homebrew/bin/brew install node
+      npm install -g @shopify/cli
+      
+      # Optional: Install Ruby and legacy theme-check
+      echo "🔴 Installing Ruby (optional for legacy support)..."
+      /opt/homebrew/bin/brew install ruby
+      gem install theme-check
+      
+      # Verify installations
+      echo ""
+      echo "✅ Verifying installations:"
+      echo "  • Node.js: $(node -v)"
+      echo "  • npm: $(npm -v)"
+      echo "  • Shopify CLI: $(shopify version)"
+      if command -v ruby &> /dev/null; then
+        echo "  • Ruby: $(ruby -v)"
+      fi
+      if command -v theme-check &> /dev/null; then
+        echo "  • Theme Check gem: $(theme-check -v)"
+      fi
+      
+      echo ""
+      echo "🎯 Next steps:"
+      echo "1. Authenticate: Run 'shopify-auth' workflow"
+      echo "2. Test validation: Run 'validation-dev' workflow"
+      echo "3. Explore: Run 'docs-browse' workflow"
+  
+  project-info:
+    name: "📊 Project Information"
+    description: "Display repository structure, validation system, and key features"
+    command: |
+      echo "🏆 Advanced Shopify Liquid Documentation Repository"
+      echo "==================================================="
+      echo ""
+      echo "🎯 Purpose: Comprehensive Shopify theme development with enterprise validation"
+      echo ""
+      echo "📚 Key directories:"
+      echo "├── shopify-liquid-guides/docs/          → Complete documentation (all 7 file types)"
+      echo "├── shopify-liquid-guides/code-library/  → Production-ready code examples"
+      echo "├── shopify-liquid-guides/examples/      → Complete theme templates"
+      echo "├── scripts/                         → Advanced validation workflows"
+      echo "├── locales/                         → Translation support"
+      echo "├── .vscode/                         → VS Code integration"
+      echo "├── .warp/                           → Warp terminal workflows"
+      echo "└── WARP.md                          → This comprehensive guide"
+      echo ""
+      echo "🔑 Essential validation files:"
+      echo "  • THEME-CHECK-SETUP.md - Ultimate validation system guide"
+      echo "  • .theme-check-development.yml - Fast development validation"
+      echo "  • .theme-check.yml - Comprehensive validation (50+ rules)"
+      echo "  • .theme-check-production.yml - Theme Store submission ready"
+      echo "  • scripts/validate-theme.sh - Multi-level validation workflow"
+      echo ""
+      echo "📚 Documentation highlights:"
+      echo "  • WARP.md - Warp terminal guidance (this file)"
+      echo "  • INSTRUCTIONS.md - Task-specific development guidance"
+      echo "  • schema-validation/schema-guidelines.md - CRITICAL validation rules"
+      echo ""
+      echo "🚀 Quick start workflows:"
+      echo "  1. 'validation-status' - Check system status"
+      echo "  2. 'validation-dev' - Fast development validation"
+      echo "  3. 'validation-all' - Complete validation suite"
+      echo "  4. 'docs-browse' - Explore repository structure"

@@ -1,0 +1,177 @@
+# Production Theme Check Configuration
+# Maximum validation for Theme Store submission
+# Documentation: https://shopify.dev/docs/themes/tools/theme-check
+
+# Root directory for theme files - point to code library
+root: "shopify-liquid-guides/code-library"
+
+# Use all available checks for production
+extends:
+  - "theme-check:all"
+
+# Minimal ignore list for production themes
+ignore:
+  - "node_modules/**"
+  - "dist/**"
+  - "build/**"
+
+# CRITICAL ERROR LEVEL CHECKS - Must pass for Theme Store
+JSONSyntaxError:
+  enabled: true
+  severity: error
+
+LiquidHTMLSyntaxError:
+  enabled: true
+  severity: error
+
+ValidSchema:
+  enabled: true
+  severity: error
+
+UnknownFilter:
+  enabled: true
+  severity: error
+
+ValidSchemaName:
+  enabled: true
+  severity: error
+
+ValidSettingsKey:
+  enabled: true
+  severity: error
+
+ValidLocalBlocks:
+  enabled: true
+  severity: error
+
+ValidBlockTarget:
+  enabled: true
+  severity: error
+
+ValidStaticBlockType:
+  enabled: true
+  severity: error
+
+ValidVisibleIf:
+  enabled: true
+  severity: error
+
+ValidContentForArguments:
+  enabled: true
+  severity: error
+
+JSONMissingBlock:
+  enabled: true
+  severity: error
+
+UniqueSettingId:
+  enabled: true
+  severity: error
+
+UniqueStaticBlockId:
+  enabled: true
+  severity: error
+
+UniqueDocParamNames:
+  enabled: true
+  severity: error
+
+CaptureOnContentForBlock:
+  enabled: true
+  severity: error
+
+SchemaPresetsStaticBlocks:
+  enabled: true
+  severity: error
+
+StaticStylesheetAndJavascriptTags:
+  enabled: true
+  severity: error
+
+ValidDocParamTypes:
+  enabled: true
+  severity: error
+
+ReservedDocParamNames:
+  enabled: true
+  severity: error
+
+UnsupportedDocTag:
+  enabled: true
+  severity: error
+
+ContentForHeaderModification:
+  enabled: true
+  severity: error
+
+CdnPreconnect:
+  enabled: true
+  severity: error
+
+MissingAsset:
+  enabled: true
+  severity: error
+
+ImgWidthAndHeight:
+  enabled: true
+  severity: error
+
+# Translation requirements for production
+TranslationKeyExists:
+  enabled: true
+  severity: error
+
+DefaultLocale:
+  enabled: true
+  severity: error
+
+MatchingTranslations:
+  enabled: true
+  severity: error
+
+MatchingSchemaTranslations:
+  enabled: true
+  severity: error
+
+# Required theme structure for production
+MissingRequiredTemplateFiles:
+  enabled: true
+  severity: error
+
+RequiredDirectories:
+  enabled: true
+  severity: error
+
+RequiredLayoutThemeObject:
+  enabled: true
+  severity: error
+
+# Code quality for production
+UndefinedObject:
+  enabled: true
+  severity: warning
+
+UnusedAssign:
+  enabled: true
+  severity: warning
+
+UnusedSnippet:
+  enabled: true
+  severity: warning
+
+# Performance requirements
+PaginationSize:
+  enabled: true
+  severity: error
+  min_size: 1
+  max_size: 50
+
+# All other checks remain at their default levels
+LiquidFreeSettings:
+  enabled: true
+  severity: warning
+
+VariableName:
+  enabled: true
+  severity: warning
+  format: snake_case

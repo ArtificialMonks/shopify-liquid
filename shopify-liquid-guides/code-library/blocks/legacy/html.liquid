@@ -1,0 +1,92 @@
+{%- comment -%}
+  HTML Block - Legacy Theme Block
+
+  Custom HTML injection block for backward compatibility.
+  Allows merchants to add custom HTML code.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/html.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # HTML settings
+  assign custom_html = block.settings.custom_html
+  assign container_class = block.settings.container_class
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .html-block-{{ unique }} {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Reset common HTML elements to ensure consistency */
+  .html-block-{{ unique }} p {
+    margin-bottom: 1em;
+  }
+
+  .html-block-{{ unique }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .html-block-{{ unique }} h1,
+  .html-block-{{ unique }} h2,
+  .html-block-{{ unique }} h3,
+  .html-block-{{ unique }} h4,
+  .html-block-{{ unique }} h5,
+  .html-block-{{ unique }} h6 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+  }
+
+  .html-block-{{ unique }} ul,
+  .html-block-{{ unique }} ol {
+    margin: 1em 0;
+    padding-left: 2em;
+  }
+
+  .html-block-{{ unique }} img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .html-block-{{ unique }} iframe {
+    max-width: 100%;
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="html-block-{{ unique }}{% if container_class != blank %} {{ container_class | escape }}{% endif %}" {{ block.shopify_attributes }}>
+  {{ custom_html }}
+</div>
+
+{% schema %}
+{
+  "name": "Custom HTML",
+  "class": "html-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "html",
+      "id": "custom_html",
+      "label": "Custom HTML",
+      "info": "Add your custom HTML code here"
+    },
+    {
+      "type": "text",
+      "id": "container_class",
+      "label": "Container class",
+      "info": "Optional CSS class for the container"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom HTML"
+    }
+  ]
+}
+{% endschema %}

@@ -2,7 +2,40 @@
 
 Common issues, solutions, and debugging techniques for Shopify Liquid development. Quick fixes for the problems you'll encounter most often.
 
+> **🚨 Schema Validation Errors**: For comprehensive schema validation rules and error prevention, see **[Schema Validation Guidelines](./schema-validation/schema-guidelines.md)**. This covers the most common "Invalid schema" errors that prevent saving .liquid files.
+
 ## Schema Issues
+
+> **Quick Reference**: For detailed schema validation rules, see **[Schema Validation Guidelines](./schema-validation/schema-guidelines.md)** which covers all Shopify schema validation requirements and common error patterns.
+
+### Schema Validation Errors (Most Common)
+
+**Problem**: "FileSaveError: Invalid schema" when trying to save .liquid files.
+
+**Common Errors & Quick Fixes**:
+
+```liquid
+<!-- ❌ BAD: Invalid setting type -->
+{"type": "file", "id": "video_file", "label": "Video"}
+<!-- ✅ GOOD: Use 'video' type -->
+{"type": "video", "id": "video_file", "label": "Video"}
+
+<!-- ❌ BAD: enabled_on in section (app blocks only) -->
+{% schema %}
+{"name": "Section", "enabled_on": {"templates": ["index"]}}
+{% endschema %}
+<!-- ✅ GOOD: Remove enabled_on from sections -->
+{% schema %}
+{"name": "Section"}
+{% endschema %}
+
+<!-- ❌ BAD: Range with too many steps -->
+{"type": "range", "min": 0, "max": 100, "step": 1}  // 101 steps!
+<!-- ✅ GOOD: Follow (max-min)/step ≤ 101 rule -->
+{"type": "range", "min": 0, "max": 100, "step": 1}  // 100 steps ✓
+```
+
+**🔗 See [Schema Guidelines](./schema-validation/schema-guidelines.md) for complete validation rules.**
 
 ### Section Not Appearing in Theme Editor
 
@@ -529,6 +562,7 @@ shopify theme dev
 ## Prevention Strategies
 
 ### Development Checklist
+- ✅ **Validate schema first** - Use [Schema Guidelines](./schema-validation/schema-guidelines.md) checklist
 - ✅ Validate JSON schema before testing
 - ✅ Test with empty/missing content
 - ✅ Check multiple screen sizes
@@ -593,3 +627,39 @@ shopify theme dev
 - Freelance Liquid developers
 
 Remember: Most issues stem from simple syntax errors, missing content guards, or incorrect variable names. Start with the basics before diving into complex debugging.
+
+## Essential Debugging References
+
+### Critical Validation Resources
+- **[Schema Validation Guidelines](./schema-validation/schema-guidelines.md)** - **FIRST STOP for schema errors**
+- **[CSS Scoping Methodology](./04-blocks-and-css-scoping.md)** - Fixing style conflicts
+- **[Theme Architecture](./docs/architecture/theme-overview.md)** - Understanding data flow
+
+### Common Issue Categories
+- **[Asset Issues](./docs/assets/)** - CSS, JS, image, font problems
+- **[Template Problems](./docs/templates/)** - JSON vs Liquid template debugging
+- **[Configuration Errors](./docs/config/)** - Settings and section group issues
+- **[Internationalization](./docs/locales/)** - Multi-language troubleshooting
+
+### Advanced Debugging
+- **[Advanced Features](./docs/advanced-features/)** - Modern feature debugging
+- **[Performance Issues](./docs/advanced-features/advanced-performance.md)** - Core Web Vitals problems
+- **[Section Groups](./docs/section-groups/)** - Dynamic layout debugging
+
+### Development Environment
+- **[VS Code Setup](./docs/shopify-extension/)** - IDE configuration issues
+- **[Best Practices 2025](./docs/architecture/best-practices-2025.md)** - Current debugging standards
+
+## Quick Reference Cards
+
+### Schema Error Quick Fix
+1. Check [Schema Guidelines](./schema-validation/schema-guidelines.md)
+2. Validate range calculations: `(max - min) / step ≤ 101`
+3. Verify setting types (use `video` not `file`)
+4. Remove `enabled_on` from sections
+
+### CSS Conflict Quick Fix
+1. Apply unique ID: `{% assign unique = section.id | replace: '_', '' | downcase %}`
+2. Scope all classes: `.component-{{ unique }}`
+3. Use `{% style %}` tags for dynamic CSS
+4. Reference [CSS Scoping guide](./04-blocks-and-css-scoping.md)

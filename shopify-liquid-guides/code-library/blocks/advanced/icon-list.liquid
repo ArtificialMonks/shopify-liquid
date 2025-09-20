@@ -1,0 +1,459 @@
+{%- comment -%}
+  Icon List Block - Advanced Theme Block
+
+  Display features and benefits with customizable icons.
+  Perfect for highlighting product features, services, or benefits.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/icon-list.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Icon settings
+  assign icon_type = block.settings.icon_type | default: 'check'
+  assign custom_icon = block.settings.custom_icon
+  assign icon_color = block.settings.icon_color | default: '#4CAF50'
+  assign icon_size = block.settings.icon_size | default: 32
+
+  # Content settings
+  assign title = block.settings.title | default: 'Feature Title'
+  assign description = block.settings.description
+  assign link = block.settings.link
+  assign link_text = block.settings.link_text | default: 'Learn more'
+
+  # Layout settings
+  assign layout = block.settings.layout | default: 'vertical'
+  assign alignment = block.settings.alignment | default: 'left'
+  assign icon_position = block.settings.icon_position | default: 'top'
+
+  # Style settings
+  assign title_color = block.settings.title_color | default: '#000000'
+  assign text_color = block.settings.text_color | default: '#666666'
+  assign background_color = block.settings.background_color
+  assign border_radius = block.settings.border_radius | default: 0
+  assign padding = block.settings.padding | default: 20
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .icon-list-{{ unique }} {
+    display: flex;
+    {% if layout == 'horizontal' %}
+      align-items: {% if icon_position == 'top' %}flex-start{% elsif icon_position == 'center' %}center{% else %}flex-end{% endif %};
+      gap: 20px;
+    {% else %}
+      flex-direction: column;
+      align-items: {% if alignment == 'center' %}center{% elsif alignment == 'right' %}flex-end{% else %}flex-start{% endif %};
+      gap: 16px;
+    {% endif %}
+
+    {% if background_color != blank %}
+      background: {{ background_color }};
+      padding: {{ padding }}px;
+      border-radius: {{ border_radius }}px;
+    {% endif %}
+
+    {% if alignment == 'center' %}
+      text-align: center;
+    {% elsif alignment == 'right' %}
+      text-align: right;
+    {% else %}
+      text-align: left;
+    {% endif %}
+  }
+
+  .icon-list-{{ unique }}__icon-wrapper {
+    flex-shrink: 0;
+    {% if layout == 'horizontal' and icon_position == 'center' %}
+      align-self: center;
+    {% endif %}
+  }
+
+  .icon-list-{{ unique }}__icon {
+    width: {{ icon_size }}px;
+    height: {{ icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ icon_color }};
+    margin: {% if layout == 'vertical' and alignment == 'center' %}0 auto{% elsif layout == 'vertical' and alignment == 'right' %}0 0 0 auto{% else %}0{% endif %};
+  }
+
+  .icon-list-{{ unique }}__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  .icon-list-{{ unique }}__icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .icon-list-{{ unique }}__content {
+    {% if layout == 'horizontal' %}
+      flex: 1;
+    {% endif %}
+  }
+
+  .icon-list-{{ unique }}__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: {{ title_color }};
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+  }
+
+  .icon-list-{{ unique }}__description {
+    font-size: 15px;
+    color: {{ text_color }};
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+  }
+
+  .icon-list-{{ unique }}__description:last-child {
+    margin-bottom: 0;
+  }
+
+  .icon-list-{{ unique }}__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: {{ icon_color }};
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+  }
+
+  .icon-list-{{ unique }}__link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  .icon-list-{{ unique }}__link-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  /* Icon background variants */
+  .icon-list-{{ unique }}__icon--circled {
+    background: {{ icon_color }};
+    color: #ffffff;
+    border-radius: 50%;
+    padding: 8px;
+  }
+
+  .icon-list-{{ unique }}__icon--squared {
+    background: {{ icon_color }}20;
+    color: {{ icon_color }};
+    border-radius: 8px;
+    padding: 8px;
+  }
+
+  .icon-list-{{ unique }}__icon--outlined {
+    border: 2px solid {{ icon_color }};
+    color: {{ icon_color }};
+    border-radius: 50%;
+    padding: 6px;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .icon-list-{{ unique }} {
+      {% if layout == 'horizontal' %}
+        flex-direction: column;
+        align-items: {% if alignment == 'center' %}center{% elsif alignment == 'right' %}flex-end{% else %}flex-start{% endif %};
+        gap: 12px;
+      {% endif %}
+
+      {% if background_color != blank %}
+        padding: {{ padding | times: 0.75 }}px;
+      {% endif %}
+    }
+
+    .icon-list-{{ unique }}__icon {
+      width: {{ icon_size | times: 0.8 }}px;
+      height: {{ icon_size | times: 0.8 }}px;
+    }
+
+    .icon-list-{{ unique }}__title {
+      font-size: 16px;
+    }
+
+    .icon-list-{{ unique }}__description {
+      font-size: 14px;
+    }
+  }
+
+  /* Focus styles for accessibility */
+  .icon-list-{{ unique }}__link:focus-visible {
+    outline: 2px solid {{ icon_color }};
+    outline-offset: 2px;
+  }
+{% endstyle %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="icon-list-{{ unique }}" {{ block.shopify_attributes }}>
+  <div class="icon-list-{{ unique }}__icon-wrapper">
+    <div class="icon-list-{{ unique }}__icon">
+      {%- if custom_icon != blank -%}
+        <img src="{{ custom_icon | image_url: width: icon_size | times: 2 }}" alt="" loading="lazy" width="{{ icon_size }}" height="{{ icon_size }}">
+      {%- else -%}
+        {%- case icon_type -%}
+          {%- when 'check' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          {%- when 'star' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          {%- when 'heart' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          {%- when 'shield' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11H16V18H8V11H9.2V10C9.2,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.4,8.7 10.4,10V11H13.6V10C13.6,8.7 12.8,8.2 12,8.2Z"/>
+            </svg>
+          {%- when 'lightning' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/>
+            </svg>
+          {%- when 'gift' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M22 12v-2a2 2 0 0 0-2-2h-2.3A3 3 0 0 0 16 6.7a3 3 0 0 0-4.7-1.4 3 3 0 0 0-4.7 1.4A3 3 0 0 0 4.3 8H2a2 2 0 0 0-2 2v2c0 1.1.9 2 2 2v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6c1.1 0 2-.9 2-2zM11 18H4v-4h7v4zm0-6H2v-2h9v2zm0-4H8.3c-.2 0-.3-.1-.3-.3 0-.8.7-1.5 1.5-1.5S11 6.9 11 7.7v.3zm2 10h7v-4h-7v4zm7-6h-9v-2h9v2zm0-4h-2.7v-.3c0-.8.7-1.5 1.5-1.5s1.5.7 1.5 1.5c0 .2-.1.3-.3.3z"/>
+            </svg>
+          {%- when 'truck' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M18 18.5a1.5 1.5 0 0 1-1.5 1.5A1.5 1.5 0 0 1 15 18.5a1.5 1.5 0 0 1 1.5-1.5a1.5 1.5 0 0 1 1.5 1.5M19.5 9.5h-2.5V6c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v9h2a3 3 0 0 0 3 3a3 3 0 0 0 3-3h6a3 3 0 0 0 3 3a3 3 0 0 0 3-3h1v-5.5c0-1.1-.9-2-2-2M7.5 17A1.5 1.5 0 0 1 6 18.5A1.5 1.5 0 0 1 4.5 17A1.5 1.5 0 0 1 6 15.5A1.5 1.5 0 0 1 7.5 17M15 13H3V6h12v7z"/>
+            </svg>
+          {%- when 'support' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.62z"/>
+              <circle cx="9" cy="13" r="1"/>
+              <circle cx="15" cy="13" r="1"/>
+            </svg>
+          {%- when 'globe' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+          {%- when 'diamond' -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M6,2L2,8L12,22L22,8L18,2H6M6.5,4H9.5L11,7H5L6.5,4M10.5,4H13.5L15,7H9L10.5,4M14.5,4H17.5L19,7H13L14.5,4M5.66,9H10.66L7.34,16L5.66,9M12,9H8.34L11.66,16L12,9V9M12,9V16L15.66,9H12M16.66,16L13.34,9H18.34L16.66,16Z"/>
+            </svg>
+        {%- endcase -%}
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="icon-list-{{ unique }}__content">
+    <h3 class="icon-list-{{ unique }}__title">{{ title | escape }}</h3>
+
+    {%- if description != blank -%}
+      <div class="icon-list-{{ unique }}__description">{{ description }}</div>
+    {%- endif -%}
+
+    {%- if link != blank -%}
+      <a href="{{ link }}" class="icon-list-{{ unique }}__link">
+        {{ link_text | escape }}
+        <svg class="icon-list-{{ unique }}__link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+        </svg>
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Icon List Item",
+  "class": "icon-list-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "select",
+      "id": "icon_type",
+      "label": "Icon",
+      "options": [
+        {"value": "check", "label": "Check mark"},
+        {"value": "star", "label": "Star"},
+        {"value": "heart", "label": "Heart"},
+        {"value": "shield", "label": "Shield"},
+        {"value": "lightning", "label": "Lightning"},
+        {"value": "gift", "label": "Gift"},
+        {"value": "truck", "label": "Delivery truck"},
+        {"value": "support", "label": "Support"},
+        {"value": "globe", "label": "Globe"},
+        {"value": "diamond", "label": "Diamond"}
+      ],
+      "default": "check"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon",
+      "label": "Custom icon",
+      "info": "Overrides the selected icon above"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#4CAF50"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 20,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Feature Title"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Add a short description of this feature or benefit."
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Learn more"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {"value": "vertical", "label": "Vertical (stacked)"},
+        {"value": "horizontal", "label": "Horizontal (side by side)"}
+      ],
+      "default": "vertical"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Icon position",
+      "options": [
+        {"value": "top", "label": "Top"},
+        {"value": "center", "label": "Center"},
+        {"value": "bottom", "label": "Bottom"}
+      ],
+      "default": "top",
+      "info": "Only for horizontal layout"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 24,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icon List Item",
+      "settings": {
+        "title": "Free Shipping",
+        "description": "Free shipping on orders over $50",
+        "icon_type": "truck"
+      }
+    },
+    {
+      "name": "Feature Highlight",
+      "settings": {
+        "title": "Premium Quality",
+        "description": "Made with the finest materials",
+        "icon_type": "diamond",
+        "layout": "horizontal"
+      }
+    },
+    {
+      "name": "Service Benefit",
+      "settings": {
+        "title": "24/7 Support",
+        "description": "Our team is here to help anytime",
+        "icon_type": "support",
+        "alignment": "center"
+      }
+    }
+  ]
+}
+{% endschema %}

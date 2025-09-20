@@ -37,6 +37,8 @@ This is a **Shopify Liquid documentation repository** containing comprehensive g
 
 **📁 Complete Structure**: See [STRUCTURE.md](./STRUCTURE.md) for detailed file tree and organization.
 
+**🤖 AI Assistant Guide**: See [.claude/project-guide.md](./.claude/project-guide.md) for comprehensive development workflows, validation automation, and complete agent guidance.
+
 ## Project Structure
 
 The repository contains unified Shopify Liquid documentation, production code, and development configuration:
@@ -44,6 +46,7 @@ The repository contains unified Shopify Liquid documentation, production code, a
 ### 🚀 Development Environment (Root Level)
 - `README.md` - Repository overview and quick start guide
 - `STRUCTURE.md` - Complete file tree and navigation reference
+- `INSTRUCTIONS.md` - Task-specific development instructions
 - `CLAUDE.md` - This file - AI assistant instructions
 - `.vscode/settings.json` - VS Code configuration for Shopify Liquid extension
 - `.vscode/extensions.json` - Recommended VS Code extensions
@@ -65,14 +68,24 @@ The repository contains unified Shopify Liquid documentation, production code, a
 - `snippets/` - Utility functions and helpers (2 optimized snippets)
 - `css-patterns/` - CSS methodologies and responsive patterns (3 pattern files)
 
+### 🛡️ Schema Validation (`schema-validation/`)
+- `schema-guidelines.md` - Comprehensive validation rules preventing "FileSaveError: Invalid schema"
+
 ### 📋 Complete Examples (`examples/`)
 - `complete-homepage.json` - Full homepage with hero, products, testimonials, FAQ
 - `product-page-sections.json` - Enhanced product page with reviews and features
 - `collection-layout.json` - Collection page with filtering and features
 
-### 📖 Tool Documentation (`docs/`)
-- `shopify-extension/README.md` - VS Code extension features and setup
-- `shopify-extension/configuration.md` - Detailed workspace configuration
+### 📖 Comprehensive Documentation (`docs/`)
+- `architecture/` - Theme structure and patterns
+- `layouts/` - Theme foundation files
+- `templates/` - Page-specific content and configuration
+- `assets/` - CSS, JavaScript, images, fonts
+- `config/` - Theme settings and merchant customization
+- `locales/` - Internationalization and translation
+- `section-groups/` - Dynamic layout areas and contextual overrides
+- `advanced-features/` - Cutting-edge development techniques
+- `shopify-extension/` - Development tools and VS Code setup
 
 ### 🗂 Archive (`_archive/`)
 - `shopify-liquid/` - Original comprehensive documentation (preserved)
@@ -175,6 +188,10 @@ MCP servers are enabled in `.claude/settings.local.json` for enhanced developmen
 - **Responsive images**: Always provide `srcset`, `sizes`, and `loading="lazy"`
 
 ### Schema Best Practices
+- **Schema validation first**: Always reference `shopify-liquid-guides/schema-validation/schema-guidelines.md`
+- **Range step validation**: Ensure `(max - min) / step ≤ 101`
+- **Valid setting types**: Use `video` not `file` for video uploads
+- **Section restrictions**: No `enabled_on` in section schemas (app blocks only)
 - **Valid JSON only**: Schema must be valid JSON (no Liquid inside)
 - **Clear labels**: Use descriptive labels and helpful `info` text
 - **Sensible limits**: Keep `max_blocks` reasonable (≤50)
@@ -219,20 +236,31 @@ The documentation is compiled from:
 |------|------------|
 | **Repository Overview** | [README.md](./README.md) |
 | **Complete File Structure** | [STRUCTURE.md](./STRUCTURE.md) |
+| **Task-Specific Instructions** | [INSTRUCTIONS.md](./INSTRUCTIONS.md) |
 | **Learn Shopify Liquid** | [01-fundamentals.md](./shopify-liquid-guides/01-fundamentals.md) |
 | **Build First Section** | [02-quick-start.md](./shopify-liquid-guides/02-quick-start.md) |
 | **Copy Production Code** | [code-library/](./shopify-liquid-guides/code-library/) |
 | **Complete Page Templates** | [examples/](./shopify-liquid-guides/examples/) |
-| **Set Up VS Code** | [docs/shopify-extension/](./shopify-liquid-guides/docs/shopify-extension/) |
+| **Theme Architecture** | [docs/architecture/](./shopify-liquid-guides/docs/architecture/) |
+| **Performance Optimization** | [docs/assets/](./shopify-liquid-guides/docs/assets/) + [docs/advanced-features/](./shopify-liquid-guides/docs/advanced-features/) |
+| **Multi-language** | [docs/locales/](./shopify-liquid-guides/docs/locales/) |
+| **Custom Content** | [docs/advanced-features/metaobject-integration.md](./shopify-liquid-guides/docs/advanced-features/metaobject-integration.md) |
+| **Modern Features** | [docs/advanced-features/](./shopify-liquid-guides/docs/advanced-features/) |
+| **Development Setup** | [docs/shopify-extension/](./shopify-liquid-guides/docs/shopify-extension/) |
 | **CSS Methodology** | [04-blocks-and-css-scoping.md](./shopify-liquid-guides/04-blocks-and-css-scoping.md) |
 | **Debug Issues** | [06-troubleshooting.md](./shopify-liquid-guides/06-troubleshooting.md) |
+| **Schema Validation** | [schema-guidelines.md](./shopify-liquid-guides/schema-validation/schema-guidelines.md) |
 
-### 🔧 By File Type
-- **`.liquid` templates** → `shopify-liquid-guides/code-library/sections/`, `blocks/`, `snippets/`
-- **`.json` examples** → `shopify-liquid-guides/examples/`
-- **`.css` patterns** → `shopify-liquid-guides/code-library/css-patterns/`
-- **Configuration** → `.vscode/`, `.theme-check.yml`
-- **Documentation** → `shopify-liquid-guides/*.md`, `docs/`
+### 🔧 By File Type (All 7 Shopify Types)
+| File Type | Documentation | Examples |
+|-----------|---------------|----------|
+| **Layouts** | [layouts/](./shopify-liquid-guides/docs/layouts/) | theme.liquid, checkout.liquid |
+| **Templates** | [templates/](./shopify-liquid-guides/docs/templates/) | JSON and Liquid templates |
+| **Sections** | [Learning guides](./shopify-liquid-guides/) + [Code library](./shopify-liquid-guides/code-library/sections/) | Production-ready sections |
+| **Blocks** | [blocks-config.md](./shopify-liquid-guides/docs/config/blocks-config.md) | Block schema patterns |
+| **Assets** | [assets/](./shopify-liquid-guides/docs/assets/) | CSS, JS, images, fonts |
+| **Config** | [config/](./shopify-liquid-guides/docs/config/) | Settings, groups, blocks |
+| **Locales** | [locales/](./shopify-liquid-guides/docs/locales/) | Translation files |
 
 ### 📚 Entry Points
 - **New Developers**: Start with [shopify-liquid-guides/README.md](./shopify-liquid-guides/README.md)

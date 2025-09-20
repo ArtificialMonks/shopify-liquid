@@ -1,0 +1,572 @@
+{%- comment -%}
+  Image Block - Essential Theme Block
+
+  Responsive image block with lazy loading, srcset optimization,
+  and multiple display options. Supports Shopify's image transformation API.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/image.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Image settings
+  assign image = block.settings.image
+  assign image_mobile = block.settings.image_mobile
+  assign alt_text = block.settings.alt_text | default: image.alt | escape
+
+  # Display settings
+  assign image_ratio = block.settings.image_ratio | default: 'adapt'
+  assign image_fit = block.settings.image_fit | default: 'cover'
+  assign image_position = block.settings.image_position | default: 'center center'
+  assign border_radius = block.settings.border_radius | default: 0
+  assign shadow = block.settings.shadow | default: 'none'
+
+  # Size settings
+  assign max_width = block.settings.max_width | default: 100
+  assign desktop_height = block.settings.desktop_height | default: 'auto'
+  assign mobile_height = block.settings.mobile_height | default: 'auto'
+
+  # Link settings
+  assign link = block.settings.link
+  assign open_new_window = block.settings.open_new_window | default: false
+
+  # Overlay settings
+  assign overlay_opacity = block.settings.overlay_opacity | default: 0
+  assign overlay_color = block.settings.overlay_color | default: '#000000'
+
+  # Caption settings
+  assign caption = block.settings.caption
+  assign caption_position = block.settings.caption_position | default: 'below'
+
+  # Performance settings
+  assign loading = block.settings.loading | default: 'lazy'
+  assign preload = block.settings.preload | default: false
+
+  # Calculate aspect ratio padding
+  case image_ratio
+    when '1:1'
+      assign ratio_padding = 100
+    when '4:3'
+      assign ratio_padding = 75
+    when '16:9'
+      assign ratio_padding = 56.25
+    when '2:3'
+      assign ratio_padding = 150
+    when '3:2'
+      assign ratio_padding = 66.67
+    else
+      if image != blank
+        assign ratio_padding = 100.0 | divided_by: image.aspect_ratio
+      else
+        assign ratio_padding = 100
+      endif
+  endcase
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .image-block-{{ unique }} {
+    max-width: {{ max_width }}%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ border_radius }}px;
+    background: #f5f5f5;
+  }
+
+  /* Shadow variants */
+  .image-block-{{ unique }}--shadow-small {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .image-block-{{ unique }}--shadow-medium {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+
+  .image-block-{{ unique }}--shadow-large {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .image-block-{{ unique }}__wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    {% if image_ratio != 'adapt' %}
+      padding-bottom: {{ ratio_padding }}%;
+      height: 0;
+    {% elsif desktop_height != 'auto' %}
+      height: {{ desktop_height }}px;
+    {% endif %}
+  }
+
+  .image-block-{{ unique }}__image {
+    {% if image_ratio != 'adapt' %}
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    {% else %}
+      width: 100%;
+      height: {% if desktop_height != 'auto' %}{{ desktop_height }}px{% else %}auto{% endif %};
+      display: block;
+    {% endif %}
+    object-fit: {{ image_fit }};
+    object-position: {{ image_position }};
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+
+  /* Hover effect */
+  .image-block-{{ unique }}--has-link:hover .image-block-{{ unique }}__image {
+    transform: scale(1.05);
+  }
+
+  /* Overlay */
+  .image-block-{{ unique }}__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: {{ overlay_color }};
+    opacity: {{ overlay_opacity | divided_by: 100.0 }};
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .image-block-{{ unique }}--has-link:hover .image-block-{{ unique }}__overlay {
+    opacity: {{ overlay_opacity | plus: 10 | divided_by: 100.0 }};
+  }
+
+  /* Caption styles */
+  .image-block-{{ unique }}__caption {
+    font-size: 14px;
+    color: #666;
+    margin-top: 12px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .image-block-{{ unique }}__caption--overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: #fff;
+    text-align: left;
+  }
+
+  /* Placeholder styling */
+  .image-block-{{ unique }}__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #f0f0f0;
+    color: #999;
+    {% if image_ratio != 'adapt' %}
+      position: absolute;
+      top: 0;
+      left: 0;
+    {% else %}
+      min-height: 300px;
+    {% endif %}
+  }
+
+  .image-block-{{ unique }}__placeholder svg {
+    width: 64px;
+    height: 64px;
+    fill: currentColor;
+    opacity: 0.3;
+  }
+
+  /* Loading animation */
+  .image-block-{{ unique }}--loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer-{{ unique }} 1.5s infinite;
+  }
+
+  @keyframes shimmer-{{ unique }} {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .image-block-{{ unique }} {
+      max-width: 100%;
+      border-radius: {{ border_radius | times: 0.75 }}px;
+    }
+
+    .image-block-{{ unique }}__wrapper {
+      {% if mobile_height != 'auto' %}
+        height: {{ mobile_height }}px;
+      {% endif %}
+    }
+
+    .image-block-{{ unique }}__image {
+      {% if mobile_height != 'auto' %}
+        height: {{ mobile_height }}px;
+      {% endif %}
+    }
+
+    .image-block-{{ unique }}__caption {
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .image-block-{{ unique }}__caption--overlay {
+      padding: 12px;
+      font-size: 13px;
+    }
+  }
+
+  /* Accessibility - High contrast mode */
+  @media (prefers-contrast: high) {
+    .image-block-{{ unique }}__image {
+      filter: contrast(1.2);
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .image-block-{{ unique }}__image,
+    .image-block-{{ unique }}__overlay {
+      transition: none;
+    }
+
+    .image-block-{{ unique }}--has-link:hover .image-block-{{ unique }}__image {
+      transform: none;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} Preload critical images for better LCP performance {%- endcomment -%}
+{%- if preload and image != blank -%}
+  {%- if image_mobile != blank -%}
+    <link rel="preload" as="image" href="{{ image_mobile | image_url: width: 750 }}" media="(max-width: 749px)" imagesrcset="{{ image_mobile | image_url: width: 375 }} 375w, {{ image_mobile | image_url: width: 750 }} 750w" imagesizes="100vw">
+  {%- endif -%}
+  <link rel="preload" as="image" href="{{ image | image_url: width: 1920 }}" media="(min-width: 750px)" imagesrcset="{{ image | image_url: width: 1100 }} 1100w, {{ image | image_url: width: 1500 }} 1500w, {{ image | image_url: width: 1920 }} 1920w" imagesizes="(min-width: 1200px) 90vw, 100vw">
+{%- endif -%}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="image-block-{{ unique }}{% if shadow != 'none' %} image-block-{{ unique }}--shadow-{{ shadow }}{% endif %}{% if link != blank %} image-block-{{ unique }}--has-link{% endif %}" {{ block.shopify_attributes }}>
+  {%- if link != blank -%}
+    <a href="{{ link }}" class="image-block-{{ unique }}__wrapper"{% if open_new_window %} target="_blank" rel="noopener"{% endif %} aria-label="{{ alt_text }}">
+  {%- else -%}
+    <div class="image-block-{{ unique }}__wrapper">
+  {%- endif -%}
+
+    {%- if image != blank or image_mobile != blank -%}
+      {%- comment -%} Desktop image {%- endcomment -%}
+      {%- if image != blank -%}
+        <picture>
+          {%- if image_mobile != blank -%}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ image_mobile | image_url: width: 375 }} 375w,
+                      {{ image_mobile | image_url: width: 550 }} 550w,
+                      {{ image_mobile | image_url: width: 750 }} 750w"
+              sizes="100vw">
+          {%- endif -%}
+
+          <source
+            media="(min-width: 750px)"
+            srcset="{{ image | image_url: width: 550 }} 550w,
+                    {{ image | image_url: width: 750 }} 750w,
+                    {{ image | image_url: width: 1100 }} 1100w,
+                    {{ image | image_url: width: 1500 }} 1500w,
+                    {{ image | image_url: width: 1920 }} 1920w,
+                    {{ image | image_url: width: 2400 }} 2400w"
+            sizes="(min-width: 1200px) {{ max_width }}vw, 100vw">
+
+          <img
+            class="image-block-{{ unique }}__image"
+            src="{{ image | image_url: width: 1500 }}"
+            alt="{{ alt_text }}"
+            width="{{ image.width }}"
+            height="{{ image.height }}"
+            loading="{{ loading }}"
+            {% unless loading == 'eager' %}decoding="async"{% endunless %}>
+        </picture>
+      {%- elsif image_mobile != blank -%}
+        {%- comment -%} Mobile only image {%- endcomment -%}
+        <img
+          class="image-block-{{ unique }}__image"
+          srcset="{{ image_mobile | image_url: width: 375 }} 375w,
+                  {{ image_mobile | image_url: width: 550 }} 550w,
+                  {{ image_mobile | image_url: width: 750 }} 750w,
+                  {{ image_mobile | image_url: width: 1100 }} 1100w"
+          sizes="100vw"
+          src="{{ image_mobile | image_url: width: 750 }}"
+          alt="{{ alt_text }}"
+          width="{{ image_mobile.width }}"
+          height="{{ image_mobile.height }}"
+          loading="{{ loading }}"
+          {% unless loading == 'eager' %}decoding="async"{% endunless %}>
+      {%- endif -%}
+    {%- else -%}
+      {%- comment -%} Placeholder {%- endcomment -%}
+      <div class="image-block-{{ unique }}__placeholder">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+        </svg>
+      </div>
+    {%- endif -%}
+
+    {%- if overlay_opacity > 0 -%}
+      <div class="image-block-{{ unique }}__overlay"></div>
+    {%- endif -%}
+
+    {%- if caption != blank and caption_position == 'overlay' -%}
+      <div class="image-block-{{ unique }}__caption image-block-{{ unique }}__caption--overlay">
+        {{ caption | escape }}
+      </div>
+    {%- endif -%}
+
+  {%- if link != blank -%}
+    </a>
+  {%- else -%}
+    </div>
+  {%- endif -%}
+
+  {%- if caption != blank and caption_position == 'below' -%}
+    <div class="image-block-{{ unique }}__caption">
+      {{ caption | escape }}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Image",
+  "class": "image-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Optional: Different image for mobile devices"
+    },
+    {
+      "type": "text",
+      "id": "alt_text",
+      "label": "Alt text",
+      "info": "Describe the image for screen readers"
+    },
+    {
+      "type": "header",
+      "content": "Display"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {"value": "adapt", "label": "Adapt to image"},
+        {"value": "1:1", "label": "Square (1:1)"},
+        {"value": "4:3", "label": "Landscape (4:3)"},
+        {"value": "16:9", "label": "Wide (16:9)"},
+        {"value": "3:2", "label": "Classic (3:2)"},
+        {"value": "2:3", "label": "Portrait (2:3)"}
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        {"value": "contain", "label": "Contain"},
+        {"value": "cover", "label": "Cover"},
+        {"value": "fill", "label": "Fill"},
+        {"value": "none", "label": "None"},
+        {"value": "scale-down", "label": "Scale down"}
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {"value": "top left", "label": "Top left"},
+        {"value": "top center", "label": "Top center"},
+        {"value": "top right", "label": "Top right"},
+        {"value": "center left", "label": "Center left"},
+        {"value": "center center", "label": "Center"},
+        {"value": "center right", "label": "Center right"},
+        {"value": "bottom left", "label": "Bottom left"},
+        {"value": "bottom center", "label": "Bottom center"},
+        {"value": "bottom right", "label": "Bottom right"}
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 50,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "text",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "info": "Use 'auto' or specify pixels (e.g., '400')",
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "info": "Use 'auto' or specify pixels (e.g., '300')",
+      "default": "auto"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "shadow",
+      "label": "Shadow",
+      "options": [
+        {"value": "none", "label": "None"},
+        {"value": "small", "label": "Small"},
+        {"value": "medium", "label": "Medium"},
+        {"value": "large", "label": "Large"}
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Caption"
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Caption"
+    },
+    {
+      "type": "select",
+      "id": "caption_position",
+      "label": "Caption position",
+      "options": [
+        {"value": "below", "label": "Below image"},
+        {"value": "overlay", "label": "On image"}
+      ],
+      "default": "below"
+    },
+    {
+      "type": "header",
+      "content": "Link"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_new_window",
+      "label": "Open in new window",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "select",
+      "id": "loading",
+      "label": "Loading",
+      "options": [
+        {"value": "lazy", "label": "Lazy"},
+        {"value": "eager", "label": "Eager"}
+      ],
+      "default": "lazy",
+      "info": "Use 'eager' for above-the-fold images"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload",
+      "label": "Preload image",
+      "info": "Only for critical above-the-fold images",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image"
+    },
+    {
+      "name": "Banner Image",
+      "settings": {
+        "image_ratio": "16:9",
+        "max_width": 100,
+        "border_radius": 8
+      }
+    },
+    {
+      "name": "Product Image",
+      "settings": {
+        "image_ratio": "1:1",
+        "shadow": "small"
+      }
+    }
+  ]
+}
+{% endschema %}

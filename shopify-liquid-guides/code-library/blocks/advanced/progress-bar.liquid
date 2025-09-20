@@ -1,0 +1,392 @@
+{%- comment -%}
+  Progress Bar Block - Advanced Theme Block
+
+  Visual progress indicator for goals, completion status, or metrics.
+  Supports animated fill, labels, and multiple styles.
+
+  Usage: Add this block to any section that accepts @theme blocks
+  Copy to: /blocks/progress-bar.liquid in your theme
+{%- endcomment -%}
+
+{%- liquid
+  # Generate unique ID for CSS scoping
+  assign unique = block.id | replace: '_', '' | downcase
+
+  # Progress settings
+  assign progress_value = block.settings.progress_value | default: 50
+  assign max_value = block.settings.max_value | default: 100
+  assign progress_percentage = progress_value | times: 100.0 | divided_by: max_value | round
+
+  # Labels
+  assign label = block.settings.label
+  assign show_percentage = block.settings.show_percentage | default: true
+  assign percentage_position = block.settings.percentage_position | default: 'right'
+  assign show_value_label = block.settings.show_value_label | default: false
+
+  # Style settings
+  assign bar_style = block.settings.bar_style | default: 'rounded'
+  assign bar_height = block.settings.bar_height | default: 20
+  assign fill_color = block.settings.fill_color | default: '#4CAF50'
+  assign background_color = block.settings.background_color | default: '#e0e0e0'
+  assign text_color = block.settings.text_color | default: '#333333'
+  assign animated = block.settings.animated | default: true
+  assign striped = block.settings.striped | default: false
+-%}
+
+{%- comment -%} CSS Scoping and Styles {%- endcomment -%}
+{% style %}
+  .progress-bar-{{ unique }} {
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  .progress-bar-{{ unique }}__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-{{ unique }}__label {
+    font-size: 16px;
+    font-weight: 500;
+    color: {{ text_color }};
+    margin: 0;
+  }
+
+  .progress-bar-{{ unique }}__percentage {
+    font-size: 14px;
+    font-weight: 600;
+    color: {{ text_color }};
+    min-width: 45px;
+    text-align: right;
+  }
+
+  .progress-bar-{{ unique }}__track {
+    position: relative;
+    width: 100%;
+    height: {{ bar_height }}px;
+    background: {{ background_color }};
+    overflow: hidden;
+
+    {% case bar_style %}
+      {% when 'rounded' %}
+        border-radius: {{ bar_height | divided_by: 2 }}px;
+      {% when 'square' %}
+        border-radius: 0;
+      {% when 'slight' %}
+        border-radius: 4px;
+    {% endcase %}
+  }
+
+  .progress-bar-{{ unique }}__fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: {{ progress_percentage }}%;
+    background: {{ fill_color }};
+    transition: width 1.5s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+
+    {% case bar_style %}
+      {% when 'rounded' %}
+        border-radius: {{ bar_height | divided_by: 2 }}px;
+      {% when 'square' %}
+        border-radius: 0;
+      {% when 'slight' %}
+        border-radius: 4px;
+    {% endcase %}
+  }
+
+  {% if striped %}
+    .progress-bar-{{ unique }}__fill {
+      background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 30px 30px;
+    }
+
+    {% if animated %}
+      @keyframes stripes-{{ unique }} {
+        0% { background-position: 0 0; }
+        100% { background-position: 30px 30px; }
+      }
+
+      .progress-bar-{{ unique }}__fill {
+        animation: stripes-{{ unique }} 1s linear infinite;
+      }
+    {% endif %}
+  {% endif %}
+
+  .progress-bar-{{ unique }}__fill--animated {
+    width: 0;
+  }
+
+  .progress-bar-{{ unique }}__fill--animated.progress-bar-{{ unique }}__fill--active {
+    width: {{ progress_percentage }}%;
+  }
+
+  .progress-bar-{{ unique }}__percentage--inside {
+    font-size: {{ bar_height | minus: 6 }}px;
+    color: #ffffff;
+    font-weight: 600;
+    min-width: auto;
+    padding: 0 8px;
+  }
+
+  .progress-bar-{{ unique }}__value-label {
+    font-size: 12px;
+    color: {{ text_color }};
+    opacity: 0.7;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  /* Gradient variant */
+  .progress-bar-{{ unique }}__fill--gradient {
+    background: linear-gradient(90deg, {{ fill_color }}, {{ fill_color | color_lighten: 20 }});
+  }
+
+  /* Pulse animation */
+  @keyframes pulse-{{ unique }} {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+
+  .progress-bar-{{ unique }}__fill--pulse {
+    animation: pulse-{{ unique }} 2s ease-in-out infinite;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 749px) {
+    .progress-bar-{{ unique }}__label {
+      font-size: 14px;
+    }
+
+    .progress-bar-{{ unique }}__percentage {
+      font-size: 13px;
+      min-width: 40px;
+    }
+
+    .progress-bar-{{ unique }}__track {
+      height: {{ bar_height | times: 0.8 }}px;
+    }
+
+    .progress-bar-{{ unique }}__percentage--inside {
+      font-size: {{ bar_height | times: 0.8 | minus: 6 }}px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .progress-bar-{{ unique }}__fill {
+      transition: none;
+      animation: none;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%} JavaScript for animation {%- endcomment -%}
+{% if animated %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const progressBar{{ unique | remove: '-' }} = document.querySelector('.progress-bar-{{ unique }}');
+    const progressFill{{ unique | remove: '-' }} = progressBar{{ unique | remove: '-' }}.querySelector('.progress-bar-{{ unique }}__fill');
+
+    // Intersection Observer for animation trigger
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          progressFill{{ unique | remove: '-' }}.classList.add('progress-bar-{{ unique }}__fill--active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    progressFill{{ unique | remove: '-' }}.classList.add('progress-bar-{{ unique }}__fill--animated');
+    observer.observe(progressBar{{ unique | remove: '-' }});
+  });
+</script>
+{% endif %}
+
+{%- comment -%} HTML Structure {%- endcomment -%}
+<div class="progress-bar-{{ unique }}" {{ block.shopify_attributes }} role="progressbar" aria-valuenow="{{ progress_value }}" aria-valuemin="0" aria-valuemax="{{ max_value }}">
+  {%- if label != blank or (show_percentage and percentage_position != 'inside') -%}
+    <div class="progress-bar-{{ unique }}__header">
+      {%- if label != blank -%}
+        <div class="progress-bar-{{ unique }}__label">{{ label | escape }}</div>
+      {%- endif -%}
+
+      {%- if show_percentage and percentage_position == 'right' -%}
+        <div class="progress-bar-{{ unique }}__percentage">{{ progress_percentage }}%</div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="progress-bar-{{ unique }}__track">
+    <div class="progress-bar-{{ unique }}__fill{% if striped %} progress-bar-{{ unique }}__fill--striped{% endif %}">
+      {%- if show_percentage and percentage_position == 'inside' -%}
+        <div class="progress-bar-{{ unique }}__percentage progress-bar-{{ unique }}__percentage--inside">
+          {{ progress_percentage }}%
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if show_value_label -%}
+    <div class="progress-bar-{{ unique }}__value-label">
+      {{ progress_value }} / {{ max_value }}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Progress Bar",
+  "class": "progress-bar-block",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Progress"
+    },
+    {
+      "type": "range",
+      "id": "progress_value",
+      "label": "Current value",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "number",
+      "id": "max_value",
+      "label": "Maximum value",
+      "default": 100
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Progress"
+    },
+    {
+      "type": "header",
+      "content": "Display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_percentage",
+      "label": "Show percentage",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "percentage_position",
+      "label": "Percentage position",
+      "options": [
+        {"value": "right", "label": "Right of bar"},
+        {"value": "inside", "label": "Inside bar"}
+      ],
+      "default": "right"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_value_label",
+      "label": "Show value label",
+      "info": "Display 'current / max' below bar",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "bar_style",
+      "label": "Bar style",
+      "options": [
+        {"value": "rounded", "label": "Rounded"},
+        {"value": "square", "label": "Square"},
+        {"value": "slight", "label": "Slightly rounded"}
+      ],
+      "default": "rounded"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "label": "Bar height",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "animated",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "striped",
+      "label": "Striped pattern",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "fill_color",
+      "label": "Fill color",
+      "default": "#4CAF50"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Track color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#333333"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Progress Bar",
+      "settings": {
+        "label": "Project Progress",
+        "progress_value": 75
+      }
+    },
+    {
+      "name": "Goal Tracker",
+      "settings": {
+        "label": "Monthly Goal",
+        "progress_value": 65,
+        "max_value": 100,
+        "show_value_label": true,
+        "striped": true
+      }
+    }
+  ]
+}
+{% endschema %}

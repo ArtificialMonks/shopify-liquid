@@ -1,0 +1,56 @@
+{
+  "general": {
+    "countdown": {
+      "days": "days",
+      "hours": "hrs",
+      "minutes": "min",
+      "seconds": "sec",
+      "expired": "Offer expired"
+    },
+    "accessibility": {
+      "close": "Close announcement"
+    },
+    "search": {
+      "placeholder": "Search our store...",
+      "submit": "Search"
+    },
+    "newsletter": {
+      "email_placeholder": "Email address"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "youtube": "YouTube"
+    }
+  },
+  "contact": {
+    "form": {
+      "error_heading": "Please correct the following errors:",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "subject": "Subject",
+      "message": "Message",
+      "captcha_notice": "This form is protected by spam filters."
+    }
+  },
+  "products": {
+    "product": {
+      "sold_out": "Sold out",
+      "include_taxes": "Tax included",
+      "shipping_policy_html": "Shipping calculated at checkout"
+    }
+  },
+  "sections": {
+    "faq": {
+      "empty": "No questions found. Add some FAQ items to get started."
+    },
+    "featured_products": {
+      "empty": "No products to show. Please add some products to this collection."
+    },
+    "testimonials": {
+      "empty": "No testimonials found. Add some testimonials to get started."
+    }
+  }
+}

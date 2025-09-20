@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}" dir="{{ localization.direction }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {%- comment -%} SEO Title Construction {%- endcomment -%}
+  {%- capture seo_title -%}
+    {{ page_title }}
+    {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{%- endif -%}
+    {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{%- endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{%- endunless -%}
+  {%- endcapture -%}
+  <title>{{ seo_title }}</title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- comment -%} Favicon with multiple sizes {%- endcomment -%}
+  {%- if settings.favicon -%}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ settings.favicon | image_url: width: 16, height: 16 }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+  {%- endif -%}
+
+  {%- comment -%} Resource hints for performance {%- endcomment -%}
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+  {%- comment -%} Preload critical resources {%- endcomment -%}
+  {{ 'theme.js' | asset_url | preload_tag: as: 'script' }}
+
+  {%- if template.name == 'index' -%}
+    {%- comment -%} Preload hero image on homepage {%- endcomment -%}
+    {%- assign hero_section = sections['hero-banner'] -%}
+    {%- if hero_section.settings.image -%}
+      {{ hero_section.settings.image | image_url: width: 1200 | preload_tag: as: 'image' }}
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} Critical CSS inline for above-the-fold content {%- endcomment -%}
+  <style>
+    /* CSS Reset & Base Styles */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { font-size: 62.5%; scroll-behavior: smooth; }
+    body {
+      font-family: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+      font-size: 1.6rem;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      color: {{ settings.color_text }};
+      background-color: {{ settings.color_background }};
+    }
+
+    /* Accessibility */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 6px;
+      background: #000;
+      color: #fff;
+      padding: 8px 12px;
+      text-decoration: none;
+      z-index: 100;
+      border-radius: 0 0 4px 4px;
+      font-weight: 600;
+      transition: top 0.3s ease;
+    }
+
+    .skip-link:focus {
+      top: 6px;
+    }
+
+    #main-content:focus {
+      outline: none;
+    }
+
+    /* Screen reader only text */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Critical layout styles */
+    .page-width {
+      max-width: {{ settings.page_width | default: 1200 }}px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Focus indicators */
+    *:focus-visible {
+      outline: 2px solid {{ settings.color_accent | default: '#005fcc' }};
+      outline-offset: 2px;
+    }
+
+    /* Loading indicator */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* Critical responsive styles */
+    @media (max-width: 749px) {
+      .page-width {
+        padding: 0 1.5rem;
+      }
+
+      body {
+        font-size: 1.4rem;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-background: #1a1a1a;
+        --color-text: #ffffff;
+      }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+
+  {%- comment -%} Dynamic CSS from theme settings {%- endcomment -%}
+  <style>
+    :root {
+      --font-heading-family: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
+      --font-heading-style: {{ settings.font_heading.style }};
+      --font-heading-weight: {{ settings.font_heading.weight }};
+      --font-body-family: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+      --font-body-style: {{ settings.font_body.style }};
+      --font-body-weight: {{ settings.font_body.weight }};
+
+      --color-primary: {{ settings.color_primary }};
+      --color-secondary: {{ settings.color_secondary }};
+      --color-accent: {{ settings.color_accent }};
+      --color-text: {{ settings.color_text }};
+      --color-background: {{ settings.color_background }};
+
+      --spacing-small: {{ settings.spacing_small | default: 8 }}px;
+      --spacing-medium: {{ settings.spacing_medium | default: 16 }}px;
+      --spacing-large: {{ settings.spacing_large | default: 32 }}px;
+
+      --border-radius: {{ settings.border_radius | default: 4 }}px;
+      --border-width: {{ settings.border_width | default: 1 }}px;
+    }
+
+    /* Apply custom fonts */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-heading-family);
+      font-style: var(--font-heading-style);
+      font-weight: var(--font-heading-weight);
+      color: var(--color-primary);
+    }
+  </style>
+
+  {{ content_for_header }}
+
+  {%- comment -%} Font loading optimization {%- endcomment -%}
+  {%- unless settings.font_body.system? -%}
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {{ settings.font_body | font_face: font_display: 'swap' }}
+  {%- endunless -%}
+
+  {%- unless settings.font_heading.system? -%}
+    {{ settings.font_heading | font_face: font_display: 'swap' }}
+  {%- endunless -%}
+
+  {%- comment -%} Non-critical CSS loaded asynchronously {%- endcomment -%}
+  {{ 'theme.css' | asset_url | stylesheet_tag: media: 'print', onload: "this.media='all'" }}
+  <noscript>{{ 'theme.css' | asset_url | stylesheet_tag }}</noscript>
+
+  {%- comment -%} Template-specific CSS {%- endcomment -%}
+  {% case template.name %}
+    {% when 'product' %}
+      {{ 'product.css' | asset_url | stylesheet_tag: media: 'print', onload: "this.media='all'" }}
+    {% when 'collection' %}
+      {{ 'collection.css' | asset_url | stylesheet_tag: media: 'print', onload: "this.media='all'" }}
+    {% when 'cart' %}
+      {{ 'cart.css' | asset_url | stylesheet_tag: media: 'print', onload: "this.media='all'" }}
+  {% endcase %}
+
+  {%- comment -%} Structured data {%- endcomment -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ shop.url | json }},
+      "logo": {
+        "@type": "ImageObject",
+        "url": {{ settings.logo | image_url: width: 500 | json }}
+      }
+    }
+  </script>
+</head>
+<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+  {%- comment -%} Accessibility skip navigation {%- endcomment -%}
+  <a class="skip-link" href="#main-content">{{ 'accessibility.skip_to_content' | t }}</a>
+
+  {%- comment -%} Header section group {%- endcomment -%}
+  <header role="banner">
+    {% sections 'header-group' %}
+  </header>
+
+  {%- comment -%} Main content area with proper landmarks {%- endcomment -%}
+  <main id="main-content" tabindex="-1" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {%- comment -%} Footer section group {%- endcomment -%}
+  <footer role="contentinfo">
+    {% sections 'footer-group' %}
+  </footer>
+
+  {%- comment -%} JavaScript loaded with performance optimization {%- endcomment -%}
+  {{ 'theme.js' | asset_url | script_tag: defer: true }}
+
+  {%- comment -%} Template-specific JavaScript {%- endcomment -%}
+  {% case template.name %}
+    {% when 'product' %}
+      {{ 'product.js' | asset_url | script_tag: defer: true }}
+    {% when 'collection' %}
+      {{ 'collection.js' | asset_url | script_tag: defer: true }}
+    {% when 'cart' %}
+      {{ 'cart.js' | asset_url | script_tag: defer: true }}
+  {% endcase %}
+
+  {%- comment -%} Service Worker for caching {%- endcomment -%}
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+  </script>
+</body>
+</html>
