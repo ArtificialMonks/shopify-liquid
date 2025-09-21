@@ -56,30 +56,34 @@ This theme block wraps the main implementation in snippets/block-video-text.liqu
       "info": "Describe the video content for accessibility. Leave blank to use the heading text."
     },
     {
+      "type": "header",
+      "content": "Video Caption (Optional)"
+    },
+    {
       "type": "checkbox",
       "id": "show_video_caption",
-      "label": "Show Video Caption",
+      "label": "Enable Video Caption",
       "default": false,
       "info": "Display a visible caption below the video"
     },
     {
       "type": "text",
       "id": "video_caption",
-      "label": "Video Caption Text",
+      "label": "Caption Text",
       "placeholder": "Enter video caption...",
-      "info": "Caption shown below the video when enabled"
+      "info": "Caption text - only appears when caption is enabled above"
     },
     {
       "type": "select",
       "id": "video_caption_style",
-      "label": "Caption Style",
+      "label": "Caption Visual Style",
       "options": [
-        {"value": "subtle", "label": "Subtle"},
-        {"value": "prominent", "label": "Prominent"},
+        {"value": "subtle", "label": "Subtle (italic, faded)"},
+        {"value": "prominent", "label": "Prominent (bold, border)"},
         {"value": "overlay", "label": "Overlay on Video"}
       ],
       "default": "subtle",
-      "info": "Visual style of the video caption"
+      "info": "Visual appearance - only applies when caption is enabled"
     },
     {
       "type": "header",
@@ -170,87 +174,155 @@ This theme block wraps the main implementation in snippets/block-video-text.liqu
     },
     {
       "type": "header",
-      "content": "Layout & Positioning"
+      "content": "Smart Typography Scaling"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_smart_scaling",
+      "label": "Enable Smart Font Scaling",
+      "default": true,
+      "info": "Automatically adjust font sizes based on available container space"
+    },
+    {
+      "type": "range",
+      "id": "heading_scale_ratio",
+      "label": "Heading Scale Ratio",
+      "min": 100,
+      "max": 200,
+      "step": 10,
+      "unit": "%",
+      "default": 120,
+      "info": "How much larger headings scale in bigger containers (100% = no scaling)"
+    },
+    {
+      "type": "range",
+      "id": "min_font_size",
+      "label": "Minimum Font Size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14,
+      "info": "Smallest font size allowed when scaling down"
+    },
+    {
+      "type": "header",
+      "content": "Layout Configuration"
     },
     {
       "type": "select",
       "id": "layout_style",
       "label": "Overall Layout",
       "options": [
-        {"value": "side_by_side", "label": "Side by Side"},
-        {"value": "stacked", "label": "Stacked Vertically"},
-        {"value": "overlay", "label": "Text Overlay on Video"},
-        {"value": "floating", "label": "Floating Text"},
-        {"value": "custom_grid", "label": "Custom Grid"}
+        {"value": "side_by_side", "label": "Side by Side - Classic horizontal layout"},
+        {"value": "stacked", "label": "Stacked - Vertical arrangement"},
+        {"value": "overlay", "label": "Text Overlay - Text positioned over video"},
+        {"value": "floating", "label": "Floating - Flexible positioned content"},
+        {"value": "grid_equal", "label": "Equal Grid - Balanced 2-column grid"},
+        {"value": "grid_video_large", "label": "Video Prominent - 2:1 video focus"},
+        {"value": "grid_text_large", "label": "Text Prominent - 1:2 text focus"},
+        {"value": "grid_magazine", "label": "Magazine - Editorial spanning layout"},
+        {"value": "grid_asymmetric", "label": "Asymmetric - Golden ratio proportions"},
+        {"value": "grid_custom", "label": "Custom Grid - Configurable columns"}
       ],
       "default": "side_by_side",
-      "info": "Choose the overall arrangement of video and text"
+      "info": "🎯 CHOOSE YOUR LAYOUT: Side by Side & Stacked = flexible positioning, Overlay = text over video, Grid layouts = structured columns. Each layout type uses different positioning settings below."
+    },
+    {
+      "type": "header",
+      "content": "Fine-Tune Layout Positioning (Settings below apply differently based on your layout choice above)"
+    },
+    {
+      "type": "range",
+      "id": "custom_grid_columns",
+      "label": "Custom Grid Columns (Custom Grid Only)",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "info": "⚠️ ONLY APPLIES TO: Custom Grid layout. Ignored by all other layout types."
+    },
+    {
+      "type": "select",
+      "id": "grid_aspect_ratio",
+      "label": "Grid Cell Aspect Ratio (Grid Layouts Only)",
+      "options": [
+        {"value": "auto", "label": "Auto - Content Height"},
+        {"value": "1-1", "label": "Square (1:1)"},
+        {"value": "4-3", "label": "Standard (4:3)"},
+        {"value": "16-9", "label": "Widescreen (16:9)"},
+        {"value": "3-2", "label": "Photo (3:2)"}
+      ],
+      "default": "auto",
+      "info": "⚠️ ONLY APPLIES TO: Grid layouts (Equal Grid, Custom Grid). Forces uniform cell heights."
     },
     {
       "type": "select",
       "id": "video_position",
       "label": "Video Position",
       "options": [
-        {"value": "left", "label": "Left"},
-        {"value": "center", "label": "Center"},
-        {"value": "right", "label": "Right"},
-        {"value": "top", "label": "Top"},
-        {"value": "bottom", "label": "Bottom"}
+        {"value": "left", "label": "Left (Side by Side & Stacked)"},
+        {"value": "center", "label": "Center (All Layouts)"},
+        {"value": "right", "label": "Right (Side by Side & Stacked)"},
+        {"value": "top", "label": "Top (Stacked Only)"},
+        {"value": "bottom", "label": "Bottom (Stacked Only)"}
       ],
       "default": "left",
-      "info": "Position of the main video element"
+      "info": "Video position - only applies to Side by Side and Stacked layouts. Grid layouts use their own positioning."
     },
     {
       "type": "select",
       "id": "text_position",
       "label": "Text Position",
       "options": [
-        {"value": "left", "label": "Left"},
-        {"value": "center", "label": "Center"},
-        {"value": "right", "label": "Right"},
-        {"value": "top", "label": "Top"},
-        {"value": "bottom", "label": "Bottom"},
-        {"value": "overlay_top", "label": "Overlay - Top"},
-        {"value": "overlay_center", "label": "Overlay - Center"},
-        {"value": "overlay_bottom", "label": "Overlay - Bottom"}
+        {"value": "left", "label": "Left (Flexbox Layouts)"},
+        {"value": "center", "label": "Center (All Layouts)"},
+        {"value": "right", "label": "Right (Flexbox Layouts)"},
+        {"value": "top", "label": "Top (Stacked Layouts)"},
+        {"value": "bottom", "label": "Bottom (Stacked Layouts)"},
+        {"value": "overlay_top", "label": "Overlay Top (Overlay Layout)"},
+        {"value": "overlay_center", "label": "Overlay Center (Overlay Layout)"},
+        {"value": "overlay_bottom", "label": "Overlay Bottom (Overlay Layout)"}
       ],
       "default": "right",
-      "info": "Position of the text content"
+      "info": "Text position - applies differently based on layout style. Grid layouts ignore this setting."
     },
     {
       "type": "select",
       "id": "mobile_layout",
       "label": "Mobile Layout Override",
       "options": [
-        {"value": "inherit", "label": "Same as Desktop"},
-        {"value": "stack_text_first", "label": "Stack - Text First"},
+        {"value": "inherit", "label": "Inherit - Keep desktop layout (grid-friendly)"},
+        {"value": "stack_text_first", "label": "Stack - Text First (recommended)"},
         {"value": "stack_video_first", "label": "Stack - Video First"},
-        {"value": "overlay_bottom", "label": "Text Overlay Bottom"}
+        {"value": "overlay_bottom", "label": "Overlay - Text at Bottom"}
       ],
       "default": "stack_text_first",
-      "info": "How layout adapts on mobile devices"
+      "info": "How layout adapts on mobile - Stack options convert all layouts to flexbox, Inherit preserves grids but makes them single-column"
     },
     {
       "type": "range",
       "id": "gap",
       "label": "Gap Between Elements",
       "min": 0,
-      "max": 64,
-      "step": 1,
+      "max": 80,
+      "step": 4,
       "unit": "px",
-      "default": 24
+      "default": 24,
+      "info": "Universal spacing for all layout types - works for flexbox, grid, and overlay layouts"
     },
     {
       "type": "select",
       "id": "vertical_align",
       "label": "Vertical Alignment",
       "options": [
-        {"value": "start", "label": "Top"},
-        {"value": "center", "label": "Center"},
-        {"value": "end", "label": "Bottom"},
-        {"value": "stretch", "label": "Stretch"}
+        {"value": "start", "label": "Top - Align to top"},
+        {"value": "center", "label": "Center - Vertically centered"},
+        {"value": "end", "label": "Bottom - Align to bottom"},
+        {"value": "stretch", "label": "Stretch - Fill available height"}
       ],
-      "default": "start"
+      "default": "start",
+      "info": "How content aligns vertically within the container - works with all layout types"
     },
     {
       "type": "header",
@@ -286,6 +358,13 @@ This theme block wraps the main implementation in snippets/block-video-text.liqu
       "id": "loop",
       "label": "Loop Video",
       "default": false
+    },
+    {
+      "type": "text",
+      "id": "video_transcript_url",
+      "label": "Video Transcript URL",
+      "info": "Link to full transcript for accessibility compliance (VTT format recommended)",
+      "placeholder": "https://example.com/transcript.vtt"
     },
     {
       "type": "select",
@@ -394,67 +473,105 @@ This theme block wraps the main implementation in snippets/block-video-text.liqu
       "info": "Position of background image/video"
     },
     {
+      "type": "select",
+      "id": "bg_blend_mode",
+      "label": "Background Blend Effect",
+      "options": [
+        {"value": "normal", "label": "Normal - No Blending"},
+        {"value": "multiply", "label": "Multiply - Darker Blend"},
+        {"value": "overlay", "label": "Overlay - Balanced Contrast"},
+        {"value": "soft-light", "label": "Soft Light - Subtle Blend"},
+        {"value": "hard-light", "label": "Hard Light - Strong Contrast"},
+        {"value": "color-dodge", "label": "Color Dodge - Bright Highlights"},
+        {"value": "color-burn", "label": "Color Burn - Rich Shadows"}
+      ],
+      "default": "normal",
+      "info": "Creative blending of background with content for artistic effects"
+    },
+    {
+      "type": "range",
+      "id": "bg_overlay_opacity",
+      "label": "Background Overlay Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 0,
+      "info": "Add a semi-transparent overlay to backgrounds for better text readability"
+    },
+    {
+      "type": "color",
+      "id": "bg_overlay_color",
+      "label": "Background Overlay Color",
+      "default": "#000000",
+      "info": "Color of the background overlay when opacity is above 0%"
+    },
+    {
       "type": "header",
-      "content": "Effects & Animations"
+      "content": "Interactive Effects (Optional)"
     },
     {
       "type": "checkbox",
       "id": "enable_hover_effects",
       "label": "Enable Hover Effects",
       "default": true,
-      "info": "Enable interactive hover effects for video and text"
+      "info": "Add subtle interactive effects when users hover over elements"
     },
     {
       "type": "select",
       "id": "video_hover_effect",
-      "label": "Video Hover Effect",
+      "label": "Video Interaction Style",
       "options": [
-        {"value": "none", "label": "None"},
-        {"value": "scale", "label": "Scale Up"},
-        {"value": "lift", "label": "Lift with Shadow"},
-        {"value": "glow", "label": "Glow Effect"},
-        {"value": "blur_focus", "label": "Blur to Focus"},
-        {"value": "brightness", "label": "Brightness Change"}
+        {"value": "none", "label": "None - No Effect"},
+        {"value": "scale", "label": "Scale - Gentle Zoom"},
+        {"value": "lift", "label": "Lift - Raised with Shadow"},
+        {"value": "glow", "label": "Glow - Soft Light Effect"},
+        {"value": "blur_focus", "label": "Focus - Blur to Sharp"},
+        {"value": "brightness", "label": "Brighten - Subtle Highlight"}
       ],
       "default": "scale",
-      "info": "Hover effect for the main video element"
+      "info": "Interactive effect - only applies when hover effects are enabled"
     },
     {
       "type": "select",
       "id": "text_hover_effect",
-      "label": "Text Hover Effect",
+      "label": "Text Interaction Style",
       "options": [
-        {"value": "none", "label": "None"},
-        {"value": "fade_highlight", "label": "Fade Highlight"},
-        {"value": "slide_underline", "label": "Slide Underline"},
-        {"value": "color_shift", "label": "Color Shift"},
-        {"value": "scale_text", "label": "Scale Text"},
-        {"value": "glow_text", "label": "Text Glow"}
+        {"value": "none", "label": "None - No Effect"},
+        {"value": "fade_highlight", "label": "Highlight - Subtle Background"},
+        {"value": "slide_underline", "label": "Underline - Animated Line"},
+        {"value": "color_shift", "label": "Color - Theme Accent"},
+        {"value": "scale_text", "label": "Scale - Slight Growth"},
+        {"value": "glow_text", "label": "Glow - Text Shadow"}
       ],
       "default": "fade_highlight",
-      "info": "Hover effect for text content"
+      "info": "Interactive effect - only applies when hover effects are enabled"
+    },
+    {
+      "type": "header",
+      "content": "Scroll Animations (Optional)"
     },
     {
       "type": "checkbox",
       "id": "enable_scroll_animations",
       "label": "Enable Scroll Animations",
       "default": true,
-      "info": "Animate elements as they come into view"
+      "info": "Smoothly animate elements as they come into view while scrolling"
     },
     {
       "type": "select",
       "id": "scroll_animation_style",
-      "label": "Scroll Animation Style",
+      "label": "Animation Entry Style",
       "options": [
-        {"value": "fade_in", "label": "Fade In"},
-        {"value": "slide_up", "label": "Slide Up"},
-        {"value": "slide_left", "label": "Slide Left"},
-        {"value": "slide_right", "label": "Slide Right"},
-        {"value": "zoom_in", "label": "Zoom In"},
-        {"value": "stagger", "label": "Staggered Elements"}
+        {"value": "fade_in", "label": "Fade In - Simple Appearance"},
+        {"value": "slide_up", "label": "Slide Up - From Below"},
+        {"value": "slide_left", "label": "Slide Left - From Right"},
+        {"value": "slide_right", "label": "Slide Right - From Left"},
+        {"value": "zoom_in", "label": "Zoom In - Scale Growth"},
+        {"value": "stagger", "label": "Stagger - Sequential Elements"}
       ],
       "default": "fade_in",
-      "info": "Animation style when elements enter viewport"
+      "info": "Animation style - only applies when scroll animations are enabled"
     },
     {
       "type": "range",
@@ -466,6 +583,37 @@ This theme block wraps the main implementation in snippets/block-video-text.liqu
       "unit": "ms",
       "default": 600,
       "info": "How long animations take to complete"
+    },
+    {
+      "type": "header",
+      "content": "Performance Optimization"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_optimize_performance",
+      "label": "Auto-Optimize for Performance",
+      "default": true,
+      "info": "Automatically reduce effects and video quality on slower connections"
+    },
+    {
+      "type": "select",
+      "id": "performance_mode",
+      "label": "Performance Priority",
+      "options": [
+        {"value": "auto", "label": "Auto - Detect Connection"},
+        {"value": "quality", "label": "Quality - Full Features"},
+        {"value": "balanced", "label": "Balanced - Selective Effects"},
+        {"value": "speed", "label": "Speed - Minimal Effects"}
+      ],
+      "default": "auto",
+      "info": "Choose between visual quality and loading performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "preload_critical_media",
+      "label": "Preload Critical Media",
+      "default": true,
+      "info": "Load video poster and first frame early for faster perceived performance"
     },
     {
       "type": "header",

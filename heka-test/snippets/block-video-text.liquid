@@ -98,9 +98,13 @@ All classes suffixed with unique block.id to prevent collisions between block in
     /* Layout & Spacing */
     position: relative;
     display: block;
-    padding: {{ block.settings.padding_y }}px {{ block.settings.padding_x }}px;
+    {% if block.settings.enable_smart_scaling %}
+      /* Container query context for smart scaling */
+      container-type: inline-size;
+      container-name: video-text-{{ uid }};
+    {% endif %}
 
-    /* Background sizing and positioning */
+    /* Background sizing with full-bleed support */
     {% case block.settings.bg_size %}
       {% when 'full_screen' %}
         height: 100vh;
@@ -110,17 +114,54 @@ All classes suffixed with unique block.id to prevent collisions between block in
         top: 0;
         left: 0;
         z-index: -1;
+        padding: {{ block.settings.padding_y }}px {{ block.settings.padding_x }}px;
       {% when 'half_screen' %}
         height: 50vh;
         width: 100%;
         margin: 0;
+        {% if has_bg_video or has_bg_image %}
+          /* Full-bleed for backgrounds */
+          margin-left: calc(-100vw / 2 + 50%);
+          margin-right: calc(-100vw / 2 + 50%);
+          width: 100vw;
+          padding-left: calc(100vw / 2 - 50% + {{ block.settings.padding_x }}px);
+          padding-right: calc(100vw / 2 - 50% + {{ block.settings.padding_x }}px);
+        {% else %}
+          padding: {{ block.settings.padding_y }}px {{ block.settings.padding_x }}px;
+        {% endif %}
+        padding-top: {{ block.settings.padding_y }}px;
+        padding-bottom: {{ block.settings.padding_y }}px;
       {% when 'custom' %}
         height: {{ block.settings.bg_custom_height }}px;
         width: 100%;
+        {% if has_bg_video or has_bg_image %}
+          /* Full-bleed for backgrounds */
+          margin-left: calc(-100vw / 2 + 50%);
+          margin-right: calc(-100vw / 2 + 50%);
+          width: 100vw;
+          padding-left: calc(100vw / 2 - 50% + {{ block.settings.padding_x }}px);
+          padding-right: calc(100vw / 2 - 50% + {{ block.settings.padding_x }}px);
+        {% else %}
+          padding: {{ block.settings.padding_y }}px {{ block.settings.padding_x }}px;
+        {% endif %}
+        padding-top: {{ block.settings.padding_y }}px;
+        padding-bottom: {{ block.settings.padding_y }}px;
       {% else %}
-        /* section_only - default behavior */
+        /* section_only - default behavior with smart background handling */
         width: 100%;
         min-height: 400px;
+        {% if has_bg_video or has_bg_image %}
+          /* Full-bleed for backgrounds */
+          margin-left: calc(-100vw / 2 + 50%);
+          margin-right: calc(-100vw / 2 + 50%);
+          width: 100vw;
+          padding-left: calc(100vw / 2 - 50% + {{ block.settings.padding_x }}px);
+          padding-right: calc(100vw / 2 - 50% + {{ block.settings.padding_x }}px);
+        {% else %}
+          padding: {{ block.settings.padding_y }}px {{ block.settings.padding_x }}px;
+        {% endif %}
+        padding-top: {{ block.settings.padding_y }}px;
+        padding-bottom: {{ block.settings.padding_y }}px;
     {% endcase %}
 
     /* Background Priority System */
@@ -133,45 +174,91 @@ All classes suffixed with unique block.id to prevent collisions between block in
       background-size: cover;
       background-position: {{ block.settings.bg_position | default: 'center center' }};
       background-repeat: no-repeat;
+      /* Advanced background blending */
+      background-blend-mode: {{ block.settings.bg_blend_mode | default: 'normal' }};
+      mix-blend-mode: {{ block.settings.bg_blend_mode | default: 'normal' }};
+    {% endif %}
+
+    /* Background overlay for enhanced readability */
+    {% if block.settings.bg_overlay_opacity > 0 %}
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: {{ block.settings.bg_overlay_color | default: '#000000' }};
+        opacity: {{ block.settings.bg_overlay_opacity | divided_by: 100.0 }};
+        pointer-events: none;
+        z-index: 0;
+      }
     {% endif %}
     
-    /* Container alignment */
-    {% case block.settings.align_block %}
-      {% when 'start' %}
-        margin-inline: 0 auto 0 0;
-      {% when 'end' %}
-        margin-inline: 0 0 0 auto;
-      {% else %}
-        margin-inline: auto;
-    {% endcase %}
-    
-    /* Content max-width */
-    {% unless block.settings.content_max_width_px == blank %}
-      max-width: {{ block.settings.content_max_width_px }}px;
-    {% endunless %}
-    
-    /* Enhanced Scroll Animations */
+    /* Performance-Aware Scroll Animations */
     {% if block.settings.enable_scroll_animations %}
-      opacity: 0;
-      {% case block.settings.scroll_animation_style %}
-        {% when 'fade_in' %}
-          animation: fadeIn-{{ uid }} {{ block.settings.animation_duration | default: 600 }}ms ease forwards;
-        {% when 'slide_up' %}
-          transform: translateY(30px);
-          animation: slideUp-{{ uid }} {{ block.settings.animation_duration | default: 600 }}ms ease forwards;
-        {% when 'slide_left' %}
-          transform: translateX(-30px);
-          animation: slideLeft-{{ uid }} {{ block.settings.animation_duration | default: 600 }}ms ease forwards;
-        {% when 'slide_right' %}
-          transform: translateX(30px);
-          animation: slideRight-{{ uid }} {{ block.settings.animation_duration | default: 600 }}ms ease forwards;
-        {% when 'zoom_in' %}
-          transform: scale(0.8);
-          animation: zoomIn-{{ uid }} {{ block.settings.animation_duration | default: 600 }}ms ease forwards;
-        {% when 'stagger' %}
-          animation: fadeIn-{{ uid }} {{ block.settings.animation_duration | default: 600 }}ms ease forwards;
-      {% endcase %}
-      animation-delay: 0.1s;
+      {% assign enable_animations = true %}
+      {% if block.settings.auto_optimize_performance %}
+        {% case block.settings.performance_mode %}
+          {% when 'speed' %}
+            {% assign enable_animations = false %}
+          {% when 'balanced' %}
+            /* Simplified animations for balanced mode */
+            {% assign animation_duration = 300 %}
+          {% when 'auto' %}
+            /* Auto-detect via CSS media queries for connection */
+            {% assign enable_animations = true %}
+        {% endcase %}
+      {% endif %}
+
+      {% if enable_animations %}
+        opacity: 0;
+        will-change: opacity, transform;
+        {% assign duration = block.settings.animation_duration | default: 600 %}
+        {% if block.settings.performance_mode == 'balanced' %}
+          {% assign duration = 300 %}
+        {% endif %}
+
+        {% case block.settings.scroll_animation_style %}
+          {% when 'fade_in' %}
+            animation: fadeIn-{{ uid }} {{ duration }}ms ease forwards;
+          {% when 'slide_up' %}
+            transform: translateY(30px);
+            animation: slideUp-{{ uid }} {{ duration }}ms ease forwards;
+          {% when 'slide_left' %}
+            transform: translateX(-30px);
+            animation: slideLeft-{{ uid }} {{ duration }}ms ease forwards;
+          {% when 'slide_right' %}
+            transform: translateX(30px);
+            animation: slideRight-{{ uid }} {{ duration }}ms ease forwards;
+          {% when 'zoom_in' %}
+            transform: scale(0.8);
+            animation: zoomIn-{{ uid }} {{ duration }}ms ease forwards;
+          {% when 'stagger' %}
+            animation: fadeIn-{{ uid }} {{ duration }}ms ease forwards;
+        {% endcase %}
+        animation-delay: 0.1s;
+        animation-fill-mode: both;
+      {% endif %}
+    {% endif %}
+
+    /* Performance-based optimizations */
+    {% if block.settings.auto_optimize_performance %}
+      /* Slow connection optimizations */
+      @media (prefers-reduced-data: reduce) {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+
+      /* Auto-optimize based on connection type */
+      {% if block.settings.performance_mode == 'auto' %}
+        @supports (connection: slow-2g) {
+          animation-duration: 200ms !important;
+          transition-duration: 200ms !important;
+        }
+      {% endif %}
     {% endif %}
 
     /* Enhanced background video coverage */
@@ -201,6 +288,8 @@ All classes suffixed with unique block.id to prevent collisions between block in
       object-fit: cover;
       pointer-events: none;
       z-index: -1;
+      /* Advanced video blending */
+      mix-blend-mode: {{ block.settings.bg_blend_mode | default: 'normal' }};
 
       /* Enhanced sizing based on bg_size setting */
       {% case block.settings.bg_size %}
@@ -231,7 +320,28 @@ All classes suffixed with unique block.id to prevent collisions between block in
     width: 100%;
     height: 100%;
 
-    /* Enhanced Layout System */
+    /* Content max-width constraint for inner content */
+    {% unless block.settings.content_max_width_px == blank %}
+      max-width: {{ block.settings.content_max_width_px }}px;
+      margin-left: auto;
+      margin-right: auto;
+    {% endunless %}
+
+    /* Container alignment for inner content */
+    {% case block.settings.align_block %}
+      {% when 'start' %}
+        {% unless block.settings.content_max_width_px == blank %}
+          margin-left: 0;
+          margin-right: auto;
+        {% endunless %}
+      {% when 'end' %}
+        {% unless block.settings.content_max_width_px == blank %}
+          margin-left: auto;
+          margin-right: 0;
+        {% endunless %}
+    {% endcase %}
+
+    /* Context-Aware Layout System */
     {% case block.settings.layout_style %}
       {% when 'side_by_side' %}
         flex-direction: row;
@@ -240,6 +350,18 @@ All classes suffixed with unique block.id to prevent collisions between block in
             flex-direction: row;
           {% when 'right' %}
             flex-direction: row-reverse;
+          {% when 'center' %}
+            flex-direction: row;
+            justify-content: center;
+        {% endcase %}
+        /* Text positioning for side by side */
+        {% case block.settings.text_position %}
+          {% when 'center' %}
+            align-items: center;
+          {% when 'top' %}
+            align-items: flex-start;
+          {% when 'bottom' %}
+            align-items: flex-end;
         {% endcase %}
       {% when 'stacked' %}
         flex-direction: column;
@@ -248,33 +370,148 @@ All classes suffixed with unique block.id to prevent collisions between block in
             flex-direction: column;
           {% when 'bottom' %}
             flex-direction: column-reverse;
+          {% when 'center' %}
+            flex-direction: column;
+            align-items: center;
+        {% endcase %}
+        /* Text alignment for stacked */
+        {% case block.settings.text_position %}
+          {% when 'center' %}
+            text-align: center;
+          {% when 'left' %}
+            text-align: left;
+          {% when 'right' %}
+            text-align: right;
         {% endcase %}
       {% when 'overlay' %}
         position: relative;
         flex-direction: column;
-        justify-content: {{ block.settings.text_position | replace: 'overlay_', '' }};
+        /* Overlay positioning only uses text_position */
+        {% case block.settings.text_position %}
+          {% when 'overlay_top' %}
+            justify-content: flex-start;
+          {% when 'overlay_center' %}
+            justify-content: center;
+          {% when 'overlay_bottom' %}
+            justify-content: flex-end;
+        {% endcase %}
       {% when 'floating' %}
         position: relative;
         flex-wrap: wrap;
-      {% when 'custom_grid' %}
+        /* Floating allows flexible positioning */
+        {% if block.settings.text_position == 'center' %}
+          justify-content: center;
+        {% endif %}
+      {% when 'grid_equal' %}
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-gap: {{ block.settings.gap }}px;
+        gap: {{ block.settings.gap }}px;
+        /* Future-proof: Can be extended to equal columns for multiple content blocks */
+        {% case block.settings.grid_aspect_ratio %}
+          {% when '1-1' %}
+            grid-auto-rows: 1fr;
+          {% when '4-3' %}
+            grid-auto-rows: calc(75% * 1fr);
+          {% when '16-9' %}
+            grid-auto-rows: calc(56.25% * 1fr);
+          {% when '3-2' %}
+            grid-auto-rows: calc(66.67% * 1fr);
+        {% endcase %}
+      {% when 'grid_video_large' %}
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: {{ block.settings.gap }}px;
+        align-items: start;
+      {% when 'grid_text_large' %}
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: {{ block.settings.gap }}px;
+        align-items: start;
+      {% when 'grid_magazine' %}
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: {{ block.settings.gap }}px;
+        /* Magazine-style spanning */
+        & > .video-text__video-{{ uid }} {
+          grid-row: 1 / -1;
+        }
+        & > .video-text__text-{{ uid }} {
+          grid-column: 2;
+          align-self: center;
+        }
+      {% when 'grid_asymmetric' %}
+        display: grid;
+        grid-template-columns: 1.618fr 1fr; /* Golden ratio */
+        gap: {{ block.settings.gap }}px;
+        grid-template-areas: "video text";
+      {% when 'grid_custom' %}
+        display: grid;
+        grid-template-columns: repeat({{ block.settings.custom_grid_columns | default: 2 }}, 1fr);
+        gap: {{ block.settings.gap }}px;
+        align-items: start;
+        /* Future-proof: Flexible grid areas for multiple content blocks */
+        grid-auto-flow: row;
+        grid-auto-rows: auto;
+
+        /* Current single video/text positioning */
+        & > .video-text__video-{{ uid }} {
+          /* First grid cell by default, expandable for multiple videos */
+          grid-column: 1;
+          grid-row: 1;
+        }
+        & > .video-text__text-{{ uid }} {
+          /* Second grid cell by default, expandable for multiple text blocks */
+          grid-column: 2;
+          grid-row: 1;
+          align-self: center;
+        }
+
+        /* Future extension point: Additional content blocks would use:
+           .video-text__content-3-{{ uid }} { grid-column: 3; grid-row: 1; }
+           .video-text__content-4-{{ uid }} { grid-column: 1; grid-row: 2; } etc. */
     {% endcase %}
 
-    /* Mobile Layout Override */
+    /* Enhanced Mobile Layout Override */
     @media (max-width: 749px) {
       {% case block.settings.mobile_layout %}
         {% when 'stack_text_first' %}
+          /* Convert all layouts to stacked with text first */
+          display: flex !important;
           flex-direction: column !important;
+          grid-template-columns: none !important;
+          grid-template-areas: none !important;
         {% when 'stack_video_first' %}
+          /* Convert all layouts to stacked with video first */
+          display: flex !important;
           flex-direction: column-reverse !important;
+          grid-template-columns: none !important;
+          grid-template-areas: none !important;
         {% when 'overlay_bottom' %}
+          /* Convert to overlay with text at bottom */
+          display: flex !important;
           flex-direction: column !important;
-          justify-content: flex-end;
+          justify-content: flex-end !important;
+          grid-template-columns: none !important;
+          grid-template-areas: none !important;
         {% when 'inherit' %}
-          /* Keep desktop layout */
+          /* Keep desktop layout but ensure mobile-friendly grids */
+          {% assign is_grid_layout = false %}
+          {% case block.settings.layout_style %}
+            {% when 'grid_equal', 'grid_video_large', 'grid_text_large', 'grid_magazine', 'grid_asymmetric', 'grid_custom' %}
+              {% assign is_grid_layout = true %}
+          {% endcase %}
+          {% if is_grid_layout %}
+            /* Make grids more mobile-friendly */
+            grid-template-columns: 1fr !important;
+            grid-template-areas: none !important;
+            gap: {{ block.settings.gap | divided_by: 2 }}px !important;
+          {% endif %}
       {% endcase %}
+
+      /* Universal mobile improvements */
+      gap: {{ block.settings.gap | divided_by: 2 }}px;
+      padding: {{ block.settings.padding_y | divided_by: 2 }}px {{ block.settings.padding_x }}px;
     }
   }
   
@@ -489,12 +726,17 @@ All classes suffixed with unique block.id to prevent collisions between block in
       font-weight: {{ block.settings.heading_font.weight | default: block.settings.heading_weight }};
       font-style: {{ block.settings.heading_font.style }};
     {% endif %}
-    font-size: {{ block.settings.heading_size }}px;
+    {% if block.settings.enable_smart_scaling %}
+      /* Smart font scaling with container queries */
+      font-size: clamp({{ block.settings.min_font_size }}px, {{ block.settings.heading_size }}px + 1cqw, {{ block.settings.heading_size | times: block.settings.heading_scale_ratio | divided_by: 100 }}px);
+    {% else %}
+      font-size: {{ block.settings.heading_size }}px;
+    {% endif %}
     font-weight: {{ block.settings.heading_weight }};
     color: {{ block.settings.text_color | default: 'currentColor' }};
     line-height: 1.2;
   }
-  
+
   .video-text__body-{{ uid }} {
     margin: 0;
     {% if block.settings.body_font %}
@@ -502,7 +744,12 @@ All classes suffixed with unique block.id to prevent collisions between block in
       font-weight: {{ block.settings.body_font.weight | default: block.settings.body_weight }};
       font-style: {{ block.settings.body_font.style }};
     {% endif %}
-    font-size: {{ block.settings.body_size }}px;
+    {% if block.settings.enable_smart_scaling %}
+      /* Smart body font scaling */
+      font-size: clamp({{ block.settings.min_font_size }}px, {{ block.settings.body_size }}px + 0.5cqw, {{ block.settings.body_size | times: 1.15 }}px);
+    {% else %}
+      font-size: {{ block.settings.body_size }}px;
+    {% endif %}
     font-weight: {{ block.settings.body_weight }};
     color: {{ block.settings.text_color | default: 'currentColor' }};
     line-height: 1.6;
@@ -640,21 +887,29 @@ All classes suffixed with unique block.id to prevent collisions between block in
     outline-offset: 2px;
   }
 
-  /* Enhanced Animation Keyframes */
+  /* Enhanced Animation Keyframes with GPU Acceleration */
   {% if block.settings.enable_scroll_animations %}
     @keyframes fadeIn-{{ uid }} {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+        will-change: opacity, transform;
+      }
+      to {
+        opacity: 1;
+        will-change: auto;
+      }
     }
 
     @keyframes slideUp-{{ uid }} {
       from {
         opacity: 0;
         transform: translateY(30px);
+        will-change: opacity, transform;
       }
       to {
         opacity: 1;
         transform: translateY(0);
+        will-change: auto;
       }
     }
 
@@ -662,10 +917,12 @@ All classes suffixed with unique block.id to prevent collisions between block in
       from {
         opacity: 0;
         transform: translateX(-30px);
+        will-change: opacity, transform;
       }
       to {
         opacity: 1;
         transform: translateX(0);
+        will-change: auto;
       }
     }
 
@@ -673,10 +930,12 @@ All classes suffixed with unique block.id to prevent collisions between block in
       from {
         opacity: 0;
         transform: translateX(30px);
+        will-change: opacity, transform;
       }
       to {
         opacity: 1;
         transform: translateX(0);
+        will-change: auto;
       }
     }
 
@@ -684,10 +943,12 @@ All classes suffixed with unique block.id to prevent collisions between block in
       from {
         opacity: 0;
         transform: scale(0.8);
+        will-change: opacity, transform;
       }
       to {
         opacity: 1;
         transform: scale(1);
+        will-change: auto;
       }
     }
 
@@ -762,12 +1023,25 @@ All classes suffixed with unique block.id to prevent collisions between block in
             {% if block.settings.show_controls %}controls{% endif %}
             {% if block.settings.loop %}loop{% endif %}
             {% if block.settings.video_poster %}poster="{{ block.settings.video_poster | image_url: width: 1200 }}"{% endif %}
-            aria-label="{% if block.settings.video_alt != blank %}{{ block.settings.video_alt | escape }}{% elsif block.settings.heading != blank %}{{ block.settings.heading | escape }}{% else %}Video content{% endif %}">
+            {% if block.settings.preload_critical_media %}preload="metadata"{% else %}preload="none"{% endif %}
+            tabindex="0"
+            role="application"
+            aria-label="{% if block.settings.video_alt != blank %}{{ block.settings.video_alt | escape }}{% elsif block.settings.heading != blank %}{{ block.settings.heading | escape }}{% else %}Video content{% endif %}"
+            {% if block.settings.video_transcript_url != blank %}aria-describedby="video-desc-{{ uid }}"{% endif %}>
             {%- for source in block.settings.video_file.sources -%}
               <source src="{{ source.url }}" type="{{ source.mime_type }}">
             {%- endfor -%}
+            {%- if block.settings.video_transcript_url != blank -%}
+              <track kind="captions" src="{{ block.settings.video_transcript_url }}" srclang="en" label="English Captions">
+            {%- endif -%}
             <p>Your browser doesn't support HTML5 video. <a href="{{ block.settings.video_file.sources[0].url }}">Download the video</a> instead.</p>
           </video>
+
+          {%- if block.settings.video_transcript_url != blank -%}
+            <div id="video-desc-{{ uid }}" class="video-text__transcript-link-{{ uid }}" style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;">
+              Video transcript available at: <a href="{{ block.settings.video_transcript_url }}" target="_blank" rel="noopener">View Transcript</a>
+            </div>
+          {%- endif -%}
 
           {%- comment -%} Enhanced Video Caption {%- endcomment -%}
           {%- if block.settings.show_video_caption and block.settings.video_caption != blank -%}
