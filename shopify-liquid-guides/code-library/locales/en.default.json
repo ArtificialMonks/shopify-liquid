@@ -1,56 +1,64 @@
 {
   "general": {
+    "accessibility": {
+      "skip_to_text": "Skip to content",
+      "close": "Close",
+      "new_window": "Opens in a new window.",
+      "external": "Opens external website.",
+      "refresh_page": "Choosing a selection results in a full page refresh.",
+      "unit_price_separator": "per",
+      "link_messages": {
+        "new_window": "Opens in a new window.",
+        "external": "Opens external website"
+      }
+    },
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "search": {
+      "heading": "{{ count }} result found for \"{{ terms }}\"",
+      "heading_plural": "{{ count }} results found for \"{{ terms }}\"",
+      "results_with_count": "{{ count }} result found for \"{{ terms }}\"",
+      "results_with_count_plural": "{{ count }} results found for \"{{ terms }}\"",
+      "submit": "Search",
+      "placeholder": "Search our store"
+    },
+    "cart": {
+      "cart_error": "There was an error while updating your cart. Please try again.",
+      "cart_quantity_error_html": "You can only add [quantity] of this item to your cart."
+    },
+    "share": {
+      "success_message": "Link copied to clipboard!"
+    },
     "countdown": {
       "days": "days",
       "hours": "hrs",
       "minutes": "min",
-      "seconds": "sec",
-      "expired": "Offer expired"
-    },
-    "accessibility": {
-      "close": "Close announcement"
-    },
-    "search": {
-      "placeholder": "Search our store...",
-      "submit": "Search"
-    },
-    "newsletter": {
-      "email_placeholder": "Email address"
-    },
-    "social": {
-      "facebook": "Facebook",
-      "instagram": "Instagram",
-      "twitter": "Twitter",
-      "youtube": "YouTube"
+      "seconds": "sec"
     }
   },
-  "contact": {
-    "form": {
-      "error_heading": "Please correct the following errors:",
-      "name": "Name",
-      "email": "Email",
-      "phone": "Phone",
-      "subject": "Subject",
-      "message": "Message",
-      "captcha_notice": "This form is protected by spam filters."
+  "sections": {
+    "cart": {
+      "cart_error": "There was an error while updating your cart. Please try again.",
+      "cart_quantity_error_html": "You can only add [quantity] of this item to your cart."
+    },
+    "slideshow": {
+      "pause_slideshow": "Pause slideshow",
+      "play_slideshow": "Play slideshow"
     }
   },
   "products": {
     "product": {
+      "add_to_cart": "Add to cart",
       "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "value_unavailable": "{{ option_value }} - Unavailable",
       "include_taxes": "Tax included",
-      "shipping_policy_html": "Shipping calculated at checkout"
-    }
-  },
-  "sections": {
-    "faq": {
-      "empty": "No questions found. Add some FAQ items to get started."
-    },
-    "featured_products": {
-      "empty": "No products to show. Please add some products to this collection."
-    },
-    "testimonials": {
-      "empty": "No testimonials found. Add some testimonials to get started."
+      "shipping_policy_html": "Shipping calculated at checkout",
+      "media": {
+        "image_available": "Image {{ index }} is now available in gallery view"
+      }
     }
   }
 }

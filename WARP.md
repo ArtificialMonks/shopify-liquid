@@ -70,20 +70,26 @@ shopify version
 shopify login --store=your-store.myshopify.com
 ```
 
-### First Commands - Advanced Validation System + Shopify MCP
+### First Commands - Enhanced Validation System + Shopify MCP
 ```bash
-# 🚨 CRITICAL: Development validation with schema integrity (RECOMMENDED)
+# 🚨 CRITICAL: Development validation with comprehensive checks (RECOMMENDED)
 ./scripts/validate-theme.sh development
 
-# Complete validation suite
+# 🆕 Liquid syntax validation only (zero tolerance)
+./scripts/validate-theme.sh syntax
+
+# Complete validation suite with syntax validation
 ./scripts/validate-theme.sh all
 
-# 🔍 Schema integrity check (catches range step violations)
-./scripts/validate-theme.sh integrity
+# 🔍 Ultimate validation (comprehensive + liquid syntax)
+./scripts/validate-theme.sh ultimate
+
+# 🆕 Deep validation (ultimate + integrity + comprehensive)
+./scripts/validate-theme.sh deep
 
 # 🆕 Shopify MCP Server integration (when working with AI assistants)
 # Note: These are used within Claude Code, not direct command line tools
-# See SHOPIFY-MCP-SETUP.md for complete integration guide
+# See shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md for complete integration guide
 
 # Browse code library structure (including custom directories)
 ls -la shopify-liquid-guides/code-library/
@@ -92,14 +98,23 @@ ls -la shopify-liquid-guides/code-library/sections/custom/
 ls -la shopify-liquid-guides/code-library/css-patterns/custom/
 ```
 
-## Advanced Validation System
+## 🚀 Enhanced Validation System
 
-### 🚀 Ultimate Theme Validation Script
-The repository now includes an enterprise-grade validation system with multiple validation levels:
+### Ultimate Theme Validation Script + Liquid Syntax Validation
+The repository now includes a comprehensive validation system with multi-language validation (Shell + Python) and advanced Liquid syntax checking:
 
 ```bash
-# Development validation (fast, essential checks)
+# 🆕 Liquid syntax validation only (zero tolerance)
+./scripts/validate-theme.sh syntax
+
+# Development validation (fast, essential checks + liquid syntax)
 ./scripts/validate-theme.sh development
+
+# 🆕 Ultimate validation (comprehensive liquid syntax + theme validation)
+./scripts/validate-theme.sh ultimate
+
+# 🆕 Deep validation (ultimate + integrity + comprehensive)
+./scripts/validate-theme.sh deep
 
 # Comprehensive validation (all available checks)
 ./scripts/validate-theme.sh comprehensive
@@ -121,6 +136,20 @@ The repository now includes an enterprise-grade validation system with multiple 
 
 # Show help and usage
 ./scripts/validate-theme.sh help
+```
+
+### 🆕 Advanced Liquid Syntax Validation
+```bash
+# Python-based comprehensive Liquid syntax validation
+python scripts/liquid-syntax-validator.py shopify-liquid-guides/code-library/
+
+# Multi-level validation options:
+# --validation-level fast      # Quick syntax checks
+# --validation-level standard  # Standard validation (default)
+# --validation-level comprehensive # Deep validation with all checks
+
+# Integration with ultimate validator
+python scripts/ultimate-validator.py --liquid-syntax
 ```
 
 ### Multi-Level Theme Check Configurations
@@ -242,7 +271,7 @@ shopify theme check
 ### Documentation and Setup
 ```bash
 # Complete MCP setup guide
-cat SHOPIFY-MCP-SETUP.md
+cat shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md
 
 # MCP integration examples and usage patterns
 # (Documentation created during MCP server setup)
@@ -422,7 +451,7 @@ Critical validation rules:
 
 ### Essential Development Files
 - **`THEME-CHECK-SETUP.md`** - Complete validation system setup guide (START HERE)
-- **`SHOPIFY-MCP-SETUP.md`** - 🆕 Shopify MCP server integration and usage guide
+- **`shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md`** - 🆕 Shopify MCP server integration and usage guide
 - **`.theme-check.yml`** - Comprehensive theme validation configuration
 - **`.theme-check-development.yml`** - Fast development validation config
 - **`.theme-check-production.yml`** - Theme Store submission validation
@@ -438,6 +467,8 @@ Critical validation rules:
 - **`shopify-liquid-guides/schema-validation/schema-guidelines.md`** - Schema validation rules (MUST READ)
 - **`shopify-liquid-guides/04-blocks-and-css-scoping.md`** - CSS scoping methodology
 - **`shopify-liquid-guides/docs/architecture/theme-overview.md`** - Complete theme architecture
+- **`shopify-liquid-guides/docs/validation/VALIDATOR_ARCHITECTURE_IMPROVEMENTS.md`** - 🆕 Comprehensive validator implementation
+- **`shopify-liquid-guides/docs/validation/SHOPIFY_FILE_TYPE_VALIDATION_MATRIX.md`** - 🆕 Official validation reference
 - **`STRUCTURE.md`** - Complete file tree and navigation guide
 
 ### Production Code References
@@ -547,13 +578,13 @@ workflows:
       cat .mcp.json | jq '."shopify-dev-mcp"'
       echo ""
       echo "📖 MCP Setup Guide:"
-      ls -la SHOPIFY-MCP-SETUP.md
+      ls -la shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md
 
   mcp-documentation:
     name: "MCP Documentation and Guide"
     command: |
       echo "📚 Shopify MCP Integration Guide:"
-      echo "- SHOPIFY-MCP-SETUP.md - Complete setup and usage guide"
+      echo "- shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md - Complete setup and usage guide"
       echo "- .mcp.json - MCP server configuration"
       echo ""
       echo "🔧 MCP Tools Available (when using AI assistants):"
@@ -565,7 +596,7 @@ workflows:
       echo "- fetch_full_docs - Complete documentation pages"
       echo ""
       echo "💡 Note: MCP tools are used within AI assistants like Claude Code"
-      echo "💡 See SHOPIFY-MCP-SETUP.md for complete usage examples"
+      echo "💡 See shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md for complete usage examples"
 
   # Documentation and navigation
   docs-browse:
@@ -578,7 +609,7 @@ workflows:
       ls -la shopify-liquid-guides/code-library/
       echo ""
       echo "🚀 MCP Integration:"
-      ls -la SHOPIFY-MCP-SETUP.md
+      ls -la shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md
 
   # Shopify CLI workflows
   serve-theme:

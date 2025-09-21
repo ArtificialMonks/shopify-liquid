@@ -4,16 +4,19 @@ This guide explains how to effectively use the complete shopify-liquid-guides re
 
 ## 🎯 Quick Navigation for AI Assistants
 
-### 🚀 **Validation Automation (START HERE)**
+### 🚀 **Enhanced Validation Automation (START HERE)**
 1. **`THEME-CHECK-SETUP.md`** - Ultimate validation automation guide (CRITICAL)
 2. **`./scripts/validate-theme.sh`** - Complete validation workflow automation
-3. **Ultimate Validation Commands**:
+3. **`./scripts/liquid-syntax-validator.py`** - 🆕 Comprehensive Liquid syntax validation
+4. **Enhanced Validation Commands**:
    ```bash
-   ./scripts/validate-theme.sh development  # Fast validation with ultimate checks
-   ./scripts/validate-theme.sh ultimate     # Zero tolerance liquid validation only
-   ./scripts/validate-theme.sh deep         # Ultimate + integrity + comprehensive
+   ./scripts/validate-theme.sh syntax       # 🆕 Liquid syntax validation only (zero tolerance)
+   ./scripts/validate-theme.sh development  # Fast validation with liquid syntax checks
+   ./scripts/validate-theme.sh ultimate     # 🆕 Ultimate (comprehensive liquid syntax + theme validation)
+   ./scripts/validate-theme.sh deep         # 🆕 Deep (ultimate + integrity + comprehensive)
    ./scripts/validate-theme.sh auto-fix     # Auto-correct issues
    ./scripts/validate-theme.sh production   # Theme Store ready
+   python scripts/liquid-syntax-validator.py shopify-liquid-guides/code-library/
    ```
 
 ### Primary Documentation References (Always Check After Validation)
@@ -86,44 +89,51 @@ This guide explains how to effectively use the complete shopify-liquid-guides re
 
 ## 🔄 Workflow Patterns
 
-### 🚀 **Validation-First Development (Essential)**
-**ALWAYS start every workflow with validation:**
+### 🚀 **Enhanced Validation-First Development (Essential)**
+**ALWAYS start every workflow with comprehensive validation:**
 ```bash
-./scripts/validate-theme.sh development  # Fast validation with ultimate checks
-./scripts/validate-theme.sh ultimate     # Zero tolerance liquid validation only
-./scripts/validate-theme.sh deep         # Ultimate + integrity + comprehensive
+./scripts/validate-theme.sh development  # Fast validation with liquid syntax checks
+./scripts/validate-theme.sh syntax       # 🆕 Liquid syntax validation only (zero tolerance)
+./scripts/validate-theme.sh ultimate     # 🆕 Ultimate (comprehensive liquid syntax + theme validation)
+./scripts/validate-theme.sh deep         # 🆕 Deep (ultimate + integrity + comprehensive)
 ```
 
 ### For Schema Development
 1. **FIRST**: Run `./scripts/validate-theme.sh development` to check existing state
-2. **ALWAYS** review `schema-validation/schema-guidelines.md`
-3. Validate range calculations: `(max - min) / step ≤ 101` (automated verification)
-4. Use correct setting types (`video` not `file`) (automated detection)
-5. Remove invalid attributes (`enabled_on` from sections) (automated detection)
-6. Reference `docs/config/` for configuration patterns
-7. **VALIDATE**: Run `./scripts/validate-theme.sh auto-fix` to correct issues
-8. **CONFIRM**: Run `./scripts/validate-theme.sh production` for Theme Store readiness
+2. **LIQUID SYNTAX**: Run `./scripts/validate-theme.sh syntax` for comprehensive Liquid validation
+3. **ALWAYS** review `schema-validation/schema-guidelines.md`
+4. Validate range calculations: `(max - min) / step ≤ 101` (automated verification)
+5. Use correct setting types (`video` not `file`) (automated detection)
+6. Remove invalid attributes (`enabled_on` from sections) (automated detection)
+7. Reference `docs/config/` for configuration patterns
+8. **VALIDATE**: Run `./scripts/validate-theme.sh auto-fix` to correct issues
+9. **ULTIMATE**: Run `./scripts/validate-theme.sh ultimate` for comprehensive validation
+10. **CONFIRM**: Run `./scripts/validate-theme.sh production` for Theme Store readiness
 
 ### For Section Development
 1. **VALIDATE**: Run `./scripts/validate-theme.sh development` before starting
-2. Review `code-library/sections/` for existing patterns
-3. Apply CSS scoping from `04-blocks-and-css-scoping.md`
-4. Validate schema against `schema-validation/schema-guidelines.md`
-5. Reference `docs/architecture/theme-overview.md` for integration
-6. **TEST**: Run `./scripts/validate-theme.sh development` after each section
-7. **AUTO-FIX**: Run `./scripts/validate-theme.sh auto-fix` for simple corrections
+2. **LIQUID SYNTAX**: Run `./scripts/validate-theme.sh syntax` for comprehensive syntax checking
+3. Review `code-library/sections/` for existing patterns
+4. Apply CSS scoping from `04-blocks-and-css-scoping.md`
+5. Validate schema against `schema-validation/schema-guidelines.md`
+6. Reference `docs/architecture/theme-overview.md` for integration
+7. **TEST**: Run `./scripts/validate-theme.sh development` after each section
+8. **ULTIMATE**: Run `./scripts/validate-theme.sh ultimate` for comprehensive validation
+9. **AUTO-FIX**: Run `./scripts/validate-theme.sh auto-fix` for simple corrections
 
 ### For Complete Theme Development
 1. **VALIDATE**: Run `./scripts/validate-theme.sh development` to establish baseline
-2. Start with `docs/architecture/theme-overview.md`
-3. Plan layout structure using `docs/layouts/`
-4. Design templates with `docs/templates/`
-5. Optimize assets using `docs/assets/`
-6. Configure settings via `docs/config/`
-7. Add internationalization with `docs/locales/`
-8. Implement advanced features from `docs/advanced-features/`
-9. **VALIDATE THROUGHOUT**: Run `./scripts/validate-theme.sh development` after each major step
-10. **FINAL VALIDATION**: Run `./scripts/validate-theme.sh all` before deployment
+2. **LIQUID SYNTAX**: Run `./scripts/validate-theme.sh syntax` for comprehensive syntax validation
+3. Start with `docs/architecture/theme-overview.md`
+4. Plan layout structure using `docs/layouts/`
+5. Design templates with `docs/templates/`
+6. Optimize assets using `docs/assets/`
+7. Configure settings via `docs/config/`
+8. Add internationalization with `docs/locales/`
+9. Implement advanced features from `docs/advanced-features/`
+10. **VALIDATE THROUGHOUT**: Run `./scripts/validate-theme.sh development` after each major step
+11. **ULTIMATE VALIDATION**: Run `./scripts/validate-theme.sh ultimate` for comprehensive checks
+12. **FINAL VALIDATION**: Run `./scripts/validate-theme.sh all` before deployment
 
 ### For Performance Optimization
 1. **VALIDATE**: Run `./scripts/validate-theme.sh development` to identify performance issues
@@ -176,6 +186,8 @@ This guide explains how to effectively use the complete shopify-liquid-guides re
 
 ### Critical Validations (Automated + Manual)
 - [ ] **Automated validation passed**: `./scripts/validate-theme.sh development` shows no errors
+- [ ] **🆕 Liquid syntax validation passed**: `./scripts/validate-theme.sh syntax` shows no syntax errors
+- [ ] **🆕 Ultimate validation passed**: `./scripts/validate-theme.sh ultimate` comprehensive checks successful
 - [ ] Range calculations: `(max - min) / step ≤ 101` (automated verification)
 - [ ] Valid setting types (reference comprehensive list) (automated detection)
 - [ ] No `enabled_on` in section schemas (automated detection)
@@ -280,19 +292,25 @@ This guide explains how to effectively use the complete shopify-liquid-guides re
 5. Complete theme architecture mastery
 6. **VALIDATION EXPERTISE**: Teaching validation-first development to teams
 
-## 🎉 **Ultimate Development Workflow**
+## 🎉 **Enhanced Ultimate Development Workflow**
 
 ```bash
-# Perfect Shopify theme development cycle:
+# Perfect Shopify theme development cycle with comprehensive validation:
 ./scripts/validate-theme.sh development  # Start with quality baseline
+./scripts/validate-theme.sh syntax       # 🆕 Comprehensive Liquid syntax validation
 # [Develop your features]
 ./scripts/validate-theme.sh development  # Quick validation after changes
+./scripts/validate-theme.sh ultimate     # 🆕 Ultimate validation (liquid syntax + theme)
 ./scripts/validate-theme.sh auto-fix     # Fix simple issues automatically
 ./scripts/validate-theme.sh comprehensive # Complete validation before commit
 ./scripts/validate-theme.sh production   # Theme Store compliance
 ./scripts/validate-theme.sh all         # Final validation workflow
+
+# Advanced Python validation:
+python scripts/liquid-syntax-validator.py shopify-liquid-guides/code-library/
+python scripts/ultimate-validator.py --liquid-syntax --design-system
 ```
 
-**Result**: 100% Theme Store compliance guaranteed with zero development friction!
+**Result**: 100% Theme Store compliance with comprehensive Liquid syntax validation guaranteed and zero development friction!
 
 This comprehensive structure ensures you have access to the most complete Shopify theme development resource available, covering all 7 file types with modern 2024-2025 features, production-ready patterns, and comprehensive validation automation that guarantees Theme Store compliance.

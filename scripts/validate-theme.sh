@@ -102,6 +102,23 @@ run_schema_integrity_scan() {
     fi
 }
 
+# Function to run comprehensive Liquid syntax validation
+run_liquid_syntax_validation() {
+    echo ""
+    echo -e "${YELLOW}🔤 Running Comprehensive Liquid Syntax Validation${NC}"
+    echo "Advanced parser-based syntax checking for all Liquid files..."
+    echo "----------------------------------------"
+
+    if python3 "${SCRIPT_DIR}/liquid-syntax-validator.py" shopify-liquid-guides/code-library/**/*.liquid --level comprehensive >/dev/null 2>&1; then
+        echo -e "${GREEN}✅ Liquid syntax validation passed!${NC}"
+        return 0
+    else
+        echo -e "${RED}❌ Liquid syntax validation failed!${NC}"
+        python3 "${SCRIPT_DIR}/liquid-syntax-validator.py" shopify-liquid-guides/code-library/**/*.liquid --level comprehensive
+        return 1
+    fi
+}
+
 # Function to generate JSON report
 generate_json_report() {
     echo ""
@@ -185,6 +202,9 @@ main() {
         "integrity")
             run_schema_integrity_scan
             ;;
+        "syntax")
+            run_liquid_syntax_validation
+            ;;
         "report")
             generate_json_report
             ;;
@@ -202,7 +222,11 @@ main() {
             run_schema_integrity_scan
             integrity_result=$?
 
-            # 3. Comprehensive validation (theme-check)
+            # 3. Liquid syntax validation (comprehensive parser-based)
+            run_liquid_syntax_validation
+            liquid_result=$?
+
+            # 4. Comprehensive validation (theme-check)
             run_validation "Comprehensive" ".theme-check.yml" "Complete validation suite"
             comp_result=$?
 
@@ -223,13 +247,19 @@ main() {
                 echo -e "${RED}❌ Schema integrity scan: FAILED${NC}"
             fi
 
+            if [ $liquid_result -eq 0 ]; then
+                echo -e "${GREEN}✅ Liquid syntax validation: PASSED${NC}"
+            else
+                echo -e "${RED}❌ Liquid syntax validation: FAILED${NC}"
+            fi
+
             if [ $comp_result -eq 0 ]; then
                 echo -e "${GREEN}✅ Comprehensive validation: PASSED${NC}"
             else
                 echo -e "${RED}❌ Comprehensive validation: FAILED${NC}"
             fi
 
-            if [ $ultimate_result -eq 0 ] && [ $integrity_result -eq 0 ] && [ $comp_result -eq 0 ]; then
+            if [ $ultimate_result -eq 0 ] && [ $integrity_result -eq 0 ] && [ $liquid_result -eq 0 ] && [ $comp_result -eq 0 ]; then
                 echo -e "${GREEN}🎉 All deep validation checks passed!${NC}"
                 exit 0
             else
@@ -251,22 +281,26 @@ main() {
             run_schema_integrity_scan
             integrity_result=$?
 
-            # 4. Development validation
+            # 4. Liquid syntax validation (comprehensive parser-based)
+            run_liquid_syntax_validation
+            liquid_result=$?
+
+            # 5. Development validation
             run_validation "Development" ".theme-check-development.yml" "Fast development validation"
             dev_result=$?
 
-            # 5. Comprehensive validation
+            # 6. Comprehensive validation
             run_validation "Comprehensive" ".theme-check.yml" "Complete validation suite"
             comp_result=$?
 
-            # 6. Production validation
+            # 7. Production validation
             run_validation "Production" ".theme-check-production.yml" "Theme Store submission ready"
             prod_result=$?
 
-            # 7. Generate report
+            # 8. Generate report
             generate_json_report
 
-            # 8. Test presets
+            # 9. Test presets
             test_presets
 
             # Summary
@@ -284,6 +318,12 @@ main() {
                 echo -e "${GREEN}✅ Schema integrity scan: PASSED${NC}"
             else
                 echo -e "${RED}❌ Schema integrity scan: FAILED${NC}"
+            fi
+
+            if [ $liquid_result -eq 0 ]; then
+                echo -e "${GREEN}✅ Liquid syntax validation: PASSED${NC}"
+            else
+                echo -e "${RED}❌ Liquid syntax validation: FAILED${NC}"
             fi
 
             if [ $dev_result -eq 0 ]; then
@@ -315,7 +355,8 @@ main() {
             echo "  production     - Theme Store ready validation"
             echo "  ultimate       - Ultimate liquid validation (zero tolerance)"
             echo "  integrity      - Deep schema integrity scan"
-            echo "  deep          - Ultimate + integrity + comprehensive validation"
+            echo "  syntax         - Comprehensive Liquid syntax validation"
+            echo "  deep          - Ultimate + integrity + syntax + comprehensive validation"
             echo "  auto-fix       - Automatically fix correctable issues"
             echo "  report         - Generate detailed JSON report"
             echo "  presets        - Test different validation presets"

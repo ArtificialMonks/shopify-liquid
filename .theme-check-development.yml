@@ -22,7 +22,24 @@ ignore:
   - "shopify-liquid-guides/docs/layouts/**/*.liquid"
 
 # Focus on critical errors only during development
+# Enhanced with our new validation architecture
 # Translation checks disabled for faster development
+
+# NEW: Enable critical app block validation even in development
+AppBlockMissingSchema:
+  enabled: true
+  severity: error
+
+# NEW: Enable critical asset size checks (relaxed limits)
+AssetSizeAppBlockCSS:
+  enabled: true
+  severity: warning
+  max_size: 150000  # Relaxed for development
+
+AssetSizeAppBlockJavaScript:
+  enabled: true
+  severity: warning
+  max_size: 15000  # Relaxed for development
 TranslationKeyExists:
   enabled: false
 

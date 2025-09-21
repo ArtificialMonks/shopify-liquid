@@ -1,526 +1,128 @@
-# Complete Instructions for Shopify Theme Development
+# 🚀 Complete Shopify Liquid Component Builder
 
-This guide provides comprehensive instructions for all types of Shopify theme development tasks using this complete resource.
-
-## 📖 How to Use This Guide
-
-### Development Tasks
-- [Building Complete Themes](#building-complete-themes) - New theme from scratch
-- [Adding Features](#adding-features) - Specific functionality implementation
-- [Creating Individual Files](#creating-individual-files) - Sections, blocks, snippets
-- [Performance Optimization](#performance-optimization) - Speed and Core Web Vitals
-- [Multi-language Implementation](#multi-language-implementation) - Internationalization
-- [Advanced Features](#advanced-features) - AI, PWA, metaobjects
-
-### Quick References
-- [Task-Specific Quick Paths](#task-specific-quick-paths) - Fast navigation for common tasks
-- [Development Standards](#development-standards) - Code quality requirements
-- [Schema Validation](#schema-validation) - Prevent errors
-- [AI Assistant Guide](./.claude/project-guide.md) - Complete project workflows for Claude agents
+**The definitive step-by-step program for building production-ready Shopify Liquid components with automated validation, MCP integration, and comprehensive quality assurance.**
 
 ---
 
-# Theme Validation Automation
+## 🎯 **QUICK START: What Type of Component Are You Building?**
 
-## 🎯 **Ultimate Theme Validation Setup**
+**Select your path and follow the step-by-step instructions:**
 
-**Your theme validation setup is 100% ready for production with comprehensive validation coverage!**
+| Component Type | Click to Jump | Use Case |
+|----------------|---------------|----------|
+| **🏗️ [Section](#building-sections)** | Complete page sections | Hero banners, product grids, feature areas |
+| **🧱 [Theme Block](#building-theme-blocks)** | Reusable components | Feature items, testimonials, product cards |
+| **📦 [Snippet](#building-snippets)** | Utility functions | Image handlers, price formatters, utilities |
+| **🎨 [CSS Pattern](#building-css-patterns)** | Design systems | Scoped styles, responsive patterns, tokens |
+| **📄 [Layout](#building-layouts)** | Theme foundations | theme.liquid, checkout.liquid |
+| **📋 [Template](#building-templates)** | Page templates | Product pages, collection pages, custom templates |
 
-### ⚡ **Quick Validation Commands**
+---
+
+## 🛡️ **CRITICAL: Pre-Development Setup**
+
+### **Step 0: Validation Environment Ready**
+
+**MANDATORY: Run this command before starting any development:**
 
 ```bash
-# Complete validation workflow - one command does everything:
-./scripts/validate-theme.sh all
-
-# Fast development validation (essential checks only):
-./scripts/validate-theme.sh development
-
-# Production validation (Theme Store ready):
-./scripts/validate-theme.sh production
-
-# Auto-fix issues:
-./scripts/validate-theme.sh auto-fix
-```
-
-**Result**: 100% Theme Store compliance guaranteed with automated error detection, correction, and comprehensive reporting!
-
-### 🔧 **Available Validation Levels**
-
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `./scripts/validate-theme.sh development` | Fast validation with ultimate checks | During daily development |
-| `./scripts/validate-theme.sh ultimate` | Zero tolerance liquid validation only | Quick quality check |
-| `./scripts/validate-theme.sh deep` | Ultimate + integrity + comprehensive | Pre-deployment validation |
-| `./scripts/validate-theme.sh comprehensive` | Complete validation suite | Before committing changes |
-| `./scripts/validate-theme.sh production` | Theme Store submission ready | Before going live |
-| `./scripts/validate-theme.sh auto-fix` | Auto-correct fixable issues | When validation shows errors |
-| `./scripts/validate-theme.sh all` | Complete workflow | Full validation process |
-
-### 📊 **What Gets Validated**
-
-- **50+ Validation Rules**: All critical checks for schema, content, performance, and security
-- **All 7 File Types**: Sections, snippets, templates, layouts, locales, JSON configs, CSS
-- **Theme Store Compliance**: 100% alignment with Theme Store requirements
-- **Performance Checks**: Core Web Vitals and optimization best practices
-- **Accessibility Standards**: WCAG 2.1 AA compliance validation
-- **Security Patterns**: Content validation and security best practices
-
-📖 **[Complete Validation Guide](./THEME-CHECK-SETUP.md)** - Comprehensive validation documentation
-
-## 🚀 **Daily Development Workflow**
-
-### **Step 1: Before You Start Coding**
-```bash
-# Ensure your environment is ready
+# Ensure your validation environment is working
 ./scripts/validate-theme.sh development
 ```
 
-### **Step 2: During Development**
-```bash
-# Quick check after making changes
-./scripts/validate-theme.sh development
+**This validates:**
+- ✅ Ultimate Liquid validator is functional
+- ✅ Theme Check configuration is active
+- ✅ Schema validation rules are loaded
+- ✅ MCP server integration is available
+- ✅ Comprehensive syntax validation is ready
 
-# Auto-fix any simple issues
-./scripts/validate-theme.sh auto-fix
+**If this fails, stop and fix the validation setup first.**
+
+### **Step 1: Understand File Type Detection**
+
+Our system automatically detects what type of file you're creating based on:
+
+```
+📁 File Structure & Auto-Detection:
+├── sections/           ➜ Detects as 'section'
+├── blocks/            ➜ Detects as 'theme_block'
+├── snippets/          ➜ Detects as 'snippet'
+├── layout/            ➜ Detects as 'layout'
+├── templates/         ➜ Detects as 'template_liquid' or 'template_json'
+├── assets/            ➜ Detects as 'asset'
+├── config/            ➜ Detects as 'config'
+└── locales/           ➜ Detects as 'locale'
 ```
 
-### **Step 3: Before Committing**
-```bash
-# Comprehensive validation
-./scripts/validate-theme.sh comprehensive
-```
+**Our validation system automatically applies the correct validation rules based on file location.**
 
-### **Step 4: Production Ready**
-```bash
-# Final validation before deployment
-./scripts/validate-theme.sh production
-```
+### **Step 2: Documentation References**
 
-## 🏆 **Production-Ready Validation**
+**CRITICAL: Review these before coding:**
 
-### **Theme Store Submission Workflow**
-```bash
-# Run complete validation suite
-./scripts/validate-theme.sh all
-
-# Generate detailed report
-./scripts/validate-theme.sh report
-
-# Final production check
-./scripts/validate-theme.sh production
-```
-
-**Guaranteed Result**: Zero Theme Store rejections with our comprehensive validation setup!
-
-### **CI/CD Integration**
-```bash
-# JSON output for automated workflows
-shopify theme check --output json --config .theme-check-production.yml
-
-# Fail on errors for automated builds
-shopify theme check --fail-level error --config .theme-check-production.yml
-```
+| Documentation | Purpose | Link |
+|---------------|---------|------|
+| **Schema Guidelines** | Prevent validation errors | `shopify-liquid-guides/schema-validation/schema-guidelines.md` |
+| **Design System** | Component tokens & patterns | `shopify-liquid-guides/docs/architecture/design-system-implementation.md` |
+| **File Type Matrix** | Official validation rules | `shopify-liquid-guides/docs/validation/SHOPIFY_FILE_TYPE_VALIDATION_MATRIX.md` |
+| **MCP Integration** | Enhanced validation & API access | `shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md` |
+| **Validation Architecture** | Understanding our validator improvements | `shopify-liquid-guides/docs/validation/VALIDATOR_ARCHITECTURE_IMPROVEMENTS.md` |
 
 ---
 
-# Building Complete Themes
+# 🏗️ Building Sections
 
-## 🎯 New Theme Development
+**Sections are complete page components that appear in the theme editor.**
 
-### Prerequisites
-- Shopify CLI installed
-- VS Code with Shopify Liquid extension
-- Understanding of target audience and requirements
+## **Section Creation Workflow**
 
-### Architecture Planning
-**Start Here**: [Theme Architecture Overview](./shopify-liquid-guides/docs/architecture/theme-overview.md)
+### **Step 1: Planning & Research**
 
-1. **Understand Complete Structure**
-   - Review [File Taxonomy](./shopify-liquid-guides/docs/architecture/file-taxonomy.md) - All 7 file types
-   - Study [Best Practices 2025](./shopify-liquid-guides/docs/architecture/best-practices-2025.md)
-   - Plan theme features and customization needs
-
-### Foundation Implementation
-**Reference**: [Layouts Documentation](./shopify-liquid-guides/docs/layouts/)
-
-1. **Set Up Core Files**
-   - Create [theme.liquid](./shopify-liquid-guides/docs/layouts/theme-liquid.md) foundation
-   - Configure [checkout.liquid](./shopify-liquid-guides/docs/layouts/checkout-liquid.md) if needed
-   - Set up asset pipeline using [Assets Guide](./shopify-liquid-guides/docs/assets/)
-
-2. **Validate Foundation**
-   ```bash
-   # Test your theme foundation
-   ./scripts/validate-theme.sh development
-   ```
-
-### Template Architecture
-**Reference**: [Templates Documentation](./shopify-liquid-guides/docs/templates/)
-
-1. **Choose Template Strategy**
-   - Use [JSON Templates](./shopify-liquid-guides/docs/templates/json-templates.md) for merchant flexibility
-   - Use [Liquid Templates](./shopify-liquid-guides/docs/templates/liquid-templates.md) for custom logic
-   - Implement [Metaobject Templates](./shopify-liquid-guides/docs/templates/metaobject-templates.md) for custom content
-
-2. **Validate Template Configuration**
-   ```bash
-   # Ensure templates are properly configured
-   ./scripts/validate-theme.sh development
-   ```
-
-### Section Development
-**Reference**: [Code Library](./shopify-liquid-guides/code-library/)
-
-1. **Use Production-Ready Components**
-   - Copy from [sections directory](./shopify-liquid-guides/code-library/sections/)
-   - Customize [blocks](./shopify-liquid-guides/code-library/blocks/) for reusability
-   - Implement [CSS patterns](./shopify-liquid-guides/code-library/css-patterns/) for scoping
-
-2. **Validate Each Section**
-   ```bash
-   # After adding each section, validate immediately
-   ./scripts/validate-theme.sh development
-
-   # Auto-fix any schema or syntax issues
-   ./scripts/validate-theme.sh auto-fix
-   ```
-
-### Configuration Setup
-**Reference**: [Config Documentation](./shopify-liquid-guides/docs/config/)
-
-1. **Merchant Customization**
-   - Create [settings schema](./shopify-liquid-guides/docs/config/settings-schema.md)
-   - Configure [section groups](./shopify-liquid-guides/docs/section-groups/) for layout flexibility
-   - Set up [block configurations](./shopify-liquid-guides/docs/config/blocks-config.md)
-
-2. **Final Theme Validation**
-   ```bash
-   # Complete validation before launch
-   ./scripts/validate-theme.sh production
-
-   # Generate compliance report
-   ./scripts/validate-theme.sh report
-   ```
-
-### 🎉 **Theme Store Submission Ready**
-
-When your theme passes all validation levels:
 ```bash
-# Final validation confirms Theme Store readiness
-./scripts/validate-theme.sh all
-```
+# Start with MCP-enhanced research (if using AI assistant)
+# Use these MCP tools for comprehensive planning:
+# - learn_shopify_api(api: "liquid") for Liquid documentation
+# - search_docs_chunks for specific section examples
+# - introspect_graphql_schema for any API requirements
 
-**Guaranteed**: Your theme will meet all Theme Store requirements!
-
----
-
-# Adding Features
-
-## 🔥 Feature Implementation Paths
-
-### E-commerce Features
-- **Product Display**: Use [product sections](./shopify-liquid-guides/code-library/sections/) and [JSON templates](./shopify-liquid-guides/docs/templates/json-templates.md)
-- **Cart Functionality**: Reference [JavaScript assets](./shopify-liquid-guides/docs/assets/javascript-assets.md)
-- **Search & Filtering**: Implement section groups and dynamic content
-
-**Validation**: After implementing each feature:
-```bash
-./scripts/validate-theme.sh development  # Quick validation
-./scripts/validate-theme.sh auto-fix     # Fix any issues
-```
-
-### Content Management
-- **Blog Integration**: Use [template documentation](./shopify-liquid-guides/docs/templates/)
-- **Custom Content Types**: Implement [metaobjects](./shopify-liquid-guides/docs/advanced-features/metaobject-integration.md)
-- **Dynamic Layouts**: Use [section groups](./shopify-liquid-guides/docs/section-groups/)
-
-**Validation**: Ensure content templates work correctly:
-```bash
-./scripts/validate-theme.sh comprehensive  # Full validation
-```
-
-### Performance Features
-- **Speed Optimization**: Follow [advanced performance](./shopify-liquid-guides/docs/advanced-features/advanced-performance.md)
-- **Core Web Vitals**: Implement [asset optimization](./shopify-liquid-guides/docs/assets/)
-- **PWA Features**: Add [progressive web app](./shopify-liquid-guides/docs/advanced-features/progressive-web-app.md) capabilities
-
-**Validation**: Performance checks included in validation:
-```bash
-./scripts/validate-theme.sh production  # Performance + Theme Store validation
-```
-
-### Multi-language Support
-- **Translation Setup**: Use [locales documentation](./shopify-liquid-guides/docs/locales/)
-- **Regional Formatting**: Configure locale-specific formats
-- **Language Switching**: Implement navigation patterns
-
-**Validation**: Translation validation included:
-```bash
-./scripts/validate-theme.sh production  # Includes translation checks
-```
-
----
-
----
-
-# Task-Specific Quick Paths
-
-## 🚀 Common Development Scenarios
-
-### Building a Store Homepage
-1. **Architecture**: [Theme Overview](./shopify-liquid-guides/docs/architecture/theme-overview.md)
-2. **Layout**: [theme.liquid](./shopify-liquid-guides/docs/layouts/theme-liquid.md)
-3. **Template**: [JSON templates](./shopify-liquid-guides/docs/templates/json-templates.md)
-4. **Sections**: [Hero](./shopify-liquid-guides/code-library/sections/hero-banner.liquid), [Products](./shopify-liquid-guides/code-library/sections/product-grid.liquid)
-5. **Examples**: [Complete homepage](./shopify-liquid-guides/examples/complete-homepage.json)
-6. **Validate**: `./scripts/validate-theme.sh development` after each step
-
-### Adding Product Features
-1. **Templates**: [Product templates](./shopify-liquid-guides/docs/templates/json-templates.md)
-2. **Sections**: [Product sections](./shopify-liquid-guides/code-library/sections/)
-3. **JavaScript**: [Product interactions](./shopify-liquid-guides/docs/assets/javascript-assets.md)
-4. **Performance**: [Image optimization](./shopify-liquid-guides/docs/assets/image-assets.md)
-5. **Validate**: `./scripts/validate-theme.sh comprehensive` before deployment
-
-### Implementing Multi-language
-1. **Strategy**: [Translation system](./shopify-liquid-guides/docs/locales/translation-system.md)
-2. **Files**: [Locale structure](./shopify-liquid-guides/docs/locales/locale-file-structure.md)
-3. **Implementation**: Replace hard-coded text with `{{ 'key' | t }}`
-4. **Regional**: [Formatting patterns](./shopify-liquid-guides/docs/locales/regional-formatting.md)
-5. **Validate**: `./scripts/validate-theme.sh production` includes translation checks
-
-### Performance Optimization
-1. **Assets**: [CSS](./shopify-liquid-guides/docs/assets/css-assets.md), [JS](./shopify-liquid-guides/docs/assets/javascript-assets.md), [Images](./shopify-liquid-guides/docs/assets/image-assets.md)
-2. **Advanced**: [Performance patterns](./shopify-liquid-guides/docs/advanced-features/advanced-performance.md)
-3. **Core Web Vitals**: [Best practices](./shopify-liquid-guides/docs/architecture/best-practices-2025.md)
-4. **Validate**: `./scripts/validate-theme.sh production` includes performance checks
-
-### Adding Custom Content
-1. **Metaobjects**: [Integration guide](./shopify-liquid-guides/docs/advanced-features/metaobject-integration.md)
-2. **Templates**: [Metaobject templates](./shopify-liquid-guides/docs/templates/metaobject-templates.md)
-3. **Dynamic**: [Section groups](./shopify-liquid-guides/docs/section-groups/)
-4. **Validate**: `./scripts/validate-theme.sh comprehensive` after implementation
-
-### Modern Features
-1. **AI Blocks**: [AI-generated blocks](./shopify-liquid-guides/docs/advanced-features/ai-generated-blocks.md)
-2. **PWA**: [Progressive web app](./shopify-liquid-guides/docs/advanced-features/progressive-web-app.md)
-3. **Section Groups**: [Dynamic layouts](./shopify-liquid-guides/docs/section-groups/)
-4. **Validate**: `./scripts/validate-theme.sh all` for complete feature validation
-
----
-
-# Creating Individual Files
-
-**When creating any new Shopify Liquid section, block, snippet, or CSS pattern, follow these instructions exactly.**
-
-## 🎯 **Before You Start**
-
-**CRITICAL: Start with validation setup**
-```bash
-# Ensure your validation environment is ready
+# Traditional validation check
 ./scripts/validate-theme.sh development
 ```
 
-When given a prompt like *"Create a product comparison section"* or *"Build a newsletter signup block"*, follow these instructions **exactly** to ensure consistency with our established methodology.
+**Questions to Answer:**
+- What is the section's primary purpose?
+- What content will merchants customize?
+- Does it need blocks for dynamic content?
+- What responsive behavior is required?
 
-### 🎨 **Design System First Approach**
+### **Step 2: Schema Design & Validation**
 
-This repository uses a **unified design token system** that ensures consistency across all components. Before coding, understand our design hierarchy:
+**CRITICAL: Design schema first with validation rules**
 
+```bash
+# Reference our comprehensive schema validation
+cat shopify-liquid-guides/schema-validation/schema-guidelines.md
 ```
-Primitive Tokens → Semantic Tokens → Component Tokens
-   (Base Values)     (Contextual)      (Specific Use)
-```
 
-**Key Design System Files:**
-- **Design Tokens**: `code-library/css-patterns/design-tokens.css` (450+ tokens)
-- **Implementation Guide**: `docs/architecture/design-system-implementation.md`
-- **Token Integration**: All components use token-based CSS for consistency
+**Key Validation Rules:**
+- Range step calculation: `(max - min) / step ≤ 101`
+- Use `video` not `file` for video uploads
+- No `enabled_on` in sections (app blocks only)
+- Step values must be ≥ 0.1
+- All setting IDs must be unique
 
-**Design Token Usage Pattern:**
+### **Step 3: Create Section File**
+
+**Location:** `shopify-liquid-guides/code-library/sections/section-name.liquid`
+
+**Template Structure:**
 ```liquid
-{% style %}
-  .component-{{ unique }} {
-    /* ✅ Component tokens with semantic fallbacks */
-    --component-bg: var(--surface-primary);
-    --component-text: var(--text-primary);
-    --component-spacing: var(--spacing-component-md);
-
-    /* ✅ Shopify setting integration with token fallbacks */
-    --dynamic-bg: {{ block.settings.bg_color | default: 'var(--component-bg)' }};
-    --dynamic-text: {{ block.settings.text_color | default: 'var(--component-text)' }};
-
-    /* Apply tokens to properties */
-    background: var(--dynamic-bg);
-    color: var(--dynamic-text);
-    padding: var(--component-spacing);
-  }
-{% endstyle %}
-```
-
-### **🚀 Validation-First Development with Shopify MCP**
-
-Every file creation must include validation steps with Shopify MCP integration:
-
-1. **Before coding**: Run quick validation check + MCP documentation lookup
-2. **During development**: Validate schema as you build it + live GraphQL validation
-3. **After completion**: Comprehensive validation + MCP theme validation
-4. **Before deployment**: Production-ready validation + Theme Store compliance
-
-### **🔗 Shopify MCP Server Integration**
-
-This repository includes comprehensive Shopify MCP server integration for enhanced development capabilities:
-
-**MCP Tools Available:**
-- `learn_shopify_api` - Initialize Shopify API context for development
-- `validate_theme` - Comprehensive theme validation against Shopify standards
-- `validate_graphql_codeblocks` - Real-time GraphQL query validation
-- `introspect_graphql_schema` - Live schema introspection for API development
-- `search_docs_chunks` - Search official Shopify documentation
-- `fetch_full_docs` - Retrieve complete documentation pages
-
-**MCP Usage in Development Workflow:**
-```bash
-# 1. Traditional validation
-./scripts/validate-theme.sh development
-
-# 2. Enhanced MCP validation (when working with AI assistants)
-# - Use validate_theme for comprehensive Liquid validation
-# - Use validate_graphql_codeblocks for API queries
-# - Use search_docs_chunks for documentation lookup
-# - Use introspect_graphql_schema for schema exploration
-```
-
-📖 **[Complete MCP Setup Guide](./SHOPIFY-MCP-SETUP.md)** - Full integration and usage documentation
-
----
-
-## 📋 **STEP 1: Understand Our Codebase Structure**
-
-### **Available File Types & Locations**
-
-```
-shopify-liquid-guides/
-├── code-library/
-│   ├── sections/           # Complete page sections (.liquid files)
-│   ├── blocks/            # Reusable theme block components (.liquid files)
-│   ├── snippets/          # Utility functions (.liquid files)
-│   └── css-patterns/      # CSS methodology examples (.css files)
-└── schema-validation/
-    └── schema-guidelines.md  # **CRITICAL**: Schema validation rules
-```
-
-### **🎯 CRITICAL: Understanding Sections vs Blocks**
-
-**There are TWO types of blocks in Shopify themes:**
-
-#### **1. Theme Blocks (Standalone Files)**
-- **Location**: `/blocks` folder in theme root
-- **File Extension**: `.liquid`
-- **Schema**: Has its own `{% schema %}` tag
-- **Reusability**: Can be used across multiple sections
-- **Nesting**: Can contain other blocks (hierarchical)
-- **Example**: `blocks/text.liquid`, `blocks/image.liquid`
-
-#### **2. Section Blocks (Defined Within Sections)**
-- **Location**: Defined within section files
-- **Schema**: Defined in section's `{% schema %}` blocks array
-- **Reusability**: Only within the section where defined
-- **Nesting**: Cannot be nested (single level only)
-- **Example**: Block types in a section's schema
-
-**Key Difference**: Theme blocks are standalone files that can be saved separately and reused across sections. Section blocks are just configuration in a section's schema.
-
-### **🚨 MANDATORY FIRST STEP: Schema Validation**
-
-**BEFORE creating ANY schema**, you MUST review:**
-`shopify-liquid-guides/schema-validation/schema-guidelines.md`
-
-This document prevents "FileSaveError: Invalid schema" errors by providing:
-- Comprehensive validation rules and requirements
-- Range step calculation formulas: `(max - min) / step ≤ 101`
-- Valid setting types (use `video` not `file` for video uploads)
-- Critical restrictions (no `enabled_on` in section schemas)
-- Step value minimums (≥ 0.1 for all ranges)
-
-**Automated Schema Validation**: Our validation system will catch schema errors:
-```bash
-# This will validate your schema automatically
-./scripts/validate-theme.sh development
-```
-
-### **Reference Existing Patterns**
-
-**ALWAYS** examine these files first to understand our patterns:
-
-1. **🔴 CRITICAL**: `shopify-liquid-guides/schema-validation/schema-guidelines.md` - Schema validation rules
-2. **Section Example**: `shopify-liquid-guides/code-library/sections/hero-richtext-cta.liquid`
-3. **Block Example**: `shopify-liquid-guides/code-library/blocks/block-feature-item.liquid`
-4. **CSS Scoping**: `shopify-liquid-guides/code-library/css-patterns/scoped-blocks.css`
-5. **JSON Examples**: `shopify-liquid-guides/examples/complete-homepage.json`
-
----
-
-## 📐 **STEP 2: Design System + CSS Scoping Methodology (CRITICAL)**
-
-### **Unique ID Generation Pattern**
-
-**Every section and block MUST use this exact pattern:**
-
-```liquid
+{% comment %} sections/section-name.liquid {% endcomment %}
 {%- assign unique = section.id | replace: '_', '' | downcase -%}
-<!-- For blocks: -->
-{%- assign u = block.id | replace: '_', '' | downcase -%}
-```
 
-### **Design Token Integration Pattern**
-
-**All components MUST use design tokens for consistency:**
-
-```liquid
 {% style %}
-  .component-name-{{ unique }} {
-    /* ✅ Component tokens with semantic fallbacks */
-    --component-bg: var(--surface-primary);
-    --component-text: var(--text-primary);
-    --component-spacing: var(--spacing-component-md);
-    --component-radius: var(--border-radius-lg);
-
-    /* ✅ Shopify setting integration with token fallbacks */
-    --dynamic-bg: {{ section.settings.bg_color | default: 'var(--component-bg)' }};
-    --dynamic-text: {{ section.settings.text_color | default: 'var(--component-text)' }};
-    --dynamic-accent: {{ section.settings.accent_color | default: 'var(--brand-primary-500)' }};
-
-    /* ✅ Apply tokens to properties */
-    background: var(--dynamic-bg);
-    color: var(--dynamic-text);
-    padding: var(--component-spacing);
-    border-radius: var(--component-radius);
-  }
-{% endstyle %}
-```
-
-### **CSS Class Naming Convention**
-
-**All CSS classes MUST follow this pattern with design tokens:**
-
-```liquid
-<!-- Base component with token-based styling -->
-<div class="component-name-{{ unique }}">
-
-<!-- Elements within component -->
-<h2 class="component-name__title-{{ unique }}">
-<p class="component-name__text-{{ unique }}">
-
-<!-- Modifiers -->
-<div class="component-name--large-{{ unique }}">
-```
-
-### **Complete CSS Style Block Structure with Design Tokens**
-
-```liquid
-{% style %}
-  .component-name-{{ unique }} {
+  .section-name-{{ unique }} {
     /* ✅ Design token integration */
     --component-bg: var(--surface-primary);
     --component-text: var(--text-primary);
@@ -530,110 +132,87 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
     --dynamic-bg: {{ section.settings.bg_color | default: 'var(--component-bg)' }};
     --dynamic-text: {{ section.settings.text_color | default: 'var(--component-text)' }};
 
-    /* ✅ Apply design tokens */
+    /* Apply design tokens */
     background: var(--dynamic-bg);
     color: var(--dynamic-text);
     padding: var(--component-spacing);
-    box-shadow: var(--shadow-sm);
     border-radius: var(--border-radius-lg);
   }
 
-  .component-name__element-{{ unique }} {
-    /* ✅ Element styles using design tokens */
+  .section-name__element-{{ unique }} {
     font-size: var(--font-size-base);
     line-height: var(--line-height-normal);
-    color: var(--dynamic-text);
-  }
-
-  /* ✅ Focus states using design tokens */
-  .component-name-{{ unique }}:focus-within {
-    outline: var(--focus-ring-width) solid var(--focus-ring-color);
-    outline-offset: var(--focus-ring-offset);
-  }
-
-  /* ✅ Responsive behavior using token system */
-  @media (max-width: 749px) {
-    .component-name-{{ unique }} {
-      padding: var(--spacing-component-sm);
-    }
-  }
-{% endstyle %}
-```
-
-### **Token Selection Guidelines**
-
-**Choose appropriate token tiers:**
-
-1. **Component Tokens** (Preferred): `--button-primary-bg`, `--card-padding`
-2. **Semantic Tokens** (Fallback): `--surface-primary`, `--text-primary`
-3. **Primitive Tokens** (Avoid): `--neutral-100`, `--space-4`
-
-**Token Integration Checklist:**
-- [ ] Use semantic tokens, not primitives directly
-- [ ] Provide Shopify setting fallbacks with token defaults
-- [ ] Include focus states using design token system
-- [ ] Apply responsive adjustments through tokens
-
----
-
-## 🏗 **STEP 3: File Structure Requirements with Design Tokens**
-
-### **For Sections (`sections/component-name.liquid`)**
-
-```liquid
-{% comment %} sections/component-name.liquid {% endcomment %}
-{%- assign unique = section.id | replace: '_', '' | downcase -%}
-
-{% style %}
-  .component-name-{{ unique }} {
-    /* ✅ Component tokens with semantic fallbacks */
-    --component-bg: var(--surface-primary);
-    --component-text: var(--text-primary);
-    --component-spacing: var(--spacing-component-md);
-    --component-radius: var(--border-radius-lg);
-
-    /* ✅ Shopify setting integration with token fallbacks */
-    --dynamic-bg: {{ section.settings.bg_color | default: 'var(--component-bg)' }};
-    --dynamic-text: {{ section.settings.text_color | default: 'var(--component-text)' }};
-    --dynamic-accent: {{ section.settings.accent_color | default: 'var(--brand-primary-500)' }};
-
-    /* Apply tokens to properties */
-    background: var(--dynamic-bg);
-    color: var(--dynamic-text);
-    padding: var(--component-spacing);
-    border-radius: var(--component-radius);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .component-name__element-{{ unique }} {
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-normal);
-    color: var(--dynamic-text);
+    margin-bottom: var(--spacing-component-sm);
   }
 
   /* Focus states using design tokens */
-  .component-name-{{ unique }}:focus-within {
+  .section-name-{{ unique }}:focus-within {
     outline: var(--focus-ring-width) solid var(--focus-ring-color);
     outline-offset: var(--focus-ring-offset);
   }
 
-  /* Responsive using tokens */
+  /* Responsive using token system */
   @media (max-width: 749px) {
-    .component-name-{{ unique }} {
+    .section-name-{{ unique }} {
       padding: var(--spacing-component-sm);
     }
   }
 {% endstyle %}
 
-<section class="component-name-{{ unique }}" role="region" aria-label="{{ section.settings.aria_label | default: section.settings.heading | default: 'Section name' | escape }}">
-  <!-- HTML structure with escaped content -->
-  <!-- Use section.settings.* for configuration -->
-  <!-- Include blocks loop if needed -->
+<section class="section-name-{{ unique }}"
+         role="region"
+         aria-label="{{ section.settings.aria_label | default: section.settings.heading | default: 'Section content' | escape }}">
+
+  {% if section.settings.heading != blank %}
+    <h2 class="section-name__heading-{{ unique }}">{{ section.settings.heading | escape }}</h2>
+  {% endif %}
+
+  {% if section.settings.content != blank %}
+    <div class="section-name__content-{{ unique }}">{{ section.settings.content }}</div>
+  {% endif %}
+
+  {% if section.blocks.size > 0 %}
+    <div class="section-name__blocks-{{ unique }}">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'text_block' %}
+            <div class="section-name__block-{{ unique }}" {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.heading | escape }}</h3>
+              <p>{{ block.settings.text | escape }}</p>
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
 </section>
 
-{% schema %}{
+{% schema %}
+{
   "name": "Section Name",
   "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Welcome to our section"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Section content",
+      "info": "Add rich text content for your section"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessibility label",
+      "info": "Screen reader description for this section"
+    },
     {
       "type": "header",
       "content": "Design Tokens"
@@ -642,34 +221,133 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
       "type": "color",
       "id": "bg_color",
       "label": "Background Color",
-      "info": "Uses --surface-primary token as fallback"
+      "info": "Uses --surface-primary design token as fallback"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
-      "info": "Uses --text-primary token as fallback"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Accent Color",
-      "info": "Uses --brand-primary-500 token as fallback"
+      "info": "Uses --text-primary design token as fallback"
     }
   ],
   "blocks": [
-    /* Block types if applicable */
+    {
+      "type": "text_block",
+      "name": "Text Block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Block heading",
+          "default": "Feature title"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Block text",
+          "default": "Feature description"
+        }
+      ]
+    }
   ],
   "presets": [
-    {"name": "Section Name"}
+    {
+      "name": "Section Name",
+      "blocks": [
+        {
+          "type": "text_block"
+        }
+      ]
+    }
   ]
-}{% endschema %}
+}
+{% endschema %}
 ```
 
-### **For Theme Blocks (`blocks/block-component-name.liquid`)**
+### **Step 4: Comprehensive Validation**
 
-**IMPORTANT**: Theme blocks are **standalone files** in the `/blocks` folder with their own `{% schema %}` tags. They can be saved separately and used across multiple sections.
+**Run the complete validation workflow:**
 
+```bash
+# 1. Quick development validation
+./scripts/validate-theme.sh development
+
+# 2. Auto-fix any simple issues
+./scripts/validate-theme.sh auto-fix
+
+# 3. Comprehensive syntax validation
+./scripts/validate-theme.sh syntax
+
+# 4. Complete validation suite
+./scripts/validate-theme.sh comprehensive
+
+# 5. Production readiness check
+./scripts/validate-theme.sh production
+```
+
+**What Gets Validated:**
+- ✅ Liquid syntax validation (tag pairing, filter validation)
+- ✅ Schema JSON validation (no syntax errors)
+- ✅ Range step calculations (automated)
+- ✅ Design token integration (CSS pattern validation)
+- ✅ Accessibility compliance (ARIA, semantic HTML)
+- ✅ Performance patterns (responsive images, CSS optimization)
+- ✅ Theme Store compliance (all submission requirements)
+
+### **Step 5: Quality Assurance Checklist**
+
+**Manual verification after automated validation passes:**
+
+- [ ] **Design System Integration**
+  - [ ] Uses semantic design tokens, not primitive values
+  - [ ] Shopify settings provide token fallbacks
+  - [ ] Focus states implemented with design tokens
+  - [ ] Responsive behavior uses token system
+
+- [ ] **Content & Accessibility**
+  - [ ] All user content is escaped (`| escape`)
+  - [ ] Semantic HTML structure with proper roles
+  - [ ] Logical heading hierarchy (h2 → h3 → h4)
+  - [ ] Meaningful ARIA labels and descriptions
+
+- [ ] **Performance & Compliance**
+  - [ ] Responsive images with srcset and sizes
+  - [ ] Lazy loading implemented where appropriate
+  - [ ] CSS scoped with unique IDs
+  - [ ] No hardcoded values (uses settings/tokens)
+
+---
+
+# 🧱 Building Theme Blocks
+
+**Theme blocks are standalone reusable components that can be used across multiple sections.**
+
+## **Theme Block Creation Workflow**
+
+### **Step 1: Research & Planning**
+
+```bash
+# Enhanced research with MCP integration
+# Use MCP tools for block development:
+# - search_docs_chunks("theme blocks") for official documentation
+# - learn_shopify_api(api: "liquid") for block-specific Liquid features
+# - validate_theme for real-time validation during development
+
+# Standard validation check
+./scripts/validate-theme.sh development
+```
+
+**Key Considerations for Theme Blocks:**
+- **Reusability**: Can be used in multiple sections
+- **Self-contained**: Has its own schema and styling
+- **Hierarchical**: Can contain other blocks
+- **Saveable**: Merchants can save as custom blocks
+
+### **Step 2: Create Theme Block File**
+
+**Location:** `shopify-liquid-guides/code-library/blocks/block-component-name.liquid`
+
+**Template Structure:**
 ```liquid
 {% comment %} blocks/block-component-name.liquid {% endcomment %}
 {%- assign u = block.id | replace: '_', '' | downcase -%}
@@ -706,11 +384,30 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
     box-shadow: var(--shadow-sm);
     transform: translateY(-1px);
   }
+
+  /* Focus states */
+  .block-name-{{ u }}:focus-within {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
 {% endstyle %}
 
 <div class="block-name-{{ u }}" {{ block.shopify_attributes }}>
-  <h3 class="block-name__title-{{ u }}">{{ block.settings.title | escape }}</h3>
-  <p class="block-name__text-{{ u }}">{{ block.settings.content | escape }}</p>
+  {% if block.settings.heading != blank %}
+    <h3 class="block-name__heading-{{ u }}">{{ block.settings.heading | escape }}</h3>
+  {% endif %}
+
+  {% if block.settings.content != blank %}
+    <div class="block-name__content-{{ u }}">{{ block.settings.content | escape }}</div>
+  {% endif %}
+
+  {% if block.settings.link_url != blank and block.settings.link_text != blank %}
+    <a href="{{ block.settings.link_url }}"
+       class="block-name__link-{{ u }}"
+       aria-label="{{ block.settings.link_text | escape }}">
+      {{ block.settings.link_text | escape }}
+    </a>
+  {% endif %}
 </div>
 
 {% schema %}
@@ -723,15 +420,26 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
     },
     {
       "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "Default title"
+      "id": "heading",
+      "label": "Block heading",
+      "default": "Feature Title"
     },
     {
       "type": "textarea",
       "id": "content",
-      "label": "Content",
-      "default": "Default content"
+      "label": "Block content",
+      "default": "Add your feature description here."
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Learn more"
     },
     {
       "type": "header",
@@ -741,21 +449,22 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
       "type": "color",
       "id": "bg_color",
       "label": "Background Color",
-      "info": "Uses --surface-secondary token as fallback"
+      "info": "Uses --surface-secondary design token as fallback"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
-      "info": "Uses --text-primary token as fallback"
+      "info": "Uses --text-primary design token as fallback"
     }
   ],
   "presets": [
     {
       "name": "Block Name",
       "settings": {
-        "title": "Default title",
-        "content": "Default content"
+        "heading": "Feature Title",
+        "content": "Add your feature description here.",
+        "link_text": "Learn more"
       }
     }
   ]
@@ -763,51 +472,58 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 {% endschema %}
 ```
 
-### **For Section Blocks (Defined Within Sections)**
+### **Step 3: Validation & Testing**
 
-**Alternative**: Block types defined within a section's schema (not standalone files):
-
-```liquid
-<!-- In section template -->
-{% for block in section.blocks %}
-  {% case block.type %}
-    {% when 'custom_block' %}
-      <div class="section-block-{{ unique }}" {{ block.shopify_attributes }}>
-        {{ block.settings.content | escape }}
-      </div>
-  {% endcase %}
-{% endfor %}
-
-<!-- In section schema -->
-{
-  "blocks": [
-    {
-      "type": "custom_block",
-      "name": "Custom Block",
-      "settings": [
-        {
-          "type": "text",
-          "id": "content",
-          "label": "Content"
-        }
-      ]
-    }
-  ]
-}
+```bash
+# Complete validation workflow for theme blocks
+./scripts/validate-theme.sh development
+./scripts/validate-theme.sh syntax
+./scripts/validate-theme.sh comprehensive
 ```
 
-### **For Snippets (`snippets/snippet-name.liquid`)**
+**Theme Block Specific Validation:**
+- ✅ Block schema validation (proper structure)
+- ✅ Shopify attributes implementation (`{{ block.shopify_attributes }}`)
+- ✅ Unique ID scoping for CSS
+- ✅ Reusability across different contexts
 
-**Snippets support design tokens for reusable styling patterns:**
+---
 
+# 📦 Building Snippets
+
+**Snippets are utility functions that provide reusable functionality across the theme.**
+
+## **Snippet Creation Workflow**
+
+### **Step 1: Define Snippet Purpose**
+
+```bash
+# Enhanced planning with MCP
+# Use MCP for snippet research:
+# - search_docs_chunks("liquid snippets") for best practices
+# - fetch_full_docs for comprehensive Liquid reference
+
+./scripts/validate-theme.sh development
+```
+
+**Common Snippet Types:**
+- **Utility Functions**: Image handling, price formatting, date formatting
+- **Component Helpers**: Responsive images, icon rendering, social media
+- **Content Processors**: Rich text handling, link generation, metadata
+
+### **Step 2: Create Snippet File**
+
+**Location:** `shopify-liquid-guides/code-library/snippets/snippet-name.liquid`
+
+**Template Structure:**
 ```liquid
 {% comment %}
   Snippet: snippet-name
   Usage: {% render 'snippet-name', param1: value1, param2: value2, unique_id: 'component-123' %}
 
   Parameters:
-  - param1 (required): Description
-  - param2 (optional): Description with default
+  - param1 (required): Description of parameter
+  - param2 (optional): Description with default value
   - unique_id (required): Unique ID for scoped styling
   - bg_color (optional): Background color override
   - text_color (optional): Text color override
@@ -816,6 +532,12 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
   - Uses semantic tokens with component-specific fallbacks
   - Supports color customization through parameters
   - Maintains consistent spacing and typography
+
+  Example:
+  {% render 'snippet-name',
+     param1: 'value',
+     unique_id: section.id,
+     bg_color: section.settings.bg_color %}
 {% endcomment %}
 
 {%- liquid
@@ -841,450 +563,592 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
     font-size: var(--font-size-sm);
     line-height: var(--line-height-normal);
   }
+
+  .snippet-name__element-{{ unique_id }} {
+    margin-bottom: var(--spacing-component-xs);
+  }
 {% endstyle %}
 
 <div class="snippet-name-{{ unique_id }}">
   <!-- Snippet functionality with design token styling -->
-  {{ param1 | escape }}
+  {% if param1 != blank %}
+    <div class="snippet-name__element-{{ unique_id }}">
+      {{ param1 | escape }}
+    </div>
+  {% endif %}
 </div>
 ```
 
----
-
-## 🎨 **STEP 4: Schema Configuration Standards**
-
-### **⚠️ CRITICAL: Schema Validation Requirements**
-
-**BEFORE writing ANY schema, validate against these rules:**
-
-1. **Range Step Calculation**: `(max - min) / step ≤ 101`
-   ```json
-   // ❌ BAD: (100-0)/1 = 100 steps ✓, but (200-0)/1 = 200 steps ✗
-   {"type": "range", "min": 0, "max": 200, "step": 1}  // INVALID
-
-   // ✅ GOOD: (200-0)/2 = 100 steps ✓
-   {"type": "range", "min": 0, "max": 200, "step": 2}  // VALID
-   ```
-
-2. **Valid Setting Types**: Never use `"type": "file"` for videos
-   ```json
-   // ❌ BAD: Will cause "Invalid schema" error
-   {"type": "file", "id": "video_file", "label": "Video"}
-
-   // ✅ GOOD: Use video type for video uploads
-   {"type": "video", "id": "video_file", "label": "Video"}
-   ```
-
-3. **Section Restrictions**: Never use `enabled_on` in sections (app blocks only)
-   ```json
-   // ❌ BAD: Will cause "enabled_on is not a valid attribute" error
-   {"name": "Section", "enabled_on": {"templates": ["index"]}}
-
-   // ✅ GOOD: Remove enabled_on from sections
-   {"name": "Section"}
-   ```
-
-4. **Step Values**: Must be ≥ 0.1
-   ```json
-   // ❌ BAD: Step below minimum
-   {"type": "range", "step": 0.01}
-
-   // ✅ GOOD: Step meets minimum
-   {"type": "range", "step": 0.1}
-   ```
-
-### **Section Schema Requirements**
-
-```json
-{
-  "name": "Descriptive Section Name",
-  "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Default heading"
-    },
-    {
-      "type": "richtext",
-      "id": "content",
-      "label": "Content",
-      "info": "Helpful description for merchants"
-    },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Background color",
-      "default": "#ffffff"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "block_type",
-      "name": "Block Display Name",
-      "settings": [/* block settings */]
-    }
-  ],
-  "presets": [
-    {
-      "name": "Section Name",
-      "blocks": [/* default blocks if any */]
-    }
-  ]
-}
-```
-
-### **Common Setting Patterns**
-
-Use these **validated patterns** for consistency:
-
-```json
-// Text fields
-{"type": "text", "id": "heading", "label": "Heading", "default": "Default text"}
-
-// Rich text
-{"type": "richtext", "id": "content", "label": "Content"}
-
-// Colors
-{"type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff"}
-
-// URLs
-{"type": "url", "id": "link_url", "label": "Link URL"}
-
-// Images
-{"type": "image_picker", "id": "image", "label": "Image"}
-
-// Videos (NEVER use "file" type)
-{"type": "video", "id": "video_file", "label": "Video Upload"}
-{"type": "video_url", "id": "video_url", "label": "Video URL"}
-
-// Ranges (ALWAYS validate step calculation)
-{"type": "range", "id": "padding", "label": "Padding", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 20}
-// ✅ Calculation: (100-0)/4 = 25 steps (≤ 101) ✓
-
-{"type": "range", "id": "opacity", "label": "Opacity", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50}
-// ✅ Calculation: (100-0)/1 = 100 steps (≤ 101) ✓
-
-// Select options
-{"type": "select", "id": "alignment", "label": "Alignment", "options": [
-  {"value": "left", "label": "Left"},
-  {"value": "center", "label": "Center"},
-  {"value": "right", "label": "Right"}
-], "default": "center"}
-```
-
----
-
-## ♿ **STEP 5: Accessibility Requirements (MANDATORY)**
-
-### **HTML Structure Standards**
-
-```liquid
-<!-- Semantic HTML with proper ARIA -->
-<section role="region" aria-label="{{ section.settings.aria_label | default: section.settings.heading | escape }}">
-  <h2>{{ section.settings.heading | escape }}</h2>
-
-  <!-- Proper heading hierarchy -->
-  <h3>{{ block.settings.title | escape }}</h3>
-
-  <!-- Escaped user content -->
-  <p>{{ section.settings.text | escape }}</p>
-
-  <!-- Links with aria-labels -->
-  <a href="{{ section.settings.url }}" aria-label="{{ section.settings.aria_label | default: section.settings.link_text | escape }}">
-    {{ section.settings.link_text | escape }}
-  </a>
-</section>
-```
-
-### **Required Accessibility Features**
-
-1. **Escape ALL user content**: `{{ content | escape }}`
-2. **Semantic HTML**: Use `<section>`, `<article>`, `<header>`, etc.
-3. **ARIA labels**: Provide context for screen readers
-4. **Proper headings**: Logical h1→h2→h3 hierarchy
-5. **Alt text**: Images must have meaningful alt attributes
-6. **Focus management**: Visible focus states in CSS
-
----
-
-## 🚀 **STEP 6: Performance & Theme Store Compliance**
-
-### **Liquid Best Practices**
-
-```liquid
-<!-- Check for blank values -->
-{% if section.settings.heading != blank %}
-  <h2>{{ section.settings.heading | escape }}</h2>
-{% endif %}
-
-<!-- Responsive images -->
-{% if section.settings.image %}
-  <img
-    src="{{ section.settings.image | image_url: width: 800 }}"
-    srcset="{{ section.settings.image | image_url: width: 400 }} 400w,
-            {{ section.settings.image | image_url: width: 800 }} 800w"
-    sizes="(min-width: 750px) 50vw, 100vw"
-    alt="{{ section.settings.image.alt | escape }}"
-    loading="lazy"
-  >
-{% endif %}
-
-<!-- Safe property access -->
-{{ product.title | default: 'Product' | escape }}
-```
-
-### **CSS Performance Rules**
-
-```css
-/* Use CSS custom properties for dynamic values */
-.component-{{ unique }} {
-  --bg-color: {{ section.settings.bg_color | default: '#ffffff' }};
-  --text-color: {{ section.settings.text_color | default: '#333333' }};
-
-  background: var(--bg-color);
-  color: var(--text-color);
-}
-
-/* Mobile-first responsive design */
-.component-{{ unique }} {
-  /* Mobile styles first */
-}
-
-@media (min-width: 750px) {
-  .component-{{ unique }} {
-    /* Desktop styles */
-  }
-}
-```
-
----
-
-## 📝 **STEP 7: Content Standards**
-
-### **Default Content Guidelines**
-
-- **Headings**: Use realistic, merchant-friendly defaults
-- **Text**: Provide meaningful placeholder content
-- **Links**: Default to common Shopify URLs (`/collections/all`, `/pages/about`)
-- **Images**: Reference common image scenarios in alt text
-- **Colors**: Use neutral, professional color palettes
-
-### **Schema Labels & Info Text**
-
-```json
-{
-  "type": "text",
-  "id": "heading",
-  "label": "Section heading",
-  "info": "This appears at the top of your section",
-  "default": "Welcome to our store"
-}
-```
-
----
-
-## 🔄 **STEP 8: Integration Patterns**
-
-### **Block Integration in Sections**
-
-```liquid
-{% if section.blocks.size > 0 %}
-  <div class="section-name__blocks-{{ unique }}">
-    {% for block in section.blocks %}
-      {% case block.type %}
-        {% when 'feature_item' %}
-          {% render 'block-feature-item', block: block %}
-        {% when 'text_block' %}
-          {% render 'block-text', block: block %}
-      {% endcase %}
-    {% endfor %}
-  </div>
-{% endif %}
-```
-
-### **Snippet Integration**
-
-```liquid
-<!-- In sections or blocks -->
-{% render 'responsive-image',
-   image: section.settings.image,
-   alt: section.settings.heading,
-   sizes: '(min-width: 750px) 50vw, 100vw' %}
-```
-
----
-
-## 📁 **STEP 9: File Naming & Comments**
-
-### **File Naming Convention**
-
-- **Sections**: `section-name.liquid` (kebab-case)
-- **Blocks**: `block-component-name.liquid`
-- **Snippets**: `utility-name.liquid`
-- **CSS**: `pattern-name.css`
-
-### **Required Comments**
-
-```liquid
-{% comment %} sections/section-name.liquid {% endcomment %}
-<!-- At the top of every file -->
-
-{%- comment -%} Block schema (add under section schema) {%- endcomment -%}
-<!-- For block schema reference -->
-```
-
----
-
-## ✅ **STEP 10: Validation & Quality Checklist**
-
-### **🚀 Automated Validation First + Shopify MCP**
-
-**Run these commands for every new file:**
+### **Step 3: Snippet Validation**
 
 ```bash
-# 1. Development validation (fast)
+# Snippet-specific validation
 ./scripts/validate-theme.sh development
+./scripts/validate-theme.sh syntax
+```
 
-# 2. Auto-fix any simple issues
-./scripts/validate-theme.sh auto-fix
+**Snippet Validation Focuses On:**
+- ✅ Parameter validation and default handling
+- ✅ Liquid syntax in reusable context
+- ✅ Design token integration
+- ✅ CSS scoping with dynamic unique IDs
 
-# 3. Comprehensive validation
+---
+
+# 🎨 Building CSS Patterns
+
+**CSS patterns provide reusable styling methodologies and design system implementations.**
+
+## **CSS Pattern Creation Workflow**
+
+### **Step 1: Pattern Design**
+
+```bash
+./scripts/validate-theme.sh development
+```
+
+**Pattern Categories:**
+- **Component Patterns**: Button styles, card layouts, form elements
+- **Layout Patterns**: Grid systems, flexbox utilities, spacing
+- **Token Patterns**: Design token implementations, theme variables
+- **Responsive Patterns**: Breakpoint management, fluid typography
+
+### **Step 2: Create CSS Pattern File**
+
+**Location:** `shopify-liquid-guides/code-library/css-patterns/pattern-name.css`
+
+**Template Structure:**
+```css
+/* CSS Pattern: pattern-name.css */
+/*
+   Purpose: Description of the pattern and its use cases
+   Usage: How to apply this pattern in Liquid files
+   Dependencies: Any required design tokens or base styles
+
+   Design Token Integration:
+   - Uses semantic design tokens for consistency
+   - Provides component-level token abstractions
+   - Maintains responsive behavior through token system
+*/
+
+/* ✅ Component Token Definitions */
+:root {
+  --pattern-bg: var(--surface-primary);
+  --pattern-text: var(--text-primary);
+  --pattern-border: var(--border-primary);
+  --pattern-spacing: var(--spacing-component-md);
+  --pattern-radius: var(--border-radius-lg);
+}
+
+/* ✅ Base Pattern Styles */
+.pattern-base {
+  background: var(--pattern-bg);
+  color: var(--pattern-text);
+  border: 1px solid var(--pattern-border);
+  padding: var(--pattern-spacing);
+  border-radius: var(--pattern-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ✅ Pattern Variations */
+.pattern-base--large {
+  padding: var(--spacing-component-lg);
+  font-size: var(--font-size-lg);
+}
+
+.pattern-base--small {
+  padding: var(--spacing-component-sm);
+  font-size: var(--font-size-sm);
+}
+
+/* ✅ Responsive Pattern Behavior */
+@media (max-width: 749px) {
+  .pattern-base {
+    padding: var(--spacing-component-sm);
+  }
+}
+
+/* ✅ Interactive States */
+.pattern-base:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  transition: var(--transition-base);
+}
+
+.pattern-base:focus-within {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ✅ Pattern Component Integration */
+.pattern-base__element {
+  margin-bottom: var(--spacing-component-sm);
+  color: var(--pattern-text);
+}
+
+.pattern-base__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--spacing-component-xs);
+}
+
+.pattern-base__content {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+```
+
+### **Step 3: CSS Pattern Validation**
+
+```bash
+# CSS-specific validation
+./scripts/validate-theme.sh development
 ./scripts/validate-theme.sh comprehensive
+```
 
-# 4. Production readiness check
+**CSS Pattern Validation:**
+- ✅ Design token usage validation
+- ✅ CSS syntax and structure
+- ✅ Responsive pattern compliance
+- ✅ Accessibility (focus states, color contrast)
+
+---
+
+# 📄 Building Layouts
+
+**Layouts provide the foundational HTML structure for theme pages.**
+
+## **Layout Creation Workflow**
+
+### **Step 1: Layout Planning**
+
+```bash
+# Enhanced layout research with MCP
+# Use MCP for layout documentation:
+# - search_docs_chunks("theme layouts") for structure requirements
+# - fetch_full_docs("/docs/api/liquid/objects/layout") for layout objects
+
+./scripts/validate-theme.sh development
+```
+
+### **Step 2: Create Layout File**
+
+**Location:** `shopify-liquid-guides/code-library/layouts/layout-name.liquid`
+
+**Required Elements for Layouts:**
+- `{{ content_for_header }}` (required)
+- `{{ content_for_layout }}` (required)
+- Proper DOCTYPE and HTML structure
+- Meta tags and SEO elements
+
+**Template Structure:**
+```liquid
+{% comment %} layouts/layout-name.liquid {% endcomment %}
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    {% if page_title != blank %}{{ page_title }} - {% endif %}{{ shop.name }}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+  <!-- ✅ REQUIRED: content_for_header -->
+  {{ content_for_header }}
+
+  <!-- Design System CSS -->
+  {{ 'design-tokens.css' | asset_url | stylesheet_tag }}
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+</head>
+
+<body class="layout-{{ template.name }}">
+  <!-- Skip to content link for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Header -->
+  {% section 'header' %}
+
+  <!-- Main content area -->
+  <main id="main-content" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  <!-- Footer -->
+  {% section 'footer' %}
+
+  <!-- Global JavaScript -->
+  {{ 'global.js' | asset_url | script_tag }}
+</body>
+</html>
+```
+
+### **Step 3: Layout Validation**
+
+```bash
+./scripts/validate-theme.sh development
 ./scripts/validate-theme.sh production
 ```
 
-**Enhanced validation with Shopify MCP (when working with AI assistants):**
-- **Theme Validation**: Use `validate_theme` MCP tool for comprehensive Liquid template validation
-- **GraphQL Validation**: Use `validate_graphql_codeblocks` for API query validation
-- **Documentation Lookup**: Use `search_docs_chunks` for real-time Shopify documentation
-- **Schema Exploration**: Use `introspect_graphql_schema` for API development and exploration
-- **Complete Documentation**: Use `fetch_full_docs` for comprehensive reference material
+**Layout-Specific Validation:**
+- ✅ Required layout objects present
+- ✅ Valid HTML structure
+- ✅ Accessibility compliance (skip links, semantic HTML)
+- ✅ Performance optimization (preconnect, asset loading)
 
-**MCP Integration Benefits:**
-- Real-time validation against live Shopify APIs
-- Direct access to official Shopify documentation
-- Schema introspection for accurate API development
-- Theme Store compliance validation
-- Automated error detection and prevention
+---
 
-### **Manual Quality Checks**
+# 📋 Building Templates
 
-After automated validation passes, verify:
+**Templates define the structure and content for specific page types.**
 
-### **Code Quality**
+## **Template Creation Workflow**
+
+### **Step 1: Template Type Selection**
+
+```bash
+# Enhanced template research
+# Use MCP for template documentation:
+# - search_docs_chunks("shopify templates") for template types
+# - introspect_graphql_schema for data available to templates
+
+./scripts/validate-theme.sh development
+```
+
+**Template Types:**
+- **JSON Templates**: Merchant-customizable with sections
+- **Liquid Templates**: Custom logic and structure
+- **Metaobject Templates**: Custom content types
+
+### **Step 2: Create Template File**
+
+**For JSON Templates:**
+**Location:** `shopify-liquid-guides/examples/template-name.json`
+
+```json
+{
+  "sections": {
+    "header": {
+      "type": "header"
+    },
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "enable_sticky_info": true,
+        "enable_video_looping": false
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "You may also like",
+        "products_to_show": 4
+      }
+    }
+  },
+  "order": ["header", "main", "product-recommendations"]
+}
+```
+
+**For Liquid Templates:**
+**Location:** `shopify-liquid-guides/code-library/templates/template-name.liquid`
+
+```liquid
+{% comment %} templates/template-name.liquid {% endcomment %}
+{% layout 'theme' %}
+
+<div class="template-page">
+  {% if template.suffix == 'custom' %}
+    <!-- Custom template logic -->
+    {% section 'custom-hero' %}
+  {% else %}
+    <!-- Default template structure -->
+    {% section 'page-header' %}
+  {% endif %}
+
+  <main class="main-content" role="main">
+    {{ content_for_layout }}
+  </main>
+</div>
+```
+
+### **Step 3: Template Validation**
+
+```bash
+./scripts/validate-theme.sh development
+./scripts/validate-theme.sh comprehensive
+```
+
+**Template Validation:**
+- ✅ JSON syntax validation (for JSON templates)
+- ✅ Section reference validation
+- ✅ Template object usage validation
+- ✅ Layout assignment validation
+
+---
+
+# 🔄 **Enhanced Validation with Shopify MCP Integration**
+
+## **MCP-Enhanced Development Workflow**
+
+**When working with AI assistants that support MCP, use these enhanced validation capabilities:**
+
+### **Step 1: Initialize MCP Context**
+
+```bash
+# Traditional validation
+./scripts/validate-theme.sh development
+
+# Enhanced with MCP (AI assistants will use automatically):
+# - learn_shopify_api(api: "liquid") for Liquid context
+# - validate_theme for real-time theme validation
+# - introspect_graphql_schema for API schema exploration
+```
+
+### **Step 2: Real-Time Development Validation**
+
+**MCP Tools for Enhanced Development:**
+- **`validate_theme`**: Comprehensive theme validation against live Shopify standards
+- **`validate_graphql_codeblocks`**: Real-time GraphQL query validation
+- **`search_docs_chunks`**: Direct access to official Shopify documentation
+- **`introspect_graphql_schema`**: Live schema introspection for API development
+- **`fetch_full_docs`**: Complete documentation page retrieval
+
+### **Step 3: Documentation-Driven Development**
+
+**MCP-Enhanced Research:**
+```bash
+# Traditional documentation reference
+cat shopify-liquid-guides/schema-validation/schema-guidelines.md
+
+# Enhanced with MCP (AI assistants use automatically):
+# - search_docs_chunks("schema validation") for latest rules
+# - fetch_full_docs("/docs/api/liquid/tags/schema") for complete reference
+# - validate_graphql_codeblocks for API query validation
+```
+
+**📖 Complete MCP Setup: [SHOPIFY-MCP-SETUP.md](./shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md)**
+
+---
+
+# ✅ **Quality Assurance & Final Validation**
+
+## **Comprehensive Validation Workflow**
+
+**Every component must pass this complete validation workflow:**
+
+```bash
+# 1. Development validation (fast, essential checks)
+./scripts/validate-theme.sh development
+
+# 2. Liquid syntax validation (comprehensive syntax checking)
+./scripts/validate-theme.sh syntax
+
+# 3. Auto-fix any correctable issues
+./scripts/validate-theme.sh auto-fix
+
+# 4. Deep validation (ultimate + integrity + syntax + comprehensive)
+./scripts/validate-theme.sh deep
+
+# 5. Production validation (Theme Store ready)
+./scripts/validate-theme.sh production
+
+# 6. Complete validation suite (all tests)
+./scripts/validate-theme.sh all
+```
+
+## **Validation Capabilities**
+
+**Our comprehensive validation system checks:**
+
+### **Liquid Syntax Validation**
+- ✅ Tag pairing validation ({% if %} ↔ {% endif %})
+- ✅ Filter validation (60+ official Shopify filters)
+- ✅ Object validation (official Shopify objects)
+- ✅ Syntax error detection (unclosed tags, malformed expressions)
+- ✅ Performance pattern detection (nested loops, excessive filters)
+- ✅ Deprecated filter warnings (img_url → image_url)
+
+### **Schema Validation**
+- ✅ Range step calculations: `(max - min) / step ≤ 101`
+- ✅ Valid setting types (video not file for uploads)
+- ✅ JSON syntax validation (no trailing commas)
+- ✅ Setting ID uniqueness validation
+- ✅ Required property validation
+- ✅ Schema placement validation
+
+### **Design System Validation**
+- ✅ Design token usage validation
+- ✅ CSS scoping methodology compliance
+- ✅ Component token integration
+- ✅ Responsive pattern validation
+- ✅ Focus state implementation
+
+### **Accessibility Validation**
+- ✅ Semantic HTML structure
+- ✅ ARIA label and role validation
+- ✅ Heading hierarchy validation
+- ✅ Image alt text requirements
+- ✅ Focus management validation
+
+### **Performance Validation**
+- ✅ Responsive image implementation
+- ✅ Asset optimization validation
+- ✅ CSS performance patterns
+- ✅ JavaScript loading optimization
+- ✅ Core Web Vitals compliance
+
+### **Theme Store Compliance**
+- ✅ All Theme Store requirements
+- ✅ Security pattern validation
+- ✅ Code quality standards
+- ✅ Merchant experience validation
+- ✅ Cross-browser compatibility
+
+## **Manual Quality Checklist**
+
+**After automated validation passes, verify:**
+
+### **Code Quality Standards**
 - [ ] Uses unique ID scoping pattern (`{{ unique }}` or `{{ u }}`)
 - [ ] All user content is escaped with `| escape`
 - [ ] Blank value checks for optional settings
 - [ ] Responsive CSS with mobile-first approach
 - [ ] CSS custom properties for dynamic values
 
-### **Design System Compliance**
-- [ ] **Design token integration**: Uses semantic tokens, not primitives directly
-- [ ] **Token fallbacks**: Shopify settings provide token defaults (`{{ block.settings.bg_color | default: 'var(--component-bg)' }}`)
-- [ ] **Component tokens**: Uses appropriate tier (component → semantic → primitive)
-- [ ] **Focus states**: Implements design token-based focus management
-- [ ] **Responsive tokens**: Uses token system for responsive adjustments
-- [ ] **Schema integration**: Color settings reference design token fallbacks in `info` text
-- [ ] **Token consistency**: Component CSS follows unified design token patterns
+### **Design System Integration**
+- [ ] Uses semantic design tokens, not primitive values
+- [ ] Shopify settings provide token fallbacks
+- [ ] Focus states implemented with design tokens
+- [ ] Responsive behavior uses token system
+- [ ] Component follows unified design patterns
 
-### **Accessibility**
-- [ ] Semantic HTML structure
-- [ ] Proper ARIA labels and roles
-- [ ] Logical heading hierarchy
-- [ ] Meaningful alt text for images
-- [ ] Sufficient color contrast
+### **Content & Accessibility**
+- [ ] Semantic HTML structure with proper roles
+- [ ] Logical heading hierarchy (h2 → h3 → h4)
+- [ ] Meaningful ARIA labels and descriptions
+- [ ] Sufficient color contrast ratios
+- [ ] Keyboard navigation support
 
-### **Schema Validation (AUTOMATED + MANUAL)**
-- [ ] **Automated validation passed**: `./scripts/validate-theme.sh development` shows no errors
-- [ ] **Applied schema validation rules** from `schema-validation/schema-guidelines.md`
-- [ ] **Range step calculations verified**: All ranges follow `(max - min) / step ≤ 101`
-- [ ] **Valid setting types confirmed**: Use `video` not `file` for video uploads
-- [ ] **No invalid section attributes**: Remove `enabled_on` from sections
-- [ ] **Step values meet minimum**: All steps ≥ 0.1
-- [ ] **JSON syntax validated**: No trailing commas, proper quotes
-- [ ] **Setting IDs are unique**: No duplicate IDs within schema
-- [ ] **Auto-fix applied**: `./scripts/validate-theme.sh auto-fix` completed
-- [ ] **Production validation passed**: `./scripts/validate-theme.sh production` shows success
-- [ ] Descriptive labels and helpful info text
-- [ ] Sensible default values
-
-### **Performance**
-- [ ] Responsive images with srcset
-- [ ] Lazy loading where appropriate
-- [ ] Minimal CSS specificity
-- [ ] No hardcoded values (use settings)
-- [ ] **Design token efficiency**: Groups related token assignments for performance
-- [ ] **CSS custom property optimization**: Uses token-based CSS variables for dynamic styling
+### **Performance & Integration**
+- [ ] Responsive images with srcset and sizes
+- [ ] Lazy loading implemented appropriately
+- [ ] CSS scoped with unique identifiers
+- [ ] No hardcoded values (uses settings/tokens)
+- [ ] Proper integration with existing components
 
 ---
 
-## 🎯 **Summary: What You Need to Do**
+# 📚 **Documentation & Reference Files**
 
-When I give you a prompt to create a new Shopify Liquid file:
+## **Essential Documentation Structure**
 
-1. **🚀 START WITH VALIDATION**: Run `./scripts/validate-theme.sh development` to ensure clean environment
-2. **🎨 DESIGN SYSTEM FIRST**: Reference design token system (`code-library/css-patterns/design-tokens.css`) and implementation guide
-3. **🔴 VALIDATE SCHEMA FIRST**: Review `schema-validation/schema-guidelines.md` before any schema work
-4. **Apply validation rules**: Check range calculations, setting types, and restrictions
-5. **Identify the type** (section, block, snippet, CSS pattern)
-6. **Choose the correct location** in `shopify-liquid-guides/code-library/`
-7. **Follow the exact file structure** from Step 3 with design token integration
-8. **Use our CSS scoping methodology** with unique IDs and semantic tokens
-9. **Include validated schema configuration** with design token fallbacks and realistic defaults
-10. **Ensure accessibility compliance** with ARIA and semantic HTML
-11. **Follow performance best practices** for Theme Store approval
-12. **Match our naming conventions** and comment patterns
-13. **🎯 VALIDATE COMPLETION**: Run complete validation workflow:
-    ```bash
-    ./scripts/validate-theme.sh development  # Quick check
-    ./scripts/validate-theme.sh auto-fix     # Fix issues
-    ./scripts/validate-theme.sh production   # Final validation
-    ```
+Our documentation has been reorganized for optimal development workflow:
 
-### **🛡️ Error Prevention Priority**
+### **Core Development Files**
+- **`INSTRUCTIONS.md`** (this file): Complete component builder program
+- **`shopify-liquid-guides/schema-validation/schema-guidelines.md`**: Schema validation rules
+- **`shopify-liquid-guides/docs/architecture/design-system-implementation.md`**: Design system guide
 
-**The #1 cause of development friction is schema validation errors.** Our automated validation prevents these:
+### **Enhanced Documentation Location**
+- **`shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md`**: Complete MCP integration guide
+- **`shopify-liquid-guides/docs/validation/VALIDATOR_ARCHITECTURE_IMPROVEMENTS.md`**: Validator implementation details
+- **`shopify-liquid-guides/docs/validation/SHOPIFY_FILE_TYPE_VALIDATION_MATRIX.md`**: Official validation reference
 
+### **Code Library References**
+- **`shopify-liquid-guides/code-library/`**: Production-ready component examples
+- **`shopify-liquid-guides/examples/`**: Complete page templates and JSON examples
+- **`shopify-liquid-guides/docs/`**: Comprehensive documentation for all file types
+
+### **Validation Configuration**
+- **`.theme-check.yml`**: Ultimate validation configuration
+- **`.theme-check-development.yml`**: Fast development validation
+- **`.theme-check-production.yml`**: Theme Store submission validation
+
+---
+
+# 🎯 **Summary: Your Development Workflow**
+
+## **Perfect Component Creation Process**
+
+**When building any Shopify Liquid component, follow this exact workflow:**
+
+### **1. 🚀 Pre-Development (MANDATORY)**
 ```bash
-# Automated error detection and prevention
-./scripts/validate-theme.sh development
-./scripts/validate-theme.sh auto-fix
+./scripts/validate-theme.sh development  # Ensure clean environment
 ```
 
-**Manual validation checks** (automated validation covers most of these):
-- Validate range step calculations: `(max - min) / step ≤ 101`
-- Use correct setting types: `video` not `file` for uploads
-- Remove invalid attributes: No `enabled_on` in sections
-- Ensure minimum step values: ≥ 0.1 for all ranges
-- Check JSON syntax: No trailing commas or quotes issues
+### **2. 🎯 Component Planning**
+- Identify component type (section, block, snippet, CSS, layout, template)
+- Review relevant documentation section above
+- Plan schema structure with validation rules
+- Consider design token integration
 
-**Key principle**: Every new file should feel like a natural extension of our existing codebase, following identical patterns and maintaining the same level of quality and consistency.
+### **3. 🏗️ Component Creation**
+- Use appropriate file location and naming
+- Follow exact template structure for component type
+- Integrate design token system throughout
+- Implement accessibility requirements
+- Apply performance best practices
 
-**Design system principle**: Every component must use the unified design token system to ensure visual consistency and maintainability across all theme components.
-
-**Schema validation principle**: Every schema must pass the comprehensive validation rules to prevent "FileSaveError: Invalid schema" errors that break the development workflow.
-
-### **🎉 Validation-First Development Workflow**
-
+### **4. 🛡️ Comprehensive Validation**
 ```bash
-# Perfect development cycle:
-./scripts/validate-theme.sh development  # Start clean
-# [Create your file]
-./scripts/validate-theme.sh development  # Quick validation
-./scripts/validate-theme.sh auto-fix     # Fix any issues
-./scripts/validate-theme.sh production   # Production ready
+./scripts/validate-theme.sh development  # Quick check
+./scripts/validate-theme.sh syntax       # Liquid syntax validation
+./scripts/validate-theme.sh auto-fix     # Fix correctable issues
+./scripts/validate-theme.sh production   # Final validation
 ```
 
-📖 **Essential References**:
-- [Complete Validation Guide](./THEME-CHECK-SETUP.md) - Ultimate validation setup
-- [Shopify MCP Server Setup](./SHOPIFY-MCP-SETUP.md) - Direct Shopify API integration
-- `shopify-liquid-guides/schema-validation/schema-guidelines.md` - Schema validation rules
-- `shopify-liquid-guides/docs/architecture/design-system-implementation.md` - Design system implementation guide
-- `shopify-liquid-guides/code-library/css-patterns/design-tokens.css` - Unified design token system (450+ tokens)
+### **5. ✅ Quality Assurance**
+- Complete manual quality checklist
+- Verify design system integration
+- Test component in theme editor
+- Validate responsive behavior
 
-**🚀 Result**: 100% Theme Store compliance with unified design system excellence guaranteed with zero development friction!
+### **6. 🎉 Component Ready**
+- Component passes all validation levels
+- Follows unified design system
+- Meets Theme Store compliance
+- Ready for production deployment
 
-Now you're ready to create any Shopify Liquid file that perfectly fits our established methodology with full validation automation! 🎉
+---
+
+## **🛡️ Zero-Tolerance Quality Philosophy**
+
+**Our validation system implements a zero-tolerance approach to quality:**
+
+- **❌ No syntax errors**: Comprehensive Liquid syntax validation catches all issues
+- **❌ No schema violations**: Automated schema validation prevents "Invalid schema" errors
+- **❌ No accessibility gaps**: WCAG 2.1 AA compliance validation built-in
+- **❌ No performance issues**: Core Web Vitals and optimization validation
+- **❌ No Theme Store rejections**: 100% compliance validation guaranteed
+
+**Result: Every component you create will be production-ready with zero deployment issues!**
+
+---
+
+## **🚀 Enhanced with Shopify MCP Integration**
+
+**When working with AI assistants that support MCP, you get:**
+
+- **Real-time validation** against live Shopify APIs
+- **Direct documentation access** to official Shopify resources
+- **Schema introspection** for accurate API development
+- **GraphQL validation** for complex data requirements
+- **Theme compliance checking** against current Shopify standards
+
+**📖 Complete Setup Guide: [SHOPIFY-MCP-SETUP.md](./shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md)**
+
+---
+
+**🎯 You now have everything needed to build perfect Shopify Liquid components with automated validation, comprehensive quality assurance, and zero development friction!**

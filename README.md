@@ -9,42 +9,52 @@ This repository provides everything needed for world-class Shopify theme develop
 - **🎨 Unified Design System**: 450+ design tokens with three-tier architecture (primitive → semantic → component)
 - **🎯 100% Theme Store Compliance**: Ultimate validation setup with automated workflows
 - **⚡ Enhanced Automation**: Multi-language validation (Shell + Python) with design system validation
-- **🔧 Multi-Level Validation**: Development, comprehensive, production, and ultimate validation levels
-- **📊 50+ Validation Rules**: All critical checks for schema, content, performance, security, and design consistency
+- **🔧 Multi-Level Validation**: Development, syntax, ultimate, deep, comprehensive, production validation levels
+- **📊 50+ Validation Rules**: All critical checks for schema, content, performance, security, design consistency, and comprehensive Liquid syntax
 - **🚀 Modern Shopify Features**: 2024-2025 features including Shop Pay, PWA, AI blocks, metaobjects
 - **Complete Architecture Coverage**: All 7 Shopify file types with design system integration
 - **Production-Ready Code**: Copy-paste sections, blocks, templates with unified styling
 - **CSP Security Implementation**: Theme Store compliant security with no external dependencies
-- **Advanced Development Patterns**: Design token-based CSS, scoped styling, performance optimization
+- **Advanced Development Patterns**: Comprehensive Liquid syntax validation, design token-based CSS, scoped styling, performance optimization
 - **Comprehensive Documentation**: From basics to advanced implementation with design system guidance
 - **VS Code Integration**: Full development environment with intelligent tooling and validation
 
-### 🎉 **Enhanced Validation Suite - Design System + Theme Store Excellence!**
+### 🎉 **Enhanced Validation Suite - Comprehensive Liquid Syntax + Design System + Theme Store Excellence!**
 
 ```bash
-# Enhanced validation with design system compliance:
+# 🆕 Liquid syntax validation only (zero tolerance)
+./scripts/validate-theme.sh syntax
+
+# 🆕 Ultimate validation (comprehensive liquid syntax + theme validation)
 ./scripts/validate-theme.sh ultimate
+
+# 🆕 Deep validation (ultimate + integrity + comprehensive)
+./scripts/validate-theme.sh deep
 
 # Complete validation workflow - covers all aspects:
 ./scripts/validate-theme.sh all
 
-# Design system specific validation:
-python scripts/ultimate-validator.py --design-system
+# Advanced Python-based validation:
+python scripts/liquid-syntax-validator.py shopify-liquid-guides/code-library/
+python scripts/ultimate-validator.py --liquid-syntax --design-system
 ```
 
-**Result**: Ultimate validation with design token consistency, hallucinated filter detection, over-engineering prevention, performance optimization, CSP compliance, and 100% Theme Store excellence!
+**Result**: Ultimate validation with **comprehensive Liquid syntax validation**, design token consistency, hallucinated filter detection, over-engineering prevention, performance optimization, CSP compliance, and 100% Theme Store excellence!
 
 ## 🎯 Quick Start
 
 ### ⚡ Instant Validation Setup
 ```bash
-# Test the ultimate validation setup (works immediately):
+# Test the enhanced validation setup (works immediately):
 ./scripts/validate-theme.sh development
 
-# Zero tolerance liquid validation only:
+# 🆕 Liquid syntax validation only (zero tolerance):
+./scripts/validate-theme.sh syntax
+
+# 🆕 Ultimate validation (comprehensive liquid syntax + theme validation):
 ./scripts/validate-theme.sh ultimate
 
-# Deep validation for pre-deployment:
+# 🆕 Deep validation (ultimate + integrity + comprehensive):
 ./scripts/validate-theme.sh deep
 
 # Run complete validation workflow:
@@ -84,7 +94,7 @@ python scripts/ultimate-validator.py --design-system
 | **[README.md](./README.md)** | This overview | Understanding the repository |
 | **[INSTRUCTIONS.md](./INSTRUCTIONS.md)** | Task-specific guidance | When you need specific help |
 | **[scripts/validate-theme.sh](./scripts/validate-theme.sh)** | Automated validation | Daily development and pre-production |
-| **[SHOPIFY-MCP-SETUP.md](./SHOPIFY-MCP-SETUP.md)** | Shopify MCP integration | Direct API access and Liquid enhancement |
+| **[SHOPIFY-MCP-SETUP.md](./shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md)** | Shopify MCP integration | Direct API access and Liquid enhancement |
 
 ### 🔧 **Enhanced Configuration & Automation**
 
@@ -93,8 +103,9 @@ python scripts/ultimate-validator.py --design-system
 | `.theme-check.yml` | Comprehensive validation | All 50+ validation rules enabled |
 | `.theme-check-development.yml` | Fast development validation | Essential checks only |
 | `.theme-check-production.yml` | Theme Store compliance | Maximum validation for submission |
-| `scripts/validate-theme.sh` | **Enhanced validation workflow** | Multi-level validation with design system checks |
-| `scripts/ultimate-validator.py` | **Python validation suite** | Advanced repository-wide validation |
+| `scripts/validate-theme.sh` | **Enhanced validation workflow** | Multi-level validation with liquid syntax + design system checks |
+| `scripts/ultimate-validator.py` | **Python validation suite** | Advanced repository-wide validation with liquid syntax integration |
+| `scripts/liquid-syntax-validator.py` | **🆕 Liquid syntax validator** | Comprehensive Liquid syntax validation with python-liquid |
 | `scripts/scan-schema-integrity.py` | **Schema validation** | Python-based comprehensive schema checking |
 | `scripts/README.md` | **Scripts documentation** | Complete automation guide |
 | `locales/` | Translation files | Multi-language support |
@@ -222,19 +233,26 @@ Prevent style conflicts and ensure consistency using design tokens with unique i
 ## 🛠️ Development Environment
 
 ### 🚀 Ultimate Theme Validation Setup
-**100% Theme Store Compliance & Production Ready**
+**100% Theme Store Compliance & Production Ready + Comprehensive Liquid Syntax Validation**
 
 - **Shopify CLI v3.84.2**: Latest validation with 50+ rules
-- **Multi-Level Validation**: Development, comprehensive, and production configs
+- **🆕 Advanced Liquid Syntax Validation**: Python-based comprehensive syntax checking
+- **Multi-Level Validation**: Development, syntax, ultimate, deep, comprehensive, and production configs
 - **Automated Workflow**: One-command validation and auto-correction
-- **Complete Coverage**: All 7 Shopify file types validated
+- **Complete Coverage**: All 7 Shopify file types + advanced Liquid syntax validated
 
 **Quick Start:**
 ```bash
+# 🆕 Liquid syntax validation only (zero tolerance)
+./scripts/validate-theme.sh syntax
+
+# 🆕 Ultimate validation (liquid syntax + theme validation)
+./scripts/validate-theme.sh ultimate
+
 # Run complete validation workflow
 ./scripts/validate-theme.sh all
 
-# Development validation (fast)
+# Development validation (fast + liquid syntax)
 ./scripts/validate-theme.sh development
 
 # Production validation (Theme Store ready)

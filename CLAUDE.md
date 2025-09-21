@@ -252,7 +252,7 @@ The Shopify MCP server provides direct access to Shopify APIs and documentation 
 4. **Documentation**: Use `search_docs_chunks` and `fetch_full_docs`
 5. **Quality Assurance**: Regular `validate_theme` throughout development
 
-📖 **[Complete MCP Setup Guide](./SHOPIFY-MCP-SETUP.md)** - Comprehensive integration and usage documentation
+📖 **[Complete MCP Setup Guide](./shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md)** - Comprehensive integration and usage documentation
 
 MCP servers are enabled in `.claude/settings.local.json` for enhanced development capabilities.
 

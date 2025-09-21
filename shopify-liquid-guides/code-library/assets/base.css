@@ -1,0 +1,158 @@
+/*
+  base.css - Essential base styles for Shopify themes
+  Provides foundation styles that work with theme.liquid CSS variables
+*/
+
+/* Reset and base styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: rgb(var(--color-base-background-1));
+  color: rgba(var(--color-base-text), 1);
+}
+
+/* Skip to content link for accessibility */
+.skip-to-content-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999999999;
+  padding: 1rem 1.5rem;
+  background: rgba(var(--color-base-text), 1);
+  color: rgb(var(--color-base-background-1));
+  text-decoration: none;
+  font-size: 1.4rem;
+}
+
+.skip-to-content-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* Focus states */
+.focus-none:focus {
+  outline: none;
+}
+
+/* Utility classes */
+.visually-hidden {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  word-wrap: normal !important;
+}
+
+/* Gradient body class */
+.gradient {
+  background: linear-gradient(180deg, rgb(var(--color-base-background-1)), rgb(var(--color-base-background-2)));
+}
+
+/* Basic button styling */
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2rem;
+  border: 0.1rem solid transparent;
+  background-color: rgba(var(--color-base-accent-1), 1);
+  color: rgb(var(--color-base-background-1));
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  border-radius: 0;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background-color: rgba(var(--color-base-accent-2), 1);
+}
+
+.button:focus {
+  outline: 0.2rem solid rgba(var(--color-base-accent-1), 0.5);
+  outline-offset: 0.3rem;
+}
+
+/* Content layout */
+.content-for-layout {
+  min-height: 50vh;
+}
+
+/* Page width container */
+.page-width {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media screen and (min-width: 750px) {
+  .page-width {
+    padding: 0 2rem;
+  }
+}
+
+/* Section spacing */
+.section {
+  padding: var(--spacing-sections-mobile) 0;
+}
+
+@media screen and (min-width: 750px) {
+  .section {
+    padding: var(--spacing-sections-desktop) 0;
+  }
+}
+
+/* Basic typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.2;
+  margin: 0 0 1.5rem;
+}
+
+h1 { font-size: 3.2rem; }
+h2 { font-size: 2.4rem; }
+h3 { font-size: 2rem; }
+h4 { font-size: 1.8rem; }
+h5 { font-size: 1.6rem; }
+h6 { font-size: 1.4rem; }
+
+p {
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+}
+
+/* Basic responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Form elements */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Links */
+a {
+  color: rgba(var(--color-base-accent-1), 1);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: rgba(var(--color-base-accent-2), 1);
+}
+
+/* Lists */
+ul[hidden] {
+  display: none;
+}

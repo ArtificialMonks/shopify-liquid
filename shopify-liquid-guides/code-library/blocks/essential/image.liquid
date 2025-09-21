@@ -291,6 +291,7 @@
             width="{{ image.width }}"
             height="{{ image.height }}"
             loading="{{ loading }}"
+            {% if preload %}fetchpriority="high"{% endif %}
             {% unless loading == 'eager' %}decoding="async"{% endunless %}>
         </picture>
       {%- elsif image_mobile != blank -%}
@@ -307,6 +308,7 @@
           width="{{ image_mobile.width }}"
           height="{{ image_mobile.height }}"
           loading="{{ loading }}"
+          {% if preload %}fetchpriority="high"{% endif %}
           {% unless loading == 'eager' %}decoding="async"{% endunless %}>
       {%- endif -%}
     {%- else -%}

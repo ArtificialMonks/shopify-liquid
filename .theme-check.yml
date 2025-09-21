@@ -25,7 +25,22 @@ ignore:
 
 # ===================================================================
 # CRITICAL ERROR LEVEL CHECKS - Theme Store Blockers
+# Updated to align with enhanced validator architecture (2025)
 # ===================================================================
+
+# NEW: App Block Validation (Theme Store Critical)
+AppBlockMissingSchema:
+  enabled: true
+  severity: error
+
+AppBlockValidTags:
+  enabled: true
+  severity: error
+
+# NEW: Required Layout Objects
+RequiredLayoutThemeObject:
+  enabled: true
+  severity: error
 
 # Syntax and Structure
 JSONSyntaxError:
@@ -128,7 +143,33 @@ UnsupportedDocTag:
 
 # ===================================================================
 # WARNING LEVEL CHECKS - Best Practices & Performance
+# Enhanced with new validation rules from our architecture improvements
 # ===================================================================
+
+# NEW: Asset Size Validation
+AssetSizeCSS:
+  enabled: true
+  severity: warning
+  max_size: 100000  # 100KB limit
+
+AssetSizeJavaScript:
+  enabled: true
+  severity: warning
+
+AssetSizeAppBlockCSS:
+  enabled: true
+  severity: error
+  max_size: 100000  # 100KB limit for app blocks
+
+AssetSizeAppBlockJavaScript:
+  enabled: true
+  severity: error
+  max_size: 10000  # 10KB limit for app blocks
+
+# NEW: Enhanced Performance Checks
+ParserBlockingJavaScript:
+  enabled: true
+  severity: error
 
 # Settings and Schema Best Practices
 LiquidFreeSettings:

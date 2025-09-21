@@ -15,6 +15,41 @@ ignore:
   - "build/**"
 
 # CRITICAL ERROR LEVEL CHECKS - Must pass for Theme Store
+# Enhanced with new validation architecture for maximum compliance
+
+# NEW: App Block Validation (Theme Store Critical)
+AppBlockMissingSchema:
+  enabled: true
+  severity: error
+
+AppBlockValidTags:
+  enabled: true
+  severity: error
+
+# NEW: Asset Size Validation (Production Limits)
+AssetSizeCSS:
+  enabled: true
+  severity: error
+  max_size: 100000  # 100KB strict limit
+
+AssetSizeJavaScript:
+  enabled: true
+  severity: error
+
+AssetSizeAppBlockCSS:
+  enabled: true
+  severity: error
+  max_size: 100000  # 100KB strict limit for app blocks
+
+AssetSizeAppBlockJavaScript:
+  enabled: true
+  severity: error
+  max_size: 10000  # 10KB strict limit for app blocks
+
+# NEW: Enhanced Performance Checks
+ParserBlockingJavaScript:
+  enabled: true
+  severity: error
 JSONSyntaxError:
   enabled: true
   severity: error

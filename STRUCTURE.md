@@ -352,15 +352,17 @@ Automated validation → Extension setup → Linting rules → Quality assurance
 
 ## 📊 Repository Statistics
 
-- **Total Files**: 160+ files across complete documentation with validation automation
-- **Documentation Files**: 55+ markdown files covering all Shopify file types
+- **Total Files**: 170+ files across complete documentation with enhanced validation automation
+- **Documentation Files**: 60+ markdown files covering all Shopify file types + validation documentation
+- **Validation Scripts**: 8+ specialized validation and testing scripts including liquid syntax validation
 - **Liquid Templates**: 13 production-ready files in code library (sections, blocks, snippets)
 - **JSON Examples**: 3 complete page templates
 - **CSS Patterns**: 3 methodology files
 - **Configuration Files**: 12 development setup files including validation automation
-- **Validation Files**: 4 specialized validation configurations and scripts
+- **Enhanced Validation Files**: 6+ specialized validation configurations, scripts, and documentation
 - **Claude Agent Files**: 4 AI assistant configurations with validation integration
-- **Comprehensive Guides**: 40+ specialized topic files
+- **Comprehensive Guides**: 45+ specialized topic files
+- **New Documentation Directories**: 2 specialized directories (validation/, development/)
 
 ## 🎯 Navigation Quick Reference
 
@@ -386,6 +388,9 @@ Automated validation → Extension setup → Linting rules → Quality assurance
 | Need | Go To | What You'll Find |
 |------|-------|------------------|
 | **Setup Validation** | [THEME-CHECK-SETUP.md](./THEME-CHECK-SETUP.md) | Complete validation automation setup |
+| **🆕 Liquid Syntax Validation** | [liquid-syntax-validator.py](./scripts/liquid-syntax-validator.py) | Comprehensive Liquid syntax validation |
+| **🆕 Validation Architecture** | [docs/validation/](./shopify-liquid-guides/docs/validation/) | Validator implementation and reference |
+| **🆕 MCP Integration** | [docs/development/](./shopify-liquid-guides/docs/development/) | Enhanced development setup |
 | **Learn Shopify Liquid** | [01-fundamentals.md](./shopify-liquid-guides/01-fundamentals.md) | Syntax, objects, filters |
 | **Build First Section** | [02-quick-start.md](./shopify-liquid-guides/02-quick-start.md) | Step-by-step tutorial with validation |
 | **Copy Production Code** | [code-library/](./shopify-liquid-guides/code-library/) | Ready-to-use validated components |
