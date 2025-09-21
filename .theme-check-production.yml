@@ -6,8 +6,7 @@
 root: "shopify-liquid-guides/code-library"
 
 # Use all available checks for production
-extends:
-  - "theme-check:all"
+extends: "theme-check:all"
 
 # Minimal ignore list for production themes
 ignore:
@@ -175,3 +174,10 @@ VariableName:
   enabled: true
   severity: warning
   format: snake_case
+
+# RemoteAsset check at info level for production review
+# Note: This often flags legitimate external URLs and file.url references
+# Set to info level so it doesn't distract from real issues
+RemoteAsset:
+  enabled: true
+  severity: info

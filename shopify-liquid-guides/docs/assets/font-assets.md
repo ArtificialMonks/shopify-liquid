@@ -530,11 +530,12 @@ html {
 ### 2. Excessive Font Loading
 **Problem**: Too many font variants slow loading
 ```css
-/* Bad: Loading unnecessary font weights */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800;900');
+/* ❌ THEME STORE VIOLATION: External font imports not allowed */
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800;900'); */
 
-/* Good: Load only needed weights */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700');
+/* ✅ SHOPIFY COMPLIANT: Use font_picker setting type */
+/* Schema: {"type": "font_picker", "id": "heading_font", "label": "Heading Font"} */
+/* Liquid: {{ settings.heading_font | font_face: font_display: 'swap' }} */
 ```
 
 ### 3. Missing Fallback Fonts

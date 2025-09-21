@@ -1,5 +1,27 @@
 # WARP.md
 
+## CRITICAL RULE: SUBSTANCE OVER PRAISE
+
+**In all your responses, please focus on substance over praise. Skip unnecessary compliments, engage critically with my ideas, question my assumptions, identify my biases, and offer counterpoints when relevant. Don't shy away from disagreement, and ensure that any agreements you have are grounded in reason and evidence.**
+
+**When writing your response, please ensure you include the following information:**
+1. **A neutral, unbiased view of the request**, unfiltered by your desire to be a helpful and positive assistant
+2. **A devil's advocate view**, pointing out any logical counterpoints or things that I have overlooked
+3. **An encouraging, positive view of the request**
+
+### Practical Application Guidelines
+
+**Default Behavior**: Apply the full three-perspective format above.
+
+**Exceptions** - Use streamlined responses for:
+- Simple technical fixes with clear solutions ("How do I fix this TypeScript error?")
+- Direct factual queries ("What's the syntax for X?")
+- Routine implementation tasks with established patterns
+
+**For exceptions**: Still maintain substance over praise and question assumptions, but focus on accuracy and directness rather than multiple perspectives.
+
+**When in doubt**: Default to the full three-perspective format.
+
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
 ## Repository Overview
@@ -7,6 +29,27 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 This is a **comprehensive Shopify theme development resource** with an advanced validation system containing documentation, production-ready code examples, and best practices for building modern Shopify themes. It covers all 7 Shopify file types with cutting-edge features and **enterprise-grade validation workflows**.
 
 **Purpose**: Documentation and code library for professional Shopify theme development with **100% Theme Store compliance validation**.
+
+## Follow-Up Request Protocol
+
+**FOLLOW-UP REQUEST**:
+
+Provide up to 4 additional high-value, necessary follow-up improvements for the Shopify Liquid documentation and code library repository. Apply strict criteria:
+
+- **High-Value**: Must deliver measurable developer productivity improvements, theme performance gains, or merchant usability enhancements
+- **Necessary**: Must address genuine gaps in Liquid implementation patterns, schema validation failures, or Theme Store compliance issues
+- **Evidence-Based**: Must be justified by concrete issues in the current codebase, missing documentation patterns, or production deployment blockers
+- **Scoped**: Must be implementable within the existing documentation structure and code library organization without requiring major architectural changes to the theme development workflow
+
+Focus specifically on:
+- Liquid template optimization and performance patterns
+- Schema validation and Theme Store compliance gaps
+- CSS scoping methodology improvements
+- Production-ready section/block implementation missing pieces
+- Developer experience enhancements for theme building
+- Accessibility and responsive design pattern completeness
+
+If fewer than the genuinely necessary improvements exist, provide fewer items rather than padding the list.
 
 ## Quick Start
 
@@ -27,19 +70,26 @@ shopify version
 shopify login --store=your-store.myshopify.com
 ```
 
-### First Commands - Advanced Validation System
+### First Commands - Advanced Validation System + Shopify MCP
 ```bash
-# Quick validation check (recommended)
+# 🚨 CRITICAL: Development validation with schema integrity (RECOMMENDED)
 ./scripts/validate-theme.sh development
 
 # Complete validation suite
 ./scripts/validate-theme.sh all
 
-# Browse code library structure (validated directory)
+# 🔍 Schema integrity check (catches range step violations)
+./scripts/validate-theme.sh integrity
+
+# 🆕 Shopify MCP Server integration (when working with AI assistants)
+# Note: These are used within Claude Code, not direct command line tools
+# See SHOPIFY-MCP-SETUP.md for complete integration guide
+
+# Browse code library structure (including custom directories)
 ls -la shopify-liquid-guides/code-library/
-ls -la shopify-liquid-guides/code-library/sections/
-ls -la shopify-liquid-guides/code-library/snippets/
-ls -la shopify-liquid-guides/code-library/blocks/
+ls -la shopify-liquid-guides/code-library/blocks/custom/
+ls -la shopify-liquid-guides/code-library/sections/custom/
+ls -la shopify-liquid-guides/code-library/css-patterns/custom/
 ```
 
 ## Advanced Validation System
@@ -140,6 +190,71 @@ shopify theme pull --development
 
 **⚠️ Note**: `shopify theme serve` requires a complete theme with all 7 file types. The code library contains individual components for validation and reference - use complete themes from `shopify-liquid-guides/examples/` for serving.
 
+## 🚀 Shopify MCP Server Integration
+
+### Overview
+The repository includes Shopify MCP server integration for enhanced AI-assisted development. The MCP (Model Context Protocol) server provides direct access to Shopify APIs and documentation when working with AI assistants like Claude Code.
+
+### MCP Configuration
+```bash
+# View MCP configuration
+cat .mcp.json
+
+# Shopify MCP server is configured with optimal settings:
+# - LIQUID: "true" (Liquid template support)
+# - POLARIS_UNIFIED: "true" (Unified design system)
+# - OPT_OUT_INSTRUMENTATION: "true" (Performance optimization)
+```
+
+### When to Use Shopify MCP (AI Assistant Context)
+The Shopify MCP server is automatically available when working with Claude Code and provides these capabilities:
+
+**Core MCP Tools:**
+- `learn_shopify_api` - Initialize Shopify API context (required first step)
+- `validate_theme` - Real-time theme validation against live Shopify standards
+- `validate_graphql_codeblocks` - Live GraphQL query validation
+- `introspect_graphql_schema` - Live schema exploration for API development
+- `search_docs_chunks` - Direct access to official Shopify documentation
+- `fetch_full_docs` - Retrieve complete documentation pages
+
+**Typical MCP Workflow (AI Assistant Usage):**
+1. AI assistant initializes with `learn_shopify_api`
+2. Real-time validation using `validate_theme` during development
+3. GraphQL development using `introspect_graphql_schema` and `validate_graphql_codeblocks`
+4. Documentation lookup using `search_docs_chunks` and `fetch_full_docs`
+5. Continuous validation throughout development process
+
+### MCP vs. Traditional Validation
+**Traditional Development Workflow:**
+```bash
+# Local validation (always available)
+./scripts/validate-theme.sh development
+./scripts/validate-theme.sh production
+shopify theme check
+```
+
+**Enhanced AI-Assisted Workflow:**
+- **Traditional validation** + **MCP integration** for live Shopify API access
+- Real-time documentation lookup during development
+- Live GraphQL schema introspection for accurate API development
+- Theme Store compliance validation against current Shopify standards
+
+### Documentation and Setup
+```bash
+# Complete MCP setup guide
+cat SHOPIFY-MCP-SETUP.md
+
+# MCP integration examples and usage patterns
+# (Documentation created during MCP server setup)
+```
+
+**Key Benefits:**
+- **Live Shopify Documentation**: Direct access to current Shopify documentation
+- **Real-time Validation**: Theme validation against live Shopify standards
+- **GraphQL Development**: Live schema introspection and query validation
+- **Enhanced Accuracy**: Prevents Liquid hallucinations with live API access
+- **Theme Store Compliance**: Validation against current Theme Store requirements
+
 ### Documentation Navigation
 ```bash
 # Explore comprehensive documentation
@@ -199,6 +314,21 @@ shopify-liquid-guides/
 ├── schema-validation/                # Schema validation rules (critical)
 ├── docs/                            # Comprehensive documentation
 ├── code-library/                    # Production-ready code examples
+│   ├── blocks/
+│   │   ├── essential/               # Core blocks every theme needs
+│   │   ├── advanced/                # Complex functionality blocks
+│   │   ├── legacy/                  # Backward compatibility blocks
+│   │   └── custom/                  # 🆕 Repository-specific custom blocks
+│   ├── sections/
+│   │   ├── essential/               # Core section templates
+│   │   ├── enhanced/                # Advanced section functionality
+│   │   ├── templates/               # Customer/gift card templates
+│   │   └── custom/                  # 🆕 Repository-specific custom sections
+│   ├── css-patterns/
+│   │   ├── bem-scoping/            # BEM methodology with scoping
+│   │   ├── responsive/              # Mobile-first patterns
+│   │   └── custom/                  # 🆕 Repository-specific CSS patterns
+│   └── snippets/                   # Reusable Liquid functionality
 └── examples/                        # Complete templates and samples
 ```
 
@@ -211,6 +341,16 @@ shopify-liquid-guides/
 - `locales/` - Internationalization and translation
 - `section-groups/` - Dynamic layout areas (Online Store 2.0)
 - `advanced-features/` - Modern patterns (AI, PWA, metaobjects)
+
+### 🆕 Custom Directories (`code-library/*/custom/`) - Repository-Specific Components
+- `blocks/custom/` - Custom block components built for this repository
+  - **advanced_video_text.liquid** - Advanced video + text positioning block
+  - **Future custom blocks** - Additional repository-specific components
+- `sections/custom/` - Custom section templates for specialized use cases
+- `css-patterns/custom/` - Repository-specific CSS methodologies and scoping patterns
+- **Validation**: All custom components MUST pass `./scripts/validate-theme.sh integrity`
+- **Standards**: Follow same patterns as essential/advanced directories
+- **Documentation**: Each custom directory includes comprehensive README.md
 
 ### Production Code Library (`code-library/`)
 - `sections/` - Complete section templates with schema
@@ -282,13 +422,15 @@ Critical validation rules:
 
 ### Essential Development Files
 - **`THEME-CHECK-SETUP.md`** - Complete validation system setup guide (START HERE)
+- **`SHOPIFY-MCP-SETUP.md`** - 🆕 Shopify MCP server integration and usage guide
 - **`.theme-check.yml`** - Comprehensive theme validation configuration
 - **`.theme-check-development.yml`** - Fast development validation config
 - **`.theme-check-production.yml`** - Theme Store submission validation
 - **`scripts/validate-theme.sh`** - Advanced validation script with multiple levels
+- **`.mcp.json`** - 🆕 MCP server configuration for enhanced AI-assisted development
 - **`.vscode/settings.json`** - VS Code Shopify Liquid extension config
 - **`.vscode/sessions.json`** - Terminal Keeper sessions (workflow reference)
-- **`.warp/workflows.yaml`** - Warp terminal workflows for validation
+- **`.warp/workflows.yaml`** - Warp terminal workflows for validation + MCP integration
 - **`locales/en.default.json`** - Default translation file for validation
 - **`INSTRUCTIONS.md`** - Comprehensive task-specific guidance
 
@@ -377,26 +519,54 @@ workflows:
   validation-dev:
     name: "Development Validation"
     command: ./scripts/validate-theme.sh development
-  
+
   validation-full:
     name: "Complete Validation Suite"
     command: ./scripts/validate-theme.sh all
-  
+
   validation-prod:
     name: "Production Validation"
     command: ./scripts/validate-theme.sh production
-  
+
   auto-fix:
     name: "Auto-Fix Issues"
     command: ./scripts/validate-theme.sh auto-fix
-  
+
   # Legacy theme-check
   theme-check:
     name: "Legacy Theme Check"
     command: |
       cd shopify-liquid-guides/code-library
       theme-check .
-  
+
+  # 🚀 MCP Integration workflows
+  mcp-setup-check:
+    name: "Check MCP Configuration"
+    command: |
+      echo "🔧 MCP Configuration:"
+      cat .mcp.json | jq '."shopify-dev-mcp"'
+      echo ""
+      echo "📖 MCP Setup Guide:"
+      ls -la SHOPIFY-MCP-SETUP.md
+
+  mcp-documentation:
+    name: "MCP Documentation and Guide"
+    command: |
+      echo "📚 Shopify MCP Integration Guide:"
+      echo "- SHOPIFY-MCP-SETUP.md - Complete setup and usage guide"
+      echo "- .mcp.json - MCP server configuration"
+      echo ""
+      echo "🔧 MCP Tools Available (when using AI assistants):"
+      echo "- learn_shopify_api - Initialize Shopify API context"
+      echo "- validate_theme - Real-time theme validation"
+      echo "- validate_graphql_codeblocks - GraphQL query validation"
+      echo "- introspect_graphql_schema - Live schema exploration"
+      echo "- search_docs_chunks - Official Shopify documentation search"
+      echo "- fetch_full_docs - Complete documentation pages"
+      echo ""
+      echo "💡 Note: MCP tools are used within AI assistants like Claude Code"
+      echo "💡 See SHOPIFY-MCP-SETUP.md for complete usage examples"
+
   # Documentation and navigation
   docs-browse:
     name: "Browse Documentation"
@@ -406,7 +576,10 @@ workflows:
       echo ""
       echo "🔧 Code library:"
       ls -la shopify-liquid-guides/code-library/
-  
+      echo ""
+      echo "🚀 MCP Integration:"
+      ls -la SHOPIFY-MCP-SETUP.md
+
   # Shopify CLI workflows
   serve-theme:
     name: "Serve Shopify Theme"

@@ -578,35 +578,195 @@ shopify theme dev
 - ✅ JavaScript handles edge cases
 - ✅ Accessibility requirements met
 
-### Testing Scenarios
+### Comprehensive Testing Methodology
+
+**Important**: Different features work in different environments. Always test in both theme editor and preview/live mode.
+
+#### **Environment-Specific Testing**
+
+**🎨 Theme Editor Testing** ✅:
+- All settings appear and function correctly
+- Basic hover effects work
+- Color changes apply correctly
+- Layout adjustments respond
+- Typography changes work
+- No JavaScript console errors
+
+**🔍 Preview Mode Testing** ✅:
+- Scroll animations trigger correctly
+- Autoplay media functions
+- Complex hover effects work as intended
+- Interactive elements respond properly
+- Performance is acceptable
+- Mobile behavior is correct
+
+#### **Testing Workflow**
+
+```bash
+# Phase 1: Theme Editor Validation
+1. Open theme editor
+2. Navigate to section/block
+3. Test each setting systematically
+4. Verify responsive behavior at different screen sizes
+5. Check for console errors (F12 → Console)
+
+# Phase 2: Preview Mode Testing
+1. Click "Preview" in theme editor
+2. Navigate to pages with your components
+3. Test scroll animations by scrolling up/down
+4. Test hover effects on desktop
+5. Test touch interactions on mobile
+6. Check performance with DevTools
+
+# Phase 3: Live Testing (Optional)
+1. Deploy to development store
+2. Test with real content and traffic
+3. Monitor analytics and tracking
+4. Verify SEO elements function correctly
+```
+
+#### **Animation & Effects Testing**
+
+**❌ Won't Work in Theme Editor**:
+- Scroll-triggered animations
+- Intersection Observer effects
+- Autoplay media
+- Complex CSS animations with delays
+
+**✅ Works in Theme Editor**:
+- Basic CSS transitions
+- Transform effects
+- Color and opacity changes
+- Layout changes
+
+```liquid
+<!-- Test this in PREVIEW MODE only -->
+{% if block.settings.enable_scroll_animations %}
+  <div class="scroll-animate">This will only animate in preview/live</div>
+{% endif %}
+
+<!-- This works in THEME EDITOR -->
+{% if block.settings.enable_hover_effects %}
+  <div class="hover-effect">This hover effect works in editor</div>
+{% endif %}
+```
+
+#### **Comprehensive Testing Scenarios**
+
 ```liquid
 <!-- Test these scenarios for every section -->
 <!--
-1. Empty content:
+1. Settings Validation:
+   - All combinations of conditional settings (visible_if)
+   - Range settings at min, max, and edge values
+   - Empty vs filled content fields
+   - All preset configurations
+
+2. Content Variations:
    - No settings configured
    - No blocks added
-   - Missing images
+   - Missing images/videos
+   - Maximum content (all settings filled, max blocks)
+   - Very long text strings
+   - Special characters and HTML entities
 
-2. Maximum content:
-   - All settings filled
-   - Maximum blocks
-   - Very long text
+3. Cross-Browser Testing:
+   - Chrome, Firefox, Safari, Edge (latest)
+   - Mobile browsers (iOS Safari, Chrome Mobile)
+   - Test both editor and preview in each browser
 
-3. Edge cases:
-   - Special characters
-   - Very short/long content
-   - Missing resources
-
-4. Responsive:
-   - Mobile (320px)
+4. Responsive Breakpoints:
+   - Mobile portrait (320px)
+   - Mobile landscape (568px)
    - Tablet (768px)
-   - Desktop (1024px+)
+   - Desktop (1024px)
+   - Large screens (1440px+)
 
-5. Performance:
-   - Slow network
-   - Many sections on page
-   - Large images
+5. Performance Testing:
+   - Lighthouse scores >90
+   - Core Web Vitals passing
+   - No layout shift during load
+   - Smooth 60fps animations
+   - Fast loading with slow network simulation
+
+6. Accessibility Testing:
+   - Keyboard navigation works
+   - Screen reader compatibility
+   - Focus states visible
+   - Reduced motion respected (prefers-reduced-motion)
+   - Color contrast passes WCAG 2.1 AA
+
+7. Animation-Specific Testing:
+   - Test scroll animations in preview mode
+   - Verify staggered animation timing
+   - Check animation delays work correctly
+   - Ensure reduced motion fallbacks work
+   - Test on devices with limited processing power
 -->
+```
+
+#### **Automated Testing Scripts**
+
+Use these validation tools throughout development:
+
+```bash
+# Schema integrity validation
+python3 scripts/scan-schema-integrity.py .
+
+# Complete theme validation
+./scripts/validate-theme.sh development
+./scripts/validate-theme.sh ultimate
+
+# Pre-commit validation
+./scripts/pre-commit-schema-check.sh
+
+# Manual testing utility (in browser console)
+new ThemeTestingUtility().runFullTest();
+```
+
+#### **Testing Checklist Template**
+
+```markdown
+## Component Testing Checklist
+
+### Theme Editor Testing ✓
+- [ ] All settings visible and functional
+- [ ] Layout changes apply immediately
+- [ ] Typography settings work
+- [ ] Color changes are instant
+- [ ] No console errors
+- [ ] Mobile responsive behavior
+- [ ] Settings persist after save
+
+### Preview Mode Testing ✓
+- [ ] Scroll animations trigger
+- [ ] Hover effects function correctly
+- [ ] Autoplay media works
+- [ ] Interactive elements respond
+- [ ] Performance is smooth (60fps)
+- [ ] Mobile touch interactions work
+- [ ] Loading states are acceptable
+
+### Cross-Browser Testing ✓
+- [ ] Chrome (latest)
+- [ ] Firefox (latest)
+- [ ] Safari (latest)
+- [ ] Edge (latest)
+- [ ] Mobile browsers
+
+### Performance Testing ✓
+- [ ] Lighthouse score >90
+- [ ] Core Web Vitals pass
+- [ ] No layout shift
+- [ ] Fast loading times
+- [ ] Smooth animations
+
+### Accessibility Testing ✓
+- [ ] Keyboard navigation works
+- [ ] Screen reader compatibility
+- [ ] Focus states visible
+- [ ] Reduced motion respected
+- [ ] Color contrast passes
 ```
 
 ## Getting Help

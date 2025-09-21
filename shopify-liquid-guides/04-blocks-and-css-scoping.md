@@ -380,18 +380,66 @@ Use BEM (Block Element Modifier) methodology with unique suffixes:
 
 ## Advanced Patterns
 
-### Conditional Layouts
+### Conditional Layouts with Complex Settings
 ```liquid
 {% style %}
-  {% case block.settings.layout %}
+  {% case block.settings.layout_style %}
     {% when 'stacked' %}
-      .component-{{ unique }} { flex-direction: column; }
+      .component-{{ unique }} {
+        flex-direction: column;
+        align-items: {{ block.settings.text_alignment }};
+      }
     {% when 'side_by_side' %}
-      .component-{{ unique }} { flex-direction: row; }
+      .component-{{ unique }} {
+        flex-direction: row;
+        gap: {{ block.settings.gap }}px;
+      }
+      {% if block.settings.video_position == 'right' %}
+        .component-{{ unique }} { flex-direction: row-reverse; }
+      {% endif %}
     {% when 'overlay' %}
       .component-{{ unique }} { position: relative; }
-      .component__content-{{ unique }} { position: absolute; bottom: 20px; left: 20px; }
+      .component__content-{{ unique }} {
+        position: absolute;
+        {{ block.settings.overlay_position }}: 20px;
+        background: rgba(0,0,0,0.7);
+        padding: 1rem;
+        border-radius: {{ block.settings.overlay_radius }}px;
+      }
+    {% when 'floating' %}
+      .component-{{ unique }} { position: relative; overflow: visible; }
+      .component__content-{{ unique }} {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+      }
   {% endcase %}
+
+  /* Background video sizing patterns */
+  {% if block.settings.bg_video %}
+    {% case block.settings.bg_video_size %}
+      {% when 'full_screen' %}
+        .component-{{ unique }} {
+          min-height: 100vh;
+          width: 100vw;
+          margin-left: calc(-50vw + 50%);
+        }
+      {% when 'half_screen' %}
+        .component-{{ unique }} { min-height: 50vh; }
+      {% when 'section_only' %}
+        .component-{{ unique }} { height: {{ block.settings.section_height }}px; }
+      {% when 'custom_height' %}
+        .component-{{ unique }} { height: {{ block.settings.custom_height }}px; }
+    {% endcase %}
+
+    .component__bg-video-{{ unique }} {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: {{ block.settings.bg_video_fit | default: 'cover' }};
+      z-index: -1;
+    }
+  {% endif %}
 {% endstyle %}
 ```
 
@@ -408,7 +456,7 @@ Use BEM (Block Element Modifier) methodology with unique suffixes:
 <div class="component-{{ unique }}{{ state_class }}" {{ block.shopify_attributes }}>
 ```
 
-### CSS Custom Properties
+### CSS Custom Properties with Enhanced Variables
 ```liquid
 {% style %}
   .component-{{ unique }} {
@@ -416,12 +464,94 @@ Use BEM (Block Element Modifier) methodology with unique suffixes:
     --padding: {{ block.settings.padding }}px;
     --text-color: {{ block.settings.text_color }};
     --bg-color: {{ block.settings.bg_color }};
+    --animation-duration: {{ block.settings.animation_duration | default: 0.6 }}s;
+    --hover-scale: {{ block.settings.hover_scale | default: 1.05 }};
+    --border-radius: {{ block.settings.border_radius | default: 8 }}px;
 
     display: flex;
     gap: var(--gap);
     padding: var(--padding);
     color: var(--text-color);
     background: var(--bg-color);
+    border-radius: var(--border-radius);
+    transition: transform var(--animation-duration) ease, box-shadow var(--animation-duration) ease;
+  }
+
+  {% if block.settings.enable_hover_effects %}
+    .component-{{ unique }}:hover {
+      transform: scale(var(--hover-scale));
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+  {% endif %}
+{% endstyle %}
+```
+
+### Advanced Animation Patterns
+```liquid
+{% if block.settings.enable_scroll_animations %}
+  {% style %}
+    .component-{{ unique }} {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp-{{ unique }} var(--animation-duration) ease-out forwards;
+      animation-delay: {{ block.settings.animation_delay | default: 0 }}s;
+    }
+
+    @keyframes fadeInUp-{{ unique }} {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      .component-{{ unique }} {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Staggered animations for multiple blocks */
+    {% assign delay_increment = 0.1 %}
+    {% for i in (1..5) %}
+      .component-{{ unique }}:nth-child({{ i }}) {
+        animation-delay: {{ delay_increment | times: i }}s;
+      }
+    {% endfor %}
+  {% endstyle %}
+{% endif %}
+```
+
+### Responsive Video Implementation
+```liquid
+{% style %}
+  .component__video-{{ unique }} {
+    position: relative;
+    width: 100%;
+    height: {{ block.settings.video_height }}px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+  }
+
+  .component__video-{{ unique }} video {
+    width: 100%;
+    height: 100%;
+    object-fit: {{ block.settings.video_fit | default: 'cover' }};
+  }
+
+  /* Video poster optimization */
+  .component__video-{{ unique }} video[poster] {
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 749px) {
+    .component__video-{{ unique }} {
+      height: {{ block.settings.video_height_mobile | default: 250 }}px;
+    }
   }
 {% endstyle %}
 ```
@@ -530,7 +660,106 @@ Use BEM (Block Element Modifier) methodology with unique suffixes:
 </div>
 ```
 
+## Schema Validation & Complex Settings
+
+### Range Validation Rules
+Always ensure range settings comply with Shopify's validation: `(max - min) / step ≤ 101`
+
+```json
+// ✅ Correct - 100 steps
+{
+  "type": "range",
+  "id": "video_height",
+  "min": 200,
+  "max": 800,
+  "step": 6,
+  "unit": "px",
+  "default": 400
+}
+
+// ❌ Incorrect - 120 steps (exceeds limit)
+{
+  "type": "range",
+  "id": "bad_range",
+  "min": 0,
+  "max": 600,
+  "step": 5
+}
+```
+
+### Conditional Settings Organization
+Use `visible_if` to create progressive disclosure:
+
+```json
+{
+  "type": "header",
+  "content": "Advanced Options"
+},
+{
+  "type": "checkbox",
+  "id": "enable_animations",
+  "label": "Enable animations",
+  "default": false
+},
+{
+  "type": "select",
+  "id": "animation_type",
+  "label": "Animation style",
+  "visible_if": "{{ block.settings.enable_animations }}",
+  "options": [
+    { "value": "fade", "label": "Fade in" },
+    { "value": "slide", "label": "Slide up" },
+    { "value": "scale", "label": "Scale in" }
+  ],
+  "default": "fade"
+},
+{
+  "type": "range",
+  "id": "animation_duration",
+  "label": "Animation duration",
+  "visible_if": "{{ block.settings.enable_animations }}",
+  "min": 200,
+  "max": 2000,
+  "step": 100,
+  "unit": "ms",
+  "default": 600
+}
+```
+
+### Settings Organization Best Practices
+1. **Group with headers** - Use header settings to create logical sections
+2. **Progressive complexity** - Start with basic settings, add advanced options conditionally
+3. **Consistent naming** - Use prefixes for related settings (`video_height`, `video_width`, `video_fit`)
+4. **Sensible defaults** - Provide defaults that work well for most use cases
+
+## Testing Patterns
+
+### Theme Editor vs Preview Mode
+Different features work in different environments:
+
+**Theme Editor** ✅:
+- Basic CSS transitions
+- Settings changes
+- Layout adjustments
+- Color and typography changes
+
+**Preview Mode** ✅:
+- Scroll animations
+- Autoplay video
+- Complex hover effects
+- JavaScript interactions
+
+**Testing Workflow**:
+1. **Editor**: Test all settings functionality
+2. **Preview**: Test animations and interactions
+3. **Live**: Final validation with real content
+
 ## Troubleshooting
+
+### Schema Validation Errors
+- **Range step errors**: Verify `(max - min) / step ≤ 101`
+- **Invalid visible_if**: Check referenced setting exists
+- **JSON syntax**: Validate schema with JSON parser
 
 ### CSS Not Applying
 - Check that `{{ unique }}` is properly generated
@@ -540,11 +769,18 @@ Use BEM (Block Element Modifier) methodology with unique suffixes:
 ### Theme Editor Issues
 - Always include `{{ block.shopify_attributes }}` on root element
 - Check that block `type` in schema matches template file
+- Test conditional settings show/hide behavior
+
+### Animation Issues
+- Animations don't work in theme editor (use preview mode)
+- Include `prefers-reduced-motion` fallbacks
+- Test animation timing and stagger effects
 
 ### Performance Issues
 - Extract static CSS to theme files
 - Minimize dynamic CSS to only necessary properties
 - Use CSS custom properties for repeated values
+- Optimize video loading with proper poster images
 
 ## Next Steps
 

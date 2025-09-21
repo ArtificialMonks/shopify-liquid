@@ -35,6 +35,12 @@
   # Mobile settings
   assign mobile_alignment = block.settings.mobile_alignment | default: alignment
   assign mobile_text_size = block.settings.mobile_text_size | default: 'small'
+
+  # Animation and interaction settings
+  assign enable_animations = block.settings.enable_animations | default: false
+  assign animation_type = block.settings.animation_type | default: 'fade'
+  assign animation_delay = block.settings.animation_delay | default: 0
+  assign enable_hover_effects = block.settings.enable_hover_effects | default: false
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
@@ -184,11 +190,76 @@
     }
   }
 
+  /* Animation patterns */
+  {% if enable_animations %}
+    .text-block-{{ unique }} {
+      {% case animation_type %}
+        {% when 'fade' %}
+          opacity: 0;
+          animation: fadeIn-{{ unique }} 0.8s ease-out forwards;
+        {% when 'slide' %}
+          opacity: 0;
+          transform: translateY(30px);
+          animation: slideUp-{{ unique }} 0.8s ease-out forwards;
+        {% when 'scale' %}
+          opacity: 0;
+          transform: scale(0.9);
+          animation: scaleIn-{{ unique }} 0.8s ease-out forwards;
+      {% endcase %}
+      animation-delay: {{ animation_delay }}s;
+    }
+
+    @keyframes fadeIn-{{ unique }} {
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp-{{ unique }} {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scaleIn-{{ unique }} {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  {% endif %}
+
+  /* Hover effects */
+  {% if enable_hover_effects %}
+    .text-block-{{ unique }} {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .text-block-{{ unique }}:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .text-block-{{ unique }}__heading {
+      transition: color 0.3s ease;
+    }
+
+    .text-block-{{ unique }}:hover .text-block-{{ unique }}__heading {
+      {% if highlight_color != blank %}
+        color: {{ highlight_color }};
+      {% endif %}
+    }
+  {% endif %}
+
   /* Accessibility - Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .text-block-{{ unique }} * {
       animation: none !important;
       transition: none !important;
+    }
+
+    .text-block-{{ unique }} {
+      opacity: 1 !important;
+      transform: none !important;
     }
   }
 {% endstyle %}
@@ -364,6 +435,48 @@
         {"value": "large", "label": "Large"}
       ],
       "default": "small"
+    },
+    {
+      "type": "header",
+      "content": "Effects"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable scroll animations",
+      "info": "Animations only work in preview/live mode, not theme editor",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "animation_type",
+      "label": "Animation style",
+      "visible_if": "{{ block.settings.enable_animations }}",
+      "options": [
+        {"value": "fade", "label": "Fade in"},
+        {"value": "slide", "label": "Slide up"},
+        {"value": "scale", "label": "Scale in"}
+      ],
+      "default": "fade"
+    },
+    {
+      "type": "range",
+      "id": "animation_delay",
+      "label": "Animation delay",
+      "visible_if": "{{ block.settings.enable_animations }}",
+      "min": 0,
+      "max": 2000,
+      "step": 100,
+      "unit": "ms",
+      "default": 0,
+      "info": "Delay before animation starts"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_effects",
+      "label": "Enable hover effects",
+      "info": "Adds subtle hover animations",
+      "default": false
     }
   ],
   "presets": [
@@ -390,6 +503,20 @@
         "text": "<p>Add a short description for this section</p>",
         "text_style": "body",
         "alignment": "left"
+      }
+    },
+    {
+      "name": "Animated Hero Text",
+      "category": "Dynamic",
+      "settings": {
+        "heading": "Experience the Difference",
+        "heading_size": "h1",
+        "text": "<p>Discover our latest collection with stunning visuals and premium quality that sets us apart.</p>",
+        "alignment": "center",
+        "use_gradient": true,
+        "enable_animations": true,
+        "animation_type": "slide",
+        "enable_hover_effects": true
       }
     }
   ]

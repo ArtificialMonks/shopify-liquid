@@ -1,0 +1,166 @@
+{% comment %}
+  Snippet: block-artist-feature
+  Usage: {% render 'block-artist-feature', block: block, unique: 'component-123' %}
+
+  Parameters:
+  - block (required): Block object containing artist settings
+  - unique (required): Unique ID for scoped styling
+
+  Design Token Integration:
+  - Uses semantic tokens with component-specific fallbacks
+  - Supports color customization through block settings
+  - Maintains consistent spacing and typography
+{% endcomment %}
+
+{%- liquid
+  assign artist_name = block.settings.artist_name | default: 'Featured Artist'
+  assign artist_bio = block.settings.artist_bio | default: ''
+  assign artist_image = block.settings.artist_image
+  assign artist_link = block.settings.artist_link
+  assign feature_bg_color = block.settings.feature_bg_color | default: 'var(--surface-secondary)'
+  assign image_border_radius = block.settings.image_border_radius | default: 8
+  assign block_id = block.id | replace: '_', '' | downcase
+-%}
+
+{% style %}
+  .artist-feature-{{ block_id }} {
+    /* ✅ Design token integration for artist feature blocks */
+    --feature-bg: {{ feature_bg_color }};
+    --feature-text: var(--text-primary);
+    --feature-accent: var(--brand-primary-500);
+    --feature-spacing: var(--spacing-component-md);
+    --feature-radius: var(--border-radius-lg);
+    --image-radius: {{ image_border_radius }}px;
+
+    background: var(--feature-bg);
+    color: var(--feature-text);
+    padding: var(--feature-spacing);
+    border-radius: var(--feature-radius);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+  }
+
+  .artist-feature-{{ block_id }}:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .artist-feature-{{ block_id }}__image {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--image-radius);
+    overflow: hidden;
+    margin-bottom: var(--spacing-component-sm);
+    border: 2px solid var(--border-primary);
+    transition: var(--transition-base);
+  }
+
+  .artist-feature-{{ block_id }}__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-base);
+  }
+
+  .artist-feature-{{ block_id }}__image:hover img {
+    transform: scale(1.05);
+  }
+
+  .artist-feature-{{ block_id }}__name {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--feature-text);
+    margin-bottom: var(--spacing-component-xs);
+    line-height: var(--line-height-tight);
+  }
+
+  .artist-feature-{{ block_id }}__bio {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--spacing-component-sm);
+    flex-grow: 1;
+  }
+
+  .artist-feature-{{ block_id }}__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-component-xs);
+    color: var(--feature-accent);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: var(--spacing-component-xs) var(--spacing-component-sm);
+    border: 1px solid var(--feature-accent);
+    border-radius: var(--border-radius-md);
+    transition: var(--transition-base);
+  }
+
+  .artist-feature-{{ block_id }}__link:hover {
+    background: var(--feature-accent);
+    color: var(--text-inverse);
+  }
+
+  .artist-feature-{{ block_id }}__link:focus {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 749px) {
+    .artist-feature-{{ block_id }}__image {
+      width: 100px;
+      height: 100px;
+    }
+
+    .artist-feature-{{ block_id }}__name {
+      font-size: var(--font-size-lg);
+    }
+  }
+{% endstyle %}
+
+<div class="artist-feature-{{ block_id }}" {{ block.shopify_attributes }}>
+  {% if artist_image %}
+    <div class="artist-feature-{{ block_id }}__image">
+      <img
+        src="{{ artist_image | image_url: width: 240 }}"
+        srcset="{{ artist_image | image_url: width: 120 }} 120w,
+                {{ artist_image | image_url: width: 240 }} 240w"
+        sizes="120px"
+        alt="{{ artist_image.alt | default: artist_name | escape }}"
+        loading="lazy"
+        width="120"
+        height="120"
+      >
+    </div>
+  {% endif %}
+
+  <h3 class="artist-feature-{{ block_id }}__name">
+    {{ artist_name | escape }}
+  </h3>
+
+  {% if artist_bio != blank %}
+    <p class="artist-feature-{{ block_id }}__bio">
+      {{ artist_bio | escape }}
+    </p>
+  {% endif %}
+
+  {% if artist_link != blank %}
+    <a
+      href="{{ artist_link }}"
+      class="artist-feature-{{ block_id }}__link"
+      aria-label="Learn more about {{ artist_name | escape }}"
+    >
+      <span>Learn More</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8.22 2.97a.75.75 0 0 1 1.06 0L14.03 7.7a.75.75 0 0 1 0 1.06L9.28 13.5a.75.75 0 0 1-1.06-1.06L11.44 9.25H2.75a.75.75 0 0 1 0-1.5h8.69L8.22 4.53a.75.75 0 0 1 0-1.06Z"/>
+      </svg>
+    </a>
+  {% endif %}
+</div>

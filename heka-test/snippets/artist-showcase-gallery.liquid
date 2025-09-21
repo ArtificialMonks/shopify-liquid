@@ -1,0 +1,183 @@
+{%- comment -%}
+  Artist Showcase Gallery - Advanced Image Gallery System
+
+  Usage: {% render 'artist-showcase-gallery', block: block, unique: unique, image_aspect_ratio: image_aspect_ratio %}
+
+  Supports:
+  - Multiple image layouts (grid, carousel, masonry, stack)
+  - Lightbox functionality
+  - Responsive image loading
+  - Progressive enhancement
+{%- endcomment -%}
+
+{%- liquid
+  assign gallery_images = ''
+  assign gallery_count = 0
+
+  # Collect all gallery images
+  if block.settings.image != blank
+    assign gallery_images = gallery_images | append: block.settings.image.id | append: ','
+    assign gallery_count = gallery_count | plus: 1
+  endif
+
+  if block.settings.gallery_image_2 != blank
+    assign gallery_images = gallery_images | append: block.settings.gallery_image_2.id | append: ','
+    assign gallery_count = gallery_count | plus: 1
+  endif
+
+  if block.settings.gallery_image_3 != blank
+    assign gallery_images = gallery_images | append: block.settings.gallery_image_3.id | append: ','
+    assign gallery_count = gallery_count | plus: 1
+  endif
+
+  if block.settings.gallery_image_4 != blank
+    assign gallery_images = gallery_images | append: block.settings.gallery_image_4.id | append: ','
+    assign gallery_count = gallery_count | plus: 1
+  endif
+
+  if block.settings.gallery_image_5 != blank
+    assign gallery_images = gallery_images | append: block.settings.gallery_image_5.id | append: ','
+    assign gallery_count = gallery_count | plus: 1
+  endif
+
+  assign gallery_layout = block.settings.gallery_layout | default: 'grid'
+  assign gallery_lightbox = block.settings.gallery_lightbox | default: true
+  assign gallery_id = 'gallery-' | append: unique | append: '-' | append: block.id
+
+  # Determine grid columns based on count
+  case gallery_count
+    when 1
+      assign grid_columns = '1fr'
+    when 2
+      assign grid_columns = '1fr 1fr'
+    when 3
+      assign grid_columns = '1fr 1fr 1fr'
+    when 4
+      assign grid_columns = '1fr 1fr / 1fr 1fr'
+    when 5
+      assign grid_columns = '1fr 1fr 1fr / 1fr 1fr'
+    else
+      assign grid_columns = '1fr 1fr 1fr'
+  endcase
+-%}
+
+{%- if gallery_count > 0 -%}
+  <div
+    class="artist-showcase__gallery artist-showcase__gallery--{{ gallery_layout }}{% if gallery_lightbox %} artist-showcase__gallery--lightbox{% endif %}"
+    id="{{ gallery_id }}"
+    data-gallery-layout="{{ gallery_layout }}"
+    data-gallery-count="{{ gallery_count }}"
+    data-lightbox="{{ gallery_lightbox }}"
+    {% if gallery_layout == 'grid' %}
+      style="--gallery-columns: {{ grid_columns }};"
+    {% endif %}
+  >
+
+    {%- comment -%} Primary Image {%- endcomment -%}
+    {%- if block.settings.image != blank -%}
+      {%- render 'artist-showcase-gallery-item',
+          image: block.settings.image,
+          index: 1,
+          total: gallery_count,
+          image_aspect_ratio: image_aspect_ratio,
+          gallery_layout: gallery_layout,
+          gallery_lightbox: gallery_lightbox,
+          gallery_id: gallery_id,
+          title: block.settings.title -%}
+    {%- endif -%}
+
+    {%- comment -%} Additional Gallery Images {%- endcomment -%}
+    {%- if block.settings.gallery_image_2 != blank -%}
+      {%- render 'artist-showcase-gallery-item',
+          image: block.settings.gallery_image_2,
+          index: 2,
+          total: gallery_count,
+          image_aspect_ratio: image_aspect_ratio,
+          gallery_layout: gallery_layout,
+          gallery_lightbox: gallery_lightbox,
+          gallery_id: gallery_id,
+          title: block.settings.title -%}
+    {%- endif -%}
+
+    {%- if block.settings.gallery_image_3 != blank -%}
+      {%- render 'artist-showcase-gallery-item',
+          image: block.settings.gallery_image_3,
+          index: 3,
+          total: gallery_count,
+          image_aspect_ratio: image_aspect_ratio,
+          gallery_layout: gallery_layout,
+          gallery_lightbox: gallery_lightbox,
+          gallery_id: gallery_id,
+          title: block.settings.title -%}
+    {%- endif -%}
+
+    {%- if block.settings.gallery_image_4 != blank -%}
+      {%- render 'artist-showcase-gallery-item',
+          image: block.settings.gallery_image_4,
+          index: 4,
+          total: gallery_count,
+          image_aspect_ratio: image_aspect_ratio,
+          gallery_layout: gallery_layout,
+          gallery_lightbox: gallery_lightbox,
+          gallery_id: gallery_id,
+          title: block.settings.title -%}
+    {%- endif -%}
+
+    {%- if block.settings.gallery_image_5 != blank -%}
+      {%- render 'artist-showcase-gallery-item',
+          image: block.settings.gallery_image_5,
+          index: 5,
+          total: gallery_count,
+          image_aspect_ratio: image_aspect_ratio,
+          gallery_layout: gallery_layout,
+          gallery_lightbox: gallery_lightbox,
+          gallery_id: gallery_id,
+          title: block.settings.title -%}
+    {%- endif -%}
+
+    {%- comment -%} Carousel Navigation {%- endcomment -%}
+    {%- if gallery_layout == 'carousel' and gallery_count > 1 -%}
+      <div class="artist-showcase__gallery-navigation">
+        <button
+          class="artist-showcase__gallery-nav artist-showcase__gallery-nav--prev"
+          aria-label="Previous image"
+          data-gallery-nav="prev"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button
+          class="artist-showcase__gallery-nav artist-showcase__gallery-nav--next"
+          aria-label="Next image"
+          data-gallery-nav="next"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="artist-showcase__gallery-dots">
+        {%- for i in (1..gallery_count) -%}
+          <button
+            class="artist-showcase__gallery-dot{% if forloop.first %} artist-showcase__gallery-dot--active{% endif %}"
+            aria-label="Go to image {{ i }}"
+            data-gallery-dot="{{ forloop.index0 }}"
+          ></button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  {%- comment -%} Gallery Counter {%- endcomment -%}
+  {%- if gallery_count > 1 -%}
+    <div class="artist-showcase__gallery-counter">
+      <span class="artist-showcase__gallery-counter-current">1</span>
+      /
+      <span class="artist-showcase__gallery-counter-total">{{ gallery_count }}</span>
+    </div>
+  {%- endif -%}
+
+{%- endif -%}

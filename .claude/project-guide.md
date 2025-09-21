@@ -7,9 +7,11 @@ This guide explains how to effectively use the complete shopify-liquid-guides re
 ### 🚀 **Validation Automation (START HERE)**
 1. **`THEME-CHECK-SETUP.md`** - Ultimate validation automation guide (CRITICAL)
 2. **`./scripts/validate-theme.sh`** - Complete validation workflow automation
-3. **Daily Development Commands**:
+3. **Ultimate Validation Commands**:
    ```bash
-   ./scripts/validate-theme.sh development  # Quick validation
+   ./scripts/validate-theme.sh development  # Fast validation with ultimate checks
+   ./scripts/validate-theme.sh ultimate     # Zero tolerance liquid validation only
+   ./scripts/validate-theme.sh deep         # Ultimate + integrity + comprehensive
    ./scripts/validate-theme.sh auto-fix     # Auto-correct issues
    ./scripts/validate-theme.sh production   # Theme Store ready
    ```
@@ -87,7 +89,9 @@ This guide explains how to effectively use the complete shopify-liquid-guides re
 ### 🚀 **Validation-First Development (Essential)**
 **ALWAYS start every workflow with validation:**
 ```bash
-./scripts/validate-theme.sh development  # Establish quality baseline
+./scripts/validate-theme.sh development  # Fast validation with ultimate checks
+./scripts/validate-theme.sh ultimate     # Zero tolerance liquid validation only
+./scripts/validate-theme.sh deep         # Ultimate + integrity + comprehensive
 ```
 
 ### For Schema Development

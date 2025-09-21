@@ -5,10 +5,11 @@ workflows:
   # === ADVANCED VALIDATION WORKFLOWS ===
   
   validation-dev:
-    name: "🚀 Development Validation"
-    description: "Fast validation with essential checks for active development"
+    name: "🚀 Development Validation (Enhanced)"
+    description: "Fast validation with Theme Check + Schema Integrity (includes /custom directories)"
     command: |
-      echo "🔍 Running Development Validation (Fast)..."
+      echo "🔍 Running Enhanced Development Validation..."
+      echo "✨ Now includes schema integrity validation for comprehensive coverage!"
       ./scripts/validate-theme.sh development
   
   validation-comprehensive:
@@ -54,6 +55,33 @@ workflows:
       echo "🧪 Testing Shopify validation presets..."
       ./scripts/validate-theme.sh presets
   
+  # === SCHEMA INTEGRITY VALIDATION ===
+  
+  schema-integrity:
+    name: "🔍 Schema Integrity Scan"
+    description: "Deep schema validation including range step calculations (catches violations we missed!)"
+    command: |
+      echo "🎯 Running Schema Integrity Validation..."
+      echo "⚠️ This validation caught our range step error that other tools missed!"
+      ./scripts/validate-theme.sh integrity
+  
+  schema-integrity-custom:
+    name: "🆕 Custom Directory Schema Check"
+    description: "Validate schema integrity specifically for custom components"
+    command: |
+      echo "🔧 Validating custom directory components..."
+      echo "📝 Scanning: blocks/custom/, sections/custom/, css-patterns/custom/"
+      python3 scripts/scan-schema-integrity.py shopify-liquid-guides/code-library/blocks/custom/ 2>/dev/null || echo "ℹ️ No custom blocks found"
+      python3 scripts/scan-schema-integrity.py shopify-liquid-guides/code-library/sections/custom/ 2>/dev/null || echo "ℹ️ No custom sections found"
+      echo "✅ Custom directory validation complete!"
+  
+  deep-validation:
+    name: "📊 Deep Validation Suite"
+    description: "Enhanced + Schema Integrity + Comprehensive validation"
+    command: |
+      echo "🔬 Running Deep Validation (Most Thorough)..."
+      ./scripts/validate-theme.sh deep
+  
   # === SHOPIFY CLI VALIDATION ===
   
   shopify-check-recommended:
@@ -95,10 +123,10 @@ workflows:
   # === DOCUMENTATION & NAVIGATION ===
   
   docs-browse:
-    name: "📚 Browse Documentation"
-    description: "Explore repository structure and code library contents"
+    name: "📚 Browse Documentation (Updated)"
+    description: "Explore repository structure including new custom directories"
     command: |
-      echo "🗂️ Shopify Liquid Documentation Repository"
+      echo "🗋️ Shopify Liquid Documentation Repository"
       echo "=========================================="
       echo ""
       echo "📚 Documentation structure:"
@@ -106,6 +134,14 @@ workflows:
       echo ""
       echo "🔧 Code library (Production-ready):"
       ls -la shopify-liquid-guides/code-library/
+      echo ""
+      echo "🆕 NEW: Custom directories (Repository-specific components):"
+      echo "  🧩 Custom Blocks:"
+      ls -la shopify-liquid-guides/code-library/blocks/custom/ 2>/dev/null || echo "    (No custom blocks yet)"
+      echo "  🎨 Custom Sections:"
+      ls -la shopify-liquid-guides/code-library/sections/custom/ 2>/dev/null || echo "    (No custom sections yet)"
+      echo "  🎨 Custom CSS Patterns:"
+      ls -la shopify-liquid-guides/code-library/css-patterns/custom/ 2>/dev/null || echo "    (No custom CSS patterns yet)"
       echo ""
       echo "💡 Complete examples:"
       ls -la shopify-liquid-guides/examples/
@@ -128,11 +164,17 @@ workflows:
       echo "  • Comprehensive: .theme-check.yml (All 50+ rules)"
       echo "  • Production: .theme-check-production.yml (Theme Store ready)"
       echo ""
-      echo "🚀 Available Validation Workflows:"
-      echo "  • ./scripts/validate-theme.sh development"
-      echo "  • ./scripts/validate-theme.sh comprehensive"
-      echo "  • ./scripts/validate-theme.sh production"
-      echo "  • ./scripts/validate-theme.sh all (Complete suite)"
+      echo "🚀 Enhanced Multi-Level Validation Workflows:"
+      echo "  • ./scripts/validate-theme.sh development (includes schema integrity)"
+      echo "  • ./scripts/validate-theme.sh integrity    (schema validation + custom dirs)"
+      echo "  • ./scripts/validate-theme.sh deep        (enhanced + integrity + comprehensive)"
+      echo "  • ./scripts/validate-theme.sh all         (complete suite + custom dirs)"
+      echo "  • python scripts/validate-all.py          (CI/CD pipeline ready)"
+      echo ""
+      echo "🆕 Custom Directory Validation:"
+      echo "  ✓ blocks/custom/               (repository-specific block components)"
+      echo "  ✓ sections/custom/             (specialized section templates)"
+      echo "  ✓ css-patterns/custom/         (custom CSS methodologies)"
       echo ""
       echo "📊 Last Validation Report:"
       if [ -f "theme-validation-report.json" ]; then
@@ -279,12 +321,15 @@ workflows:
       echo "📚 Key directories:"
       echo "├── shopify-liquid-guides/docs/          → Complete documentation (all 7 file types)"
       echo "├── shopify-liquid-guides/code-library/  → Production-ready code examples"
+      echo "│   ├── blocks/custom/              → 🆕 Repository-specific blocks"
+      echo "│   ├── sections/custom/            → 🆕 Repository-specific sections"
+      echo "│   └── css-patterns/custom/        → 🆕 Repository-specific CSS patterns"
       echo "├── shopify-liquid-guides/examples/      → Complete theme templates"
-      echo "├── scripts/                         → Advanced validation workflows"
+      echo "├── scripts/                         → Enhanced validation workflows"
       echo "├── locales/                         → Translation support"
       echo "├── .vscode/                         → VS Code integration"
-      echo "├── .warp/                           → Warp terminal workflows"
-      echo "└── WARP.md                          → This comprehensive guide"
+      echo "├── .warp/                           → Enhanced Warp workflows"
+      echo "└── WARP.md                          → Updated comprehensive guide"
       echo ""
       echo "🔑 Essential validation files:"
       echo "  • THEME-CHECK-SETUP.md - Ultimate validation system guide"

@@ -1,0 +1,117 @@
+{%- comment -%}
+  Artist Showcase Block - Unified Block Handler
+
+  Usage: {% render 'artist-showcase-block', block: block, unique: unique, index: 1, total: 3, enable_animations: true %}
+
+  Parameters:
+  - block: The block object from section.blocks
+  - unique: Unique identifier for the section
+  - index: Current block index (for animations)
+  - total: Total number of blocks
+  - enable_animations: Whether animations are enabled
+{%- endcomment -%}
+
+{%- liquid
+  assign item_type = block.settings.item_type | default: 'artist'
+  assign card_style = block.settings.card_style | default: 'card'
+  assign image_aspect_ratio = block.settings.image_aspect_ratio | default: 'portrait'
+  assign enable_hover_effects = block.settings.enable_hover_effects | default: true
+  assign title = block.settings.title
+  assign subtitle = block.settings.subtitle
+  assign content = block.settings.content
+  assign link = block.settings.link
+  assign button_text = block.settings.button_text | default: 'Learn More'
+  assign image = block.settings.image
+
+  # Advanced Layout Settings
+  assign layout_type = block.settings.layout_type | default: 'auto'
+  assign grid_span_width = block.settings.grid_span_width | default: 1
+  assign grid_span_height = block.settings.grid_span_height | default: 1
+  assign z_index = block.settings.z_index | default: 1
+  assign transform_rotate = block.settings.transform_rotate | default: 0
+  assign transform_scale = block.settings.transform_scale | default: 100
+  assign custom_margin_top = block.settings.custom_margin_top | default: 0
+  assign custom_margin_bottom = block.settings.custom_margin_bottom | default: 0
+  assign visible_desktop = block.settings.visible_desktop | default: true
+  assign visible_tablet = block.settings.visible_tablet | default: true
+  assign visible_mobile = block.settings.visible_mobile | default: true
+  assign mobile_order = block.settings.mobile_order | default: 10
+
+  # Animation logic
+  assign animation_delay = 0
+  if enable_animations and index
+    assign animation_delay = index | minus: 1 | times: 100
+  endif
+
+  # Determine if block has content
+  assign has_content = false
+  if title != blank or subtitle != blank or content != blank
+    assign has_content = true
+  endif
+
+  # Determine if block has action
+  assign has_action = false
+  if link != blank and button_text != blank
+    assign has_action = true
+  endif
+
+  # Build responsive visibility classes
+  assign visibility_classes = ''
+  unless visible_desktop
+    assign visibility_classes = visibility_classes | append: ' artist-showcase__block--hidden-desktop'
+  endunless
+  unless visible_tablet
+    assign visibility_classes = visibility_classes | append: ' artist-showcase__block--hidden-tablet'
+  endunless
+  unless visible_mobile
+    assign visibility_classes = visibility_classes | append: ' artist-showcase__block--hidden-mobile'
+  endunless
+
+  # Build transform styles
+  assign transform_styles = ''
+  if transform_rotate != 0
+    assign transform_styles = transform_styles | append: 'rotate(' | append: transform_rotate | append: 'deg) '
+  endif
+  if transform_scale != 100
+    assign scale_decimal = transform_scale | divided_by: 100.0
+    assign transform_styles = transform_styles | append: 'scale(' | append: scale_decimal | append: ') '
+  endif
+-%}
+
+<div
+  class="artist-showcase__block artist-showcase__block--{{ item_type }} artist-showcase__block--{{ card_style }} artist-showcase__block--{{ layout_type }}{% if enable_hover_effects %} artist-showcase__block--hover{% endif %}{{ visibility_classes }}"
+  data-block-type="{{ item_type }}"
+  data-card-style="{{ card_style }}"
+  data-image-ratio="{{ image_aspect_ratio }}"
+  data-layout-type="{{ layout_type }}"
+  data-grid-span="{{ grid_span_width }}x{{ grid_span_height }}"
+  {% if enable_animations %}
+    data-animation-delay="{{ animation_delay }}"
+    data-animation-index="{{ index }}"
+  {% endif %}
+  style="
+    grid-column: span {{ grid_span_width }};
+    grid-row: span {{ grid_span_height }};
+    z-index: {{ z_index }};
+    margin-top: {{ custom_margin_top }}px;
+    margin-bottom: {{ custom_margin_bottom }}px;
+    order: {{ mobile_order }};
+    {% if transform_styles != blank %}transform: {{ transform_styles }};{% endif %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- render 'artist-showcase-card',
+      item_type: item_type,
+      card_style: card_style,
+      image_aspect_ratio: image_aspect_ratio,
+      image: image,
+      title: title,
+      subtitle: subtitle,
+      content: content,
+      link: link,
+      button_text: button_text,
+      has_content: has_content,
+      has_action: has_action,
+      unique: unique,
+      block_id: block.id -%}
+</div>

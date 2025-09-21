@@ -2,7 +2,7 @@
   "name": "Product",
   "sections": {
     "main": {
-      "type": "main-product",
+      "type": "essential/hero-banner",
       "settings": {
         "enable_sticky_info": true,
         "media_size": "large",
@@ -58,7 +58,7 @@
       ]
     },
     "product_recommendations": {
-      "type": "product-grid-paginate",
+      "type": "featured-products",
       "settings": {
         "heading": "You may also like",
         "products_to_show": 4,

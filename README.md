@@ -1,30 +1,38 @@
 # Complete Shopify Theme Development Resource
 
-The most comprehensive documentation and code library for professional Shopify theme development. Covering all 7 Shopify file types with production-ready examples, modern development patterns, and cutting-edge features.
+The most comprehensive documentation and code library for professional Shopify theme development. Covering all 7 Shopify file types with **unified design system architecture**, production-ready examples, modern development patterns, and cutting-edge features.
 
 ## 🚀 What's Inside
 
 This repository provides everything needed for world-class Shopify theme development:
 
+- **🎨 Unified Design System**: 450+ design tokens with three-tier architecture (primitive → semantic → component)
 - **🎯 100% Theme Store Compliance**: Ultimate validation setup with automated workflows
-- **⚡ Complete Automation**: One-command validation, auto-correction, and quality assurance
-- **🔧 Multi-Level Validation**: Development, comprehensive, and production-ready checking
-- **📊 50+ Validation Rules**: All critical checks for schema, content, performance, and security
-- **Complete Architecture Coverage**: All 7 Shopify file types documented
-- **2024-2025 Features**: Metaobjects, AI blocks, section groups, PWA
-- **Production-Ready Code**: Copy-paste sections, blocks, templates, and assets
-- **Modern Development Patterns**: CSS scoping, performance optimization, accessibility
-- **Comprehensive Documentation**: From basics to advanced implementation patterns
-- **VS Code Integration**: Full development environment with intelligent tooling
+- **⚡ Enhanced Automation**: Multi-language validation (Shell + Python) with design system validation
+- **🔧 Multi-Level Validation**: Development, comprehensive, production, and ultimate validation levels
+- **📊 50+ Validation Rules**: All critical checks for schema, content, performance, security, and design consistency
+- **🚀 Modern Shopify Features**: 2024-2025 features including Shop Pay, PWA, AI blocks, metaobjects
+- **Complete Architecture Coverage**: All 7 Shopify file types with design system integration
+- **Production-Ready Code**: Copy-paste sections, blocks, templates with unified styling
+- **CSP Security Implementation**: Theme Store compliant security with no external dependencies
+- **Advanced Development Patterns**: Design token-based CSS, scoped styling, performance optimization
+- **Comprehensive Documentation**: From basics to advanced implementation with design system guidance
+- **VS Code Integration**: Full development environment with intelligent tooling and validation
 
-### 🎉 **Ultimate Theme Validation - Ready Out of the Box!**
+### 🎉 **Enhanced Validation Suite - Design System + Theme Store Excellence!**
 
 ```bash
-# Complete validation workflow - one command does everything:
+# Enhanced validation with design system compliance:
+./scripts/validate-theme.sh ultimate
+
+# Complete validation workflow - covers all aspects:
 ./scripts/validate-theme.sh all
+
+# Design system specific validation:
+python scripts/ultimate-validator.py --design-system
 ```
 
-**Result**: 100% Theme Store compliance guaranteed with automated error detection, correction, and comprehensive reporting!
+**Result**: Ultimate validation with design token consistency, hallucinated filter detection, over-engineering prevention, performance optimization, CSP compliance, and 100% Theme Store excellence!
 
 ## 🎯 Quick Start
 
@@ -33,6 +41,12 @@ This repository provides everything needed for world-class Shopify theme develop
 # Test the ultimate validation setup (works immediately):
 ./scripts/validate-theme.sh development
 
+# Zero tolerance liquid validation only:
+./scripts/validate-theme.sh ultimate
+
+# Deep validation for pre-deployment:
+./scripts/validate-theme.sh deep
+
 # Run complete validation workflow:
 ./scripts/validate-theme.sh all
 ```
@@ -40,20 +54,25 @@ This repository provides everything needed for world-class Shopify theme develop
 
 ### For Beginners
 1. **Validate First**: Run `./scripts/validate-theme.sh development` to ensure quality
-2. **Learn Architecture**: [Architecture Overview](./shopify-liquid-guides/docs/architecture/theme-overview.md)
-3. **Follow Tutorials**: [Main Learning Guides](./shopify-liquid-guides/)
-4. **Use Examples**: [Production Code Library](./shopify-liquid-guides/code-library/)
+2. **Learn Design System**: [Design System Implementation](./shopify-liquid-guides/docs/architecture/design-system-implementation.md)
+3. **Understand Architecture**: [Architecture Overview](./shopify-liquid-guides/docs/architecture/theme-overview.md)
+4. **Follow Tutorials**: [Main Learning Guides](./shopify-liquid-guides/)
+5. **Use Design System Examples**: [Production Code Library](./shopify-liquid-guides/code-library/) with unified tokens
 
 ### For Experienced Developers
-1. **Reference Documentation**: [Complete Docs](./shopify-liquid-guides/docs/)
-2. **Copy Advanced Patterns**: [Advanced Features](./shopify-liquid-guides/docs/advanced-features/)
-3. **Implement Modern Architecture**: [JSON Templates](./shopify-liquid-guides/docs/templates/)
+1. **Design System First**: [450+ Design Tokens](./shopify-liquid-guides/code-library/css-patterns/design-tokens.css)
+2. **Modern Features**: [2024-2025 Shopify Features](./shopify-liquid-guides/docs/advanced-features/shopify-2024-2025-features.md)
+3. **Advanced Patterns**: [Advanced Features](./shopify-liquid-guides/docs/advanced-features/)
+4. **Theme Store Security**: [CSP Implementation](./shopify-liquid-guides/docs/layouts/theme-liquid-compliant.md)
 
 ### For Specific Tasks
+- **Design System Setup**: [Design Token Implementation](./shopify-liquid-guides/docs/architecture/design-system-implementation.md)
+- **Theme Store Security**: [CSP Implementation](./shopify-liquid-guides/docs/layouts/theme-liquid-compliant.md)
 - **Theme Setup**: [Development Environment](./shopify-liquid-guides/docs/shopify-extension/)
-- **Performance Optimization**: [Asset Management](./shopify-liquid-guides/docs/assets/)
+- **Performance Optimization**: [Asset Management](./shopify-liquid-guides/docs/assets/) + [Design Token Performance](./shopify-liquid-guides/code-library/css-patterns/performance-optimization.css)
 - **Multi-language**: [Localization](./shopify-liquid-guides/docs/locales/)
 - **Custom Content**: [Metaobjects](./shopify-liquid-guides/docs/advanced-features/metaobject-integration.md)
+- **Modern Features**: [2024-2025 Shopify Features](./shopify-liquid-guides/docs/advanced-features/shopify-2024-2025-features.md)
 
 ## 📚 Repository Structure & Navigation
 
@@ -65,15 +84,19 @@ This repository provides everything needed for world-class Shopify theme develop
 | **[README.md](./README.md)** | This overview | Understanding the repository |
 | **[INSTRUCTIONS.md](./INSTRUCTIONS.md)** | Task-specific guidance | When you need specific help |
 | **[scripts/validate-theme.sh](./scripts/validate-theme.sh)** | Automated validation | Daily development and pre-production |
+| **[SHOPIFY-MCP-SETUP.md](./SHOPIFY-MCP-SETUP.md)** | Shopify MCP integration | Direct API access and Liquid enhancement |
 
-### 🔧 **Configuration & Automation**
+### 🔧 **Enhanced Configuration & Automation**
 
 | File/Directory | Purpose | Description |
 |----------------|---------|-------------|
 | `.theme-check.yml` | Comprehensive validation | All 50+ validation rules enabled |
 | `.theme-check-development.yml` | Fast development validation | Essential checks only |
 | `.theme-check-production.yml` | Theme Store compliance | Maximum validation for submission |
-| `scripts/validate-theme.sh` | Automated workflow | One-command validation and fixing |
+| `scripts/validate-theme.sh` | **Enhanced validation workflow** | Multi-level validation with design system checks |
+| `scripts/ultimate-validator.py` | **Python validation suite** | Advanced repository-wide validation |
+| `scripts/scan-schema-integrity.py` | **Schema validation** | Python-based comprehensive schema checking |
+| `scripts/README.md` | **Scripts documentation** | Complete automation guide |
 | `locales/` | Translation files | Multi-language support |
 | `.vscode/` | VS Code configuration | Intelligent development environment |
 
@@ -137,25 +160,36 @@ shopify-liquid-guides/             # Complete documentation hub
 
 ## 🏗️ Development Methodology
 
-### CSS Scoping System
-Prevent style conflicts using unique identifiers:
+### Unified Design System + CSS Scoping
+Prevent style conflicts and ensure consistency using design tokens with unique identifiers:
 
 ```liquid
 {% assign unique = section.id | replace: '_', '' | downcase %}
 <div class="hero-banner-{{ unique }}">
   <style>
     .hero-banner-{{ unique }} {
-      background: {{ section.settings.background_color }};
+      /* ✅ Design token integration */
+      --hero-bg: {{ section.settings.bg_color | default: 'var(--surface-primary)' }};
+      --hero-text: {{ section.settings.text_color | default: 'var(--text-primary)' }};
+      --hero-spacing: var(--spacing-component-lg);
+
+      background: var(--hero-bg);
+      color: var(--hero-text);
+      padding: var(--hero-spacing);
+      border-radius: var(--border-radius-lg);
     }
   </style>
 </div>
 ```
 
 ### Modern Architecture Patterns
-- **Section-Based Design**: Flexible, merchant-customizable layouts
-- **Block Component System**: Reusable, configurable content blocks
-- **Performance-First**: Lazy loading, critical CSS, optimized assets
-- **Accessibility Compliance**: Semantic HTML, ARIA labels, keyboard navigation
+- **Unified Design System**: 450+ design tokens ensuring visual consistency across all components
+- **Three-Tier Token Architecture**: Primitive → Semantic → Component token hierarchy
+- **Section-Based Design**: Flexible, merchant-customizable layouts with design token integration
+- **Block Component System**: Reusable, configurable content blocks with unified styling
+- **CSP Security Implementation**: Theme Store compliant with no external dependencies
+- **Performance-First**: Design token optimization, lazy loading, critical CSS, optimized assets
+- **Accessibility Compliance**: WCAG 2.1 AA built into design token system
 
 ### Production Standards
 - **Theme Store Ready**: All examples meet Theme Store requirements
@@ -166,16 +200,18 @@ Prevent style conflicts using unique identifiers:
 ## 📖 Learning Paths
 
 ### Complete Beginner Path
-1. **[Architecture Fundamentals](./shopify-liquid-guides/docs/architecture/theme-overview.md)** - Understanding theme structure
-2. **[Liquid Basics](./shopify-liquid-guides/01-fundamentals.md)** - Syntax, objects, filters
-3. **[First Section](./shopify-liquid-guides/02-quick-start.md)** - Build your first component
-4. **[CSS Methodology](./shopify-liquid-guides/04-blocks-and-css-scoping.md)** - Prevent style conflicts
+1. **[Design System Fundamentals](./shopify-liquid-guides/docs/architecture/design-system-implementation.md)** - Understanding the unified design token system
+2. **[Architecture Overview](./shopify-liquid-guides/docs/architecture/theme-overview.md)** - Theme structure with design system integration
+3. **[Liquid Basics](./shopify-liquid-guides/01-fundamentals.md)** - Syntax, objects, filters
+4. **[First Section](./shopify-liquid-guides/02-quick-start.md)** - Build your first component with design tokens
+5. **[CSS Methodology](./shopify-liquid-guides/04-blocks-and-css-scoping.md)** - Design system + scoped styling
 
 ### Intermediate Developer Path
-1. **[JSON Templates](./shopify-liquid-guides/docs/templates/json-templates.md)** - Modern template architecture
-2. **[Asset Optimization](./shopify-liquid-guides/docs/assets/)** - CSS, JS, images, fonts
-3. **[Configuration](./shopify-liquid-guides/docs/config/)** - Settings and merchant customization
-4. **[Performance](./shopify-liquid-guides/05-performance-and-accessibility.md)** - Core Web Vitals
+1. **[Design Token System](./shopify-liquid-guides/code-library/css-patterns/design-tokens.css)** - Complete 450+ token reference
+2. **[Modern Shopify Features](./shopify-liquid-guides/docs/advanced-features/shopify-2024-2025-features.md)** - 2024-2025 cutting-edge features
+3. **[JSON Templates](./shopify-liquid-guides/docs/templates/json-templates.md)** - Modern template architecture
+4. **[Asset Optimization](./shopify-liquid-guides/docs/assets/)** - Performance with design tokens
+5. **[CSP Security](./shopify-liquid-guides/docs/layouts/theme-liquid-compliant.md)** - Theme Store compliance
 
 ### Advanced Developer Path
 1. **[Metaobject Integration](./shopify-liquid-guides/docs/advanced-features/metaobject-integration.md)** - Custom content types

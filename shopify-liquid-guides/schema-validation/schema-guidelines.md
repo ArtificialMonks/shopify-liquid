@@ -347,6 +347,324 @@ Before saving ANY `.liquid` file with schema, verify:
 ```
 
 ### **Block Validation Rules**
+
+---
+
+## 🎛️ **Complex Settings Organization Patterns**
+
+### **Progressive Disclosure with visible_if**
+
+For blocks with many settings (30+), use conditional rendering to reduce interface complexity:
+
+```json
+{
+  "type": "header",
+  "content": "Advanced Options"
+},
+{
+  "type": "checkbox",
+  "id": "enable_advanced_mode",
+  "label": "Enable advanced customization",
+  "default": false
+},
+{
+  "type": "select",
+  "id": "bg_video_size",
+  "label": "Background video sizing",
+  "visible_if": "{{ block.settings.enable_advanced_mode }}",
+  "options": [
+    { "value": "full_screen", "label": "Full screen" },
+    { "value": "half_screen", "label": "Half screen" },
+    { "value": "custom_height", "label": "Custom height" }
+  ],
+  "default": "full_screen"
+},
+{
+  "type": "range",
+  "id": "custom_height",
+  "label": "Custom height",
+  "visible_if": "{{ block.settings.bg_video_size == 'custom_height' }}",
+  "min": 200,
+  "max": 800,
+  "step": 20,
+  "unit": "px",
+  "default": 400
+}
+```
+
+### **Complex Range Validation Examples**
+
+Real-world examples from production blocks:
+
+```json
+// ✅ Animation duration - exactly 101 steps
+{
+  "type": "range",
+  "id": "animation_duration",
+  "min": 0,
+  "max": 2020,
+  "step": 20,
+  "unit": "ms",
+  "default": 600
+}
+
+// ✅ Video positioning - 100 steps
+{
+  "type": "range",
+  "id": "video_x_offset",
+  "min": -200,
+  "max": 200,
+  "step": 4,
+  "unit": "px",
+  "default": 0
+}
+
+// ✅ Opacity values - 100 steps
+{
+  "type": "range",
+  "id": "overlay_opacity",
+  "min": 0,
+  "max": 100,
+  "step": 1,
+  "unit": "%",
+  "default": 70
+}
+```
+
+### **Settings ID Naming Conventions**
+
+For complex blocks, use consistent prefixing:
+
+```json
+// ✅ Video-related settings
+"video_file", "video_poster", "video_position", "video_autoplay"
+
+// ✅ Background-related settings
+"bg_video", "bg_image", "bg_color", "bg_size"
+
+// ✅ Animation-related settings
+"enable_animations", "animation_type", "animation_duration", "animation_delay"
+
+// ✅ Text-related settings
+"text_color", "text_size", "text_alignment", "text_max_width"
+```
+
+---
+
+## 🧪 **Schema Testing & Validation**
+
+### **Pre-Commit Validation Workflow**
+
+Before committing any schema changes:
+
+1. **Range Validation**: Verify all `(max - min) / step ≤ 101`
+2. **JSON Syntax**: Use JSON validator to check for syntax errors
+3. **Setting References**: Ensure all `visible_if` references exist
+4. **Unique IDs**: Verify no duplicate setting IDs within schema
+5. **Required Attributes**: Check all required attributes are present
+
+### **Common Schema Testing Issues**
+
+#### **Theme Editor vs Preview Mode**
+
+Some schema features behave differently in different environments:
+
+**Theme Editor** ✅:
+- All settings display and update
+- Basic conditional rendering (`visible_if`)
+- Settings validation
+
+**Preview Mode** ✅:
+- Complete functionality testing
+- Animation and interaction testing
+- Real-world usage scenarios
+
+#### **Range Step Calculation Errors**
+
+Most common validation failures and fixes:
+
+```json
+// ❌ WRONG: 200 steps
+{
+  "min": -100, "max": 100, "step": 1
+}
+
+// ✅ FIX: 100 steps
+{
+  "min": -100, "max": 100, "step": 2
+}
+
+// ❌ WRONG: 1010 steps
+{
+  "min": 0, "max": 1010, "step": 1
+}
+
+// ✅ FIX: 101 steps
+{
+  "min": 0, "max": 1010, "step": 10
+}
+```
+
+### **Automated Validation Scripts**
+
+Use these validation patterns in development:
+
+```bash
+# Schema integrity validation
+python3 scripts/scan-schema-integrity.py .
+
+# Complete theme validation
+./scripts/validate-theme.sh ultimate
+
+# Pre-commit hook validation
+./scripts/pre-commit-schema-check.sh
+```
+
+---
+
+## 📱 **Mobile-First Schema Patterns**
+
+### **Responsive Settings Organization**
+
+```json
+{
+  "type": "header",
+  "content": "Desktop Layout"
+},
+{
+  "type": "range",
+  "id": "desktop_height",
+  "label": "Desktop height",
+  "min": 300,
+  "max": 800,
+  "step": 25,
+  "unit": "px",
+  "default": 500
+},
+{
+  "type": "header",
+  "content": "Mobile Layout"
+},
+{
+  "type": "range",
+  "id": "mobile_height",
+  "label": "Mobile height",
+  "min": 200,
+  "max": 600,
+  "step": 20,
+  "unit": "px",
+  "default": 300
+}
+```
+
+### **Mobile Alignment Patterns**
+
+```json
+{
+  "type": "select",
+  "id": "desktop_alignment",
+  "label": "Desktop text alignment",
+  "options": [
+    { "value": "left", "label": "Left" },
+    { "value": "center", "label": "Center" },
+    { "value": "right", "label": "Right" }
+  ],
+  "default": "left"
+},
+{
+  "type": "select",
+  "id": "mobile_alignment",
+  "label": "Mobile text alignment",
+  "options": [
+    { "value": "left", "label": "Left" },
+    { "value": "center", "label": "Center" },
+    { "value": "right", "label": "Right" }
+  ],
+  "default": "center",
+  "info": "Often center-aligned on mobile for better readability"
+}
+```
+
+---
+
+## 🎯 **Production Schema Best Practices**
+
+### **1. Group Related Settings**
+
+Use header settings to create logical sections:
+
+```json
+{
+  "type": "header",
+  "content": "Content"
+},
+// Content settings here
+{
+  "type": "header",
+  "content": "Layout & Positioning"
+},
+// Layout settings here
+{
+  "type": "header",
+  "content": "Effects & Animations"
+}
+// Animation settings here
+```
+
+### **2. Provide Helpful Info Text**
+
+```json
+{
+  "type": "checkbox",
+  "id": "enable_scroll_animations",
+  "label": "Enable scroll animations",
+  "info": "Animations only work in preview/live mode, not theme editor",
+  "default": false
+}
+```
+
+### **3. Use Sensible Defaults**
+
+```json
+{
+  "type": "range",
+  "id": "video_height",
+  "label": "Video height",
+  "min": 200,
+  "max": 800,
+  "step": 20,
+  "unit": "px",
+  "default": 400,  // ✅ Middle value that works for most cases
+  "info": "Recommended: 300-500px for optimal viewing"
+}
+```
+
+### **4. Optimize Preset Configurations**
+
+```json
+{
+  "presets": [
+    {
+      "name": "Basic Video Block",
+      "settings": {
+        "layout_style": "side_by_side",
+        "video_position": "left",
+        "enable_animations": false
+      }
+    },
+    {
+      "name": "Hero Video Banner",
+      "category": "Hero Sections",
+      "settings": {
+        "layout_style": "overlay",
+        "bg_video_size": "full_screen",
+        "enable_animations": true,
+        "animation_type": "fade"
+      }
+    }
+  ]
+}
+```
 - ✅ Block `type` must be unique within section
 - ✅ Block `name` must be unique within section
 - ✅ Setting `id` must be unique within block

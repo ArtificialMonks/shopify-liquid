@@ -1,0 +1,243 @@
+{%- comment -%}
+  Artist Showcase Product - Product Integration System
+
+  Usage: {% render 'artist-showcase-product', block: block, unique: unique %}
+
+  Supports:
+  - Product information display
+  - Pricing and variants
+  - Add to cart functionality
+  - Product badges and promotions
+  - Stock status and availability
+{%- endcomment -%}
+
+{%- liquid
+  assign product = block.settings.featured_product
+  assign show_price = block.settings.show_product_price | default: true
+  assign show_description = block.settings.show_product_description | default: true
+  assign show_add_to_cart = block.settings.show_add_to_cart | default: false
+  assign badge_text = block.settings.product_badge_text
+  assign badge_color = block.settings.product_badge_color | default: '#e74c3c'
+
+  assign product_id = 'product-' | append: unique | append: '-' | append: block.id
+
+  # Get first available variant
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'product-form-' | append: product_id
+
+  # Calculate savings if on sale
+  assign savings_amount = 0
+  assign savings_percentage = 0
+  if current_variant.compare_at_price > current_variant.price
+    assign savings_amount = current_variant.compare_at_price | minus: current_variant.price
+    assign savings_percentage = savings_amount | times: 100 | divided_by: current_variant.compare_at_price
+  endif
+-%}
+
+{%- if product != blank -%}
+  <div
+    class="artist-showcase__product"
+    id="{{ product_id }}"
+    data-product-id="{{ product.id }}"
+    data-product-handle="{{ product.handle }}"
+  >
+
+    {%- comment -%} Product Badge {%- endcomment -%}
+    {%- if badge_text != blank -%}
+      <div class="artist-showcase__product-badge" style="background-color: {{ badge_color }};">
+        {{ badge_text | escape }}
+      </div>
+    {%- elsif savings_percentage > 0 -%}
+      <div class="artist-showcase__product-badge artist-showcase__product-badge--sale">
+        -{{ savings_percentage }}%
+      </div>
+    {%- elsif current_variant.available == false -%}
+      <div class="artist-showcase__product-badge artist-showcase__product-badge--sold-out">
+        Sold Out
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Product Header {%- endcomment -%}
+    <div class="artist-showcase__product-header">
+      <h3 class="artist-showcase__product-title">
+        <a href="{{ product.url }}" class="artist-showcase__product-title-link">
+          {{ product.title | escape }}
+        </a>
+      </h3>
+
+      {%- if product.vendor != blank -%}
+        <p class="artist-showcase__product-vendor">{{ product.vendor | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Product Pricing {%- endcomment -%}
+    {%- if show_price -%}
+      <div class="artist-showcase__product-price">
+        <span class="artist-showcase__product-price-current">
+          {{ current_variant.price | money }}
+        </span>
+
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="artist-showcase__product-price-compare">
+            {{ current_variant.compare_at_price | money }}
+          </span>
+          {%- if savings_amount > 0 -%}
+            <span class="artist-showcase__product-price-save">
+              Save {{ savings_amount | money }}
+            </span>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Product Description {%- endcomment -%}
+    {%- if show_description and product.description != blank -%}
+      <div class="artist-showcase__product-description rte">
+        {{ product.description | truncate: 150 }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Product Variants (if multiple) {%- endcomment -%}
+    {%- if product.variants.size > 1 -%}
+      <div class="artist-showcase__product-variants">
+        {%- for option in product.options_with_values -%}
+          <div class="artist-showcase__product-option">
+            <label class="artist-showcase__product-option-label">
+              {{ option.name | escape }}:
+            </label>
+            <select
+              class="artist-showcase__product-option-select"
+              data-option-index="{{ forloop.index0 }}"
+              data-product-variants="{{ product_id }}"
+            >
+              {%- for value in option.values -%}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}selected{% endif %}
+                >
+                  {{ value | escape }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Stock Status {%- endcomment -%}
+    <div class="artist-showcase__product-availability">
+      {%- if current_variant.available -%}
+        {%- if current_variant.inventory_management and current_variant.inventory_quantity <= 10 and current_variant.inventory_quantity > 0 -%}
+          <span class="artist-showcase__product-stock artist-showcase__product-stock--low">
+            Only {{ current_variant.inventory_quantity }} left!
+          </span>
+        {%- else -%}
+          <span class="artist-showcase__product-stock artist-showcase__product-stock--available">
+            ✓ In Stock
+          </span>
+        {%- endif -%}
+      {%- else -%}
+        <span class="artist-showcase__product-stock artist-showcase__product-stock--unavailable">
+          ✗ Sold Out
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Add to Cart Form {%- endcomment -%}
+    {%- if show_add_to_cart -%}
+      <form
+        action="{{ routes.cart_add_url }}"
+        method="post"
+        enctype="multipart/form-data"
+        id="{{ product_form_id }}"
+        class="artist-showcase__product-form"
+        data-product-form
+      >
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+        <div class="artist-showcase__product-actions">
+          <button
+            type="submit"
+            class="artist-showcase__product-add-to-cart button button--primary"
+            {% unless current_variant.available %}disabled{% endunless %}
+            data-add-to-cart
+          >
+            <span class="artist-showcase__product-add-to-cart-text">
+              {% if current_variant.available %}
+                Add to Cart - {{ current_variant.price | money }}
+              {% else %}
+                Sold Out
+              {% endif %}
+            </span>
+            <span class="artist-showcase__product-add-to-cart-loading" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="43.982" stroke-dashoffset="43.982">
+                  <animate attributeName="stroke-dasharray" dur="2s" values="0 43.982;21.991 21.991;0 43.982" repeatCount="indefinite"/>
+                  <animate attributeName="stroke-dashoffset" dur="2s" values="0;-21.991;-43.982" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+              Adding...
+            </span>
+          </button>
+
+          <a
+            href="{{ product.url }}"
+            class="artist-showcase__product-view-details button button--secondary"
+          >
+            View Details
+          </a>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="artist-showcase__product-actions">
+        <a
+          href="{{ product.url }}"
+          class="artist-showcase__product-view-product button button--primary"
+        >
+          View Product
+        </a>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Product Features/Highlights {%- endcomment -%}
+    {%- if product.metafields.custom.features != blank -%}
+      <div class="artist-showcase__product-features">
+        <h4 class="artist-showcase__product-features-title">Features:</h4>
+        <ul class="artist-showcase__product-features-list">
+          {%- assign features = product.metafields.custom.features | split: ',' -%}
+          {%- for feature in features limit: 3 -%}
+            <li class="artist-showcase__product-features-item">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{ feature | strip | escape }}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Product JSON for JavaScript {%- endcomment -%}
+    <script type="application/json" data-product-json="{{ product_id }}">
+      {
+        "id": {{ product.id | json }},
+        "handle": {{ product.handle | json }},
+        "title": {{ product.title | json }},
+        "variants": [
+          {%- for variant in product.variants -%}
+            {
+              "id": {{ variant.id | json }},
+              "title": {{ variant.title | json }},
+              "price": {{ variant.price | json }},
+              "compare_at_price": {{ variant.compare_at_price | json }},
+              "available": {{ variant.available | json }},
+              "inventory_quantity": {{ variant.inventory_quantity | json }},
+              "options": {{ variant.options | json }}
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+
+  </div>
+{%- endif -%}

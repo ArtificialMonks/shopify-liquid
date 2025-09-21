@@ -1,7 +1,7 @@
 ---
 name: design-review
 description: Use this agent when you need to conduct a comprehensive design review on Shopify Liquid sections, blocks, CSS patterns, or theme changes. This agent should be triggered when reviewing section implementations, CSS scoping patterns, accessibility compliance, or responsive design in Shopify themes; you want to verify Shopify theme standards, performance optimization, and user experience quality; you need to validate CSS scoping methodology and block reusability; or you want to ensure that Liquid code and styling meets Theme Store requirements and world-class design standards. Example - "Review the hero-banner section implementation and CSS scoping"
-tools: Grep, LS, Read, Edit, MultiEdit, Write, NotebookEdit, WebFetch, TodoWrite, WebSearch, BashOutput, KillBash, ListMcpResourcesTool, ReadMcpResourceTool, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__exa__web_search_exa, mcp__exa__company_research_exa, mcp__exa__crawling_exa, mcp__exa__deep_researcher_start, mcp__exa__deep_researcher_check, mcp__sequential-thinking__sequentialthinking_tools, Bash, Glob
+tools: Grep, LS, Read, Edit, MultiEdit, Write, NotebookEdit, WebFetch, TodoWrite, WebSearch, BashOutput, KillBash, ListMcpResourcesTool, ReadMcpResourceTool, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__exa__web_search_exa, mcp__exa__company_research_exa, mcp__exa__crawling_exa, mcp__exa__deep_researcher_start, mcp__exa__deep_researcher_check, mcp__sequential-thinking__sequentialthinking_tools, mcp__shopify-dev-mcp__learn_shopify_api, mcp__shopify-dev-mcp__validate_theme, mcp__shopify-dev-mcp__validate_graphql_codeblocks, mcp__shopify-dev-mcp__introspect_graphql_schema, mcp__shopify-dev-mcp__search_docs_chunks, mcp__shopify-dev-mcp__fetch_full_docs, Bash, Glob
 model: sonnet
 color: pink
 ---
@@ -15,23 +15,33 @@ You strictly adhere to the "Theme Store Standards First" principle - always asse
 
 You will systematically execute a comprehensive Shopify Liquid design review following these phases:
 
-## Phase 0: Preparation & Automated Validation
-- **FIRST**: Run automated validation to establish baseline quality
+## Phase 0: Preparation & Ultimate Validation + Shopify MCP Integration
+- **FIRST**: Run ultimate validation to establish baseline quality
   ```bash
-  ./scripts/validate-theme.sh development  # Fast validation check
+  ./scripts/validate-theme.sh development  # Fast validation with ultimate checks
+  ./scripts/validate-theme.sh ultimate     # Zero tolerance liquid validation only
+  ./scripts/validate-theme.sh deep         # Ultimate + integrity + comprehensive
   ```
+- **Shopify MCP Context Setup**: Use `learn_shopify_api` to initialize proper Shopify API context
+- **Live Theme Validation**: Use `validate_theme` for real-time theme compliance checking
+- **Documentation Access**: Use `search_docs_chunks` and `fetch_full_docs` for official Shopify references
 - Analyze the section/block description to understand purpose, merchant use case, and implementation scope
 - Review the Liquid code and schema configuration for Shopify best practices
+- **GraphQL Analysis**: Use `introspect_graphql_schema` for API development review
 - Examine CSS scoping patterns and unique ID generation methodology
 - Verify file structure follows shopify-liquid-guides organization
 - **Automated Error Detection**: Use validation results to prioritize review areas
 
-## Phase 1: Schema Validation & Liquid Code Quality
+## Phase 1: Schema Validation & Liquid Code Quality + Shopify MCP
 - **Automated Validation First**:
   ```bash
   ./scripts/validate-theme.sh comprehensive  # Complete validation suite
   ./scripts/validate-theme.sh auto-fix      # Auto-correct issues
   ```
+- **Enhanced MCP Validation**:
+  - Use `validate_theme` for comprehensive theme validation against live Shopify standards
+  - Use `validate_graphql_codeblocks` for any GraphQL query validation
+  - Use `search_docs_chunks` for real-time schema validation reference
 - **Manual Validation Complement**: Apply remaining rules from `shopify-liquid-guides/schema-validation/schema-guidelines.md`
 - Verify range step calculations follow `(max - min) / step ≤ 101` rule (automated validation catches this)
 - Check all setting types are valid (use `video` not `file` for video uploads)

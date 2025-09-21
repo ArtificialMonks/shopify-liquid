@@ -250,13 +250,8 @@
   }
 {% endstyle %}
 
-{%- comment -%} Preload critical images for better LCP performance {%- endcomment -%}
-{%- if preload and image != blank -%}
-  {%- if image_mobile != blank -%}
-    <link rel="preload" as="image" href="{{ image_mobile | image_url: width: 750 }}" media="(max-width: 749px)" imagesrcset="{{ image_mobile | image_url: width: 375 }} 375w, {{ image_mobile | image_url: width: 750 }} 750w" imagesizes="100vw">
-  {%- endif -%}
-  <link rel="preload" as="image" href="{{ image | image_url: width: 1920 }}" media="(min-width: 750px)" imagesrcset="{{ image | image_url: width: 1100 }} 1100w, {{ image | image_url: width: 1500 }} 1500w, {{ image | image_url: width: 1920 }} 1920w" imagesizes="(min-width: 1200px) 90vw, 100vw">
-{%- endif -%}
+{%- comment -%} Preload critical images using optimized image_tag filter {%- endcomment -%}
+{%- comment -%} Preload is now handled by the image_tag filter's preload parameter below {%- endcomment -%}
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="image-block-{{ unique }}{% if shadow != 'none' %} image-block-{{ unique }}--shadow-{{ shadow }}{% endif %}{% if link != blank %} image-block-{{ unique }}--has-link{% endif %}" {{ block.shopify_attributes }}>

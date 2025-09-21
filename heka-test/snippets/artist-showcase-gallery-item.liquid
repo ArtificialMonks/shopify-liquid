@@ -1,0 +1,119 @@
+{%- comment -%}
+  Artist Showcase Gallery Item - Individual Gallery Image
+
+  Usage: {% render 'artist-showcase-gallery-item', image: image, index: 1, total: 5, ... %}
+
+  Renders a single gallery image with proper responsive handling and lightbox support
+{%- endcomment -%}
+
+{%- liquid
+  assign item_class = 'artist-showcase__gallery-item'
+
+  # Generate unique IDs
+  assign item_id = 'gallery-item-' | append: gallery_id | append: '-' | append: index
+
+  # Determine if this is the featured/main image
+  assign is_featured = false
+  if index == 1 and gallery_layout != 'carousel'
+    assign is_featured = true
+  endif
+
+  # Calculate image sizes based on layout
+  case gallery_layout
+    when 'carousel'
+      assign image_width = 400
+      assign image_sizes = '(min-width: 768px) 400px, 300px'
+    when 'masonry'
+      assign image_width = 600
+      assign image_sizes = '(min-width: 1200px) 600px, (min-width: 768px) 400px, 300px'
+    when 'grid'
+      if total <= 2
+        assign image_width = 600
+        assign image_sizes = '(min-width: 1200px) 600px, (min-width: 768px) 400px, 300px'
+      else
+        assign image_width = 400
+        assign image_sizes = '(min-width: 1200px) 400px, (min-width: 768px) 300px, 250px'
+      endif
+    when 'stack'
+      assign image_width = 800
+      assign image_sizes = '(min-width: 1200px) 800px, (min-width: 768px) 600px, 400px'
+  endcase
+
+  # Aspect ratio calculation
+  case image_aspect_ratio
+    when 'square'
+      assign aspect_ratio = '1/1'
+    when 'portrait'
+      assign aspect_ratio = '3/4'
+    when 'landscape'
+      assign aspect_ratio = '4/3'
+    when 'wide'
+      assign aspect_ratio = '16/9'
+    else
+      assign aspect_ratio = '3/4'
+  endcase
+-%}
+
+<div
+  class="{{ item_class }} {{ item_class }}--{{ gallery_layout }}{% if is_featured %} {{ item_class }}--featured{% endif %}"
+  id="{{ item_id }}"
+  data-gallery-index="{{ index }}"
+  data-image-aspect="{{ image_aspect_ratio }}"
+  {% if gallery_layout == 'carousel' %}
+    data-carousel-slide="{{ index | minus: 1 }}"
+  {% endif %}
+>
+
+  {%- if gallery_lightbox -%}
+    <button
+      class="{{ item_class }}-button"
+      aria-label="View full-size image {{ index }} of {{ total }}{% if title != blank %}: {{ title | escape }}{% endif %}"
+      data-lightbox-trigger="{{ gallery_id }}"
+      data-lightbox-index="{{ index | minus: 1 }}"
+      data-lightbox-src="{{ image | image_url: width: 1200 }}"
+      data-lightbox-alt="{{ title | escape | default: 'Gallery image' }}"
+    >
+  {%- endif -%}
+
+  <img
+    src="{{ image | image_url: width: image_width }}"
+    alt="{% if title != blank %}{{ title | escape }} - {% endif %}Gallery image {{ index }}"
+    width="{{ image_width }}"
+    height="auto"
+    loading="{% if index <= 2 %}eager{% else %}lazy{% endif %}"
+    sizes="{{ image_sizes }}"
+    srcset="
+      {{ image | image_url: width: 300 }} 300w,
+      {{ image | image_url: width: 400 }} 400w,
+      {{ image | image_url: width: 600 }} 600w,
+      {{ image | image_url: width: 800 }} 800w,
+      {{ image | image_url: width: 1200 }} 1200w
+    "
+    style="
+      aspect-ratio: {{ aspect_ratio }};
+      object-fit: cover;
+      {% if gallery_layout == 'masonry' %}width: 100%; height: auto;{% endif %}
+    "
+    class="{{ item_class }}-image"
+  >
+
+  {%- if gallery_lightbox -%}
+    <div class="{{ item_class }}-overlay">
+      <svg class="{{ item_class }}-zoom-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+        <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="11" y1="8" x2="11" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    </button>
+  {%- endif -%}
+
+  {%- comment -%} Image Counter for Individual Items {%- endcomment -%}
+  {%- if total > 1 and gallery_layout != 'carousel' -%}
+    <div class="{{ item_class }}-counter">
+      {{ index }}/{{ total }}
+    </div>
+  {%- endif -%}
+
+</div>

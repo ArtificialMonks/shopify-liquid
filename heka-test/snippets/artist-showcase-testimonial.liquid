@@ -1,0 +1,159 @@
+{%- comment -%}
+  Artist Showcase Testimonial - Customer Testimonial & Review System
+
+  Usage: {% render 'artist-showcase-testimonial', block: block, unique: unique %}
+
+  Supports:
+  - Customer testimonials and reviews
+  - Star ratings
+  - Author information and avatars
+  - Social proof elements
+  - Quote formatting
+{%- endcomment -%}
+
+{%- liquid
+  assign testimonial_quote = block.settings.testimonial_quote
+  assign testimonial_author = block.settings.testimonial_author
+  assign testimonial_role = block.settings.testimonial_role
+  assign testimonial_rating = block.settings.testimonial_rating | default: 5
+  assign testimonial_avatar = block.settings.testimonial_avatar
+
+  assign testimonial_id = 'testimonial-' | append: unique | append: '-' | append: block.id
+-%}
+
+{%- if testimonial_quote != blank -%}
+  <div
+    class="artist-showcase__testimonial"
+    id="{{ testimonial_id }}"
+    itemscope
+    itemtype="https://schema.org/Review"
+  >
+
+    {%- comment -%} Star Rating {%- endcomment -%}
+    {%- if testimonial_rating > 0 -%}
+      <div class="artist-showcase__testimonial-rating" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+        <div class="artist-showcase__testimonial-stars" aria-label="Rating: {{ testimonial_rating }} out of 5 stars">
+          {%- for i in (1..5) -%}
+            <svg
+              class="artist-showcase__testimonial-star{% if i <= testimonial_rating %} artist-showcase__testimonial-star--filled{% endif %}"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M10 1L13.09 7.26L20 8.27L15 13.14L16.18 20.02L10 16.77L3.82 20.02L5 13.14L0 8.27L6.91 7.26L10 1Z"
+                fill="{% if i <= testimonial_rating %}currentColor{% else %}none{% endif %}"
+                stroke="currentColor"
+                stroke-width="1"
+                stroke-linejoin="round"
+              />
+            </svg>
+          {%- endfor -%}
+        </div>
+        <meta itemprop="ratingValue" content="{{ testimonial_rating }}">
+        <meta itemprop="bestRating" content="5">
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Quote Content {%- endcomment -%}
+    <blockquote class="artist-showcase__testimonial-quote" itemprop="reviewBody">
+      <svg class="artist-showcase__testimonial-quote-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 21C3 17.5 5.5 15 9 15C9.7 15 10.4 15.1 11 15.3V21H3ZM14 21C14 17.5 16.5 15 20 15C20.7 15 21.4 15.1 22 15.3V21H14Z" fill="currentColor"/>
+        <path d="M9 13.5C8.2 13.5 7.5 13.3 6.8 12.9C5.4 12.1 4.3 10.8 3.8 9.2C3.3 7.6 3.4 5.9 4.1 4.4C4.8 2.9 6.1 1.8 7.7 1.3C8.5 1 9.4 1.2 10 1.8C10.6 2.4 10.8 3.3 10.5 4.1L9.6 6.6C9.4 7.2 8.8 7.5 8.2 7.3C7.6 7.1 7.3 6.5 7.5 5.9L8.1 4.2C7.5 4.4 7 4.8 6.6 5.4C6.2 6 6 6.7 6.1 7.4C6.2 8.1 6.5 8.7 7 9.1C7.5 9.5 8.2 9.7 8.9 9.6C9.5 9.5 10.1 9.8 10.2 10.4C10.3 11 10 11.6 9.4 11.7C9.3 11.8 9.1 11.9 9 13.5Z" fill="currentColor"/>
+      </svg>
+
+      <p class="artist-showcase__testimonial-text">
+        "{{ testimonial_quote | escape }}"
+      </p>
+    </blockquote>
+
+    {%- comment -%} Author Information {%- endcomment -%}
+    <div class="artist-showcase__testimonial-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+      {%- if testimonial_avatar != blank -%}
+        <div class="artist-showcase__testimonial-avatar">
+          <img
+            src="{{ testimonial_avatar | image_url: width: 80 }}"
+            alt="{{ testimonial_author | escape | default: 'Customer' }}"
+            width="60"
+            height="60"
+            loading="lazy"
+            class="artist-showcase__testimonial-avatar-image"
+          >
+        </div>
+      {%- endif -%}
+
+      <div class="artist-showcase__testimonial-author-info">
+        {%- if testimonial_author != blank -%}
+          <cite class="artist-showcase__testimonial-author-name" itemprop="name">
+            {{ testimonial_author | escape }}
+          </cite>
+        {%- endif -%}
+
+        {%- if testimonial_role != blank -%}
+          <p class="artist-showcase__testimonial-author-role" itemprop="jobTitle">
+            {{ testimonial_role | escape }}
+          </p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} Verification Badge {%- endcomment -%}
+    <div class="artist-showcase__testimonial-verification">
+      <svg class="artist-showcase__testimonial-verification-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 0L9.96 2.94L13.5 2.25L12.81 5.79L16 8L12.81 10.21L13.5 13.75L9.96 13.06L8 16L6.04 13.06L2.5 13.75L3.19 10.21L0 8L3.19 5.79L2.5 2.25L6.04 2.94L8 0Z" fill="currentColor"/>
+        <path d="M11 6L7 10L5 8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="artist-showcase__testimonial-verification-text">Verified Customer</span>
+    </div>
+
+    {%- comment -%} Social Proof (if enabled) {%- endcomment -%}
+    {%- if block.settings.enable_social_proof -%}
+      <div class="artist-showcase__testimonial-social">
+        {%- if block.settings.social_followers > 0 -%}
+          <div class="artist-showcase__testimonial-social-stat">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8Z" fill="currentColor"/>
+              <path d="M8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z" fill="currentColor"/>
+            </svg>
+            <span>{{ block.settings.social_followers | divided_by: 1000.0 | round: 1 }}K followers</span>
+          </div>
+        {%- endif -%}
+
+        {%- if block.settings.social_likes > 0 -%}
+          <div class="artist-showcase__testimonial-social-stat">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 14.5C7.5 14.5 7 14.3 6.6 13.9L1.1 8.4C0.4 7.7 0 6.7 0 5.6C0 3.5 1.7 1.8 3.8 1.8C5.1 1.8 6.3 2.5 7 3.5C7.7 2.5 8.9 1.8 10.2 1.8C12.3 1.8 14 3.5 14 5.6C14 6.7 13.6 7.7 12.9 8.4L7.4 13.9C7 14.3 6.5 14.5 8 14.5Z" fill="currentColor"/>
+            </svg>
+            <span>{{ block.settings.social_likes | divided_by: 1000.0 | round: 1 }}K likes</span>
+          </div>
+        {%- endif -%}
+
+        {%- if block.settings.social_handle != blank -%}
+          <div class="artist-showcase__testimonial-social-handle">
+            {%- if block.settings.social_link != blank -%}
+              <a href="{{ block.settings.social_link }}" class="artist-showcase__testimonial-social-link" target="_blank" rel="noopener">
+                {{ block.settings.social_handle | escape }}
+              </a>
+            {%- else -%}
+              <span>{{ block.settings.social_handle | escape }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Date and Platform {%- endcomment -%}
+    <div class="artist-showcase__testimonial-meta">
+      <time class="artist-showcase__testimonial-date" datetime="{{ 'now' | date: '%Y-%m-%d' }}">
+        {{ 'now' | date: '%B %d, %Y' }}
+      </time>
+      <span class="artist-showcase__testimonial-platform">• Verified Purchase</span>
+    </div>
+
+    {%- comment -%} Structured Data {%- endcomment -%}
+    <meta itemprop="datePublished" content="{{ 'now' | date: '%Y-%m-%d' }}">
+
+  </div>
+{%- endif -%}

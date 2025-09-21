@@ -1,0 +1,204 @@
+{% comment %}
+  Snippet: block-collection-highlight
+  Usage: {% render 'block-collection-highlight', block: block, unique: 'component-123' %}
+
+  Parameters:
+  - block (required): Block object containing collection settings
+  - unique (required): Unique ID for scoped styling
+
+  Design Token Integration:
+  - Uses semantic tokens with collection-specific styling
+  - Responsive image optimization for high-quality collection photography
+  - Overlay system for text readability over artistic imagery
+{% endcomment %}
+
+{%- liquid
+  assign collection_title = block.settings.collection_title | default: 'Featured Collection'
+  assign collection_description = block.settings.collection_description | default: ''
+  assign collection_image = block.settings.collection_image
+  assign shopify_collection = block.settings.shopify_collection
+  assign overlay_opacity = block.settings.image_overlay_opacity | default: 0
+  assign block_id = block.id | replace: '_', '' | downcase
+-%}
+
+{% style %}
+  .collection-highlight-{{ block_id }} {
+    /* ✅ Design token integration for collection highlights */
+    --collection-bg: var(--surface-primary);
+    --collection-text: var(--text-primary);
+    --collection-accent: var(--brand-primary-500);
+    --collection-overlay: rgba(0, 0, 0, {{ overlay_opacity | divided_by: 100.0 }});
+    --collection-radius: var(--border-radius-lg);
+    --collection-spacing: var(--spacing-component-md);
+
+    position: relative;
+    background: var(--collection-bg);
+    border-radius: var(--collection-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .collection-highlight-{{ block_id }}:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .collection-highlight-{{ block_id }}__image-container {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+
+  .collection-highlight-{{ block_id }}__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-slow);
+  }
+
+  .collection-highlight-{{ block_id }}:hover .collection-highlight-{{ block_id }}__image {
+    transform: scale(1.05);
+  }
+
+  .collection-highlight-{{ block_id }}__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--collection-overlay);
+    transition: var(--transition-base);
+  }
+
+  .collection-highlight-{{ block_id }}__content {
+    padding: var(--collection-spacing);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .collection-highlight-{{ block_id }}__title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--collection-text);
+    margin-bottom: var(--spacing-component-xs);
+    line-height: var(--line-height-tight);
+  }
+
+  .collection-highlight-{{ block_id }}__description {
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--spacing-component-sm);
+    flex-grow: 1;
+  }
+
+  .collection-highlight-{{ block_id }}__description p {
+    margin: 0 0 var(--spacing-component-xs) 0;
+  }
+
+  .collection-highlight-{{ block_id }}__description p:last-child {
+    margin-bottom: 0;
+  }
+
+  .collection-highlight-{{ block_id }}__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-component-xs);
+    color: var(--collection-accent);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+    margin-top: auto;
+    transition: var(--transition-base);
+  }
+
+  .collection-highlight-{{ block_id }}__link:hover {
+    color: var(--brand-primary-700);
+  }
+
+  .collection-highlight-{{ block_id }}__link:focus {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--border-radius-sm);
+  }
+
+  /* High contrast overlay for better text readability */
+  .collection-highlight-{{ block_id }}--has-overlay .collection-highlight-{{ block_id }}__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
+  }
+
+  .collection-highlight-{{ block_id }}--has-overlay .collection-highlight-{{ block_id }}__title,
+  .collection-highlight-{{ block_id }}--has-overlay .collection-highlight-{{ block_id }}__description {
+    color: white;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 749px) {
+    .collection-highlight-{{ block_id }}__title {
+      font-size: var(--font-size-lg);
+    }
+
+    .collection-highlight-{{ block_id }}__content {
+      padding: var(--spacing-component-sm);
+    }
+  }
+{% endstyle %}
+
+<div
+  class="collection-highlight-{{ block_id }}{% if overlay_opacity > 30 %} collection-highlight-{{ block_id }}--has-overlay{% endif %}"
+  {{ block.shopify_attributes }}
+>
+  {% if collection_image %}
+    <div class="collection-highlight-{{ block_id }}__image-container">
+      <img
+        src="{{ collection_image | image_url: width: 800 }}"
+        srcset="{{ collection_image | image_url: width: 400 }} 400w,
+                {{ collection_image | image_url: width: 800 }} 800w,
+                {{ collection_image | image_url: width: 1200 }} 1200w"
+        sizes="(min-width: 1200px) 400px, (min-width: 750px) 50vw, 100vw"
+        alt="{{ collection_image.alt | default: collection_title | escape }}"
+        class="collection-highlight-{{ block_id }}__image"
+        loading="lazy"
+        width="800"
+        height="600"
+      >
+      {% if overlay_opacity > 0 %}
+        <div class="collection-highlight-{{ block_id }}__overlay"></div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="collection-highlight-{{ block_id }}__content">
+    <h3 class="collection-highlight-{{ block_id }}__title">
+      {{ collection_title | escape }}
+    </h3>
+
+    {% if collection_description != blank %}
+      <div class="collection-highlight-{{ block_id }}__description">
+        {{ collection_description }}
+      </div>
+    {% endif %}
+
+    {% if shopify_collection %}
+      <a
+        href="{{ shopify_collection.url }}"
+        class="collection-highlight-{{ block_id }}__link"
+        aria-label="Explore {{ collection_title | escape }} collection"
+      >
+        <span>Explore Collection</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8.22 2.97a.75.75 0 0 1 1.06 0L14.03 7.7a.75.75 0 0 1 0 1.06L9.28 13.5a.75.75 0 0 1-1.06-1.06L11.44 9.25H2.75a.75.75 0 0 1 0-1.5h8.69L8.22 4.53a.75.75 0 0 1 0-1.06Z"/>
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+</div>

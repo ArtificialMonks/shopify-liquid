@@ -1,0 +1,255 @@
+{% comment %}
+  Snippet: block-product-spotlight
+  Usage: {% render 'block-product-spotlight', block: block, unique: 'component-123' %}
+
+  Parameters:
+  - block (required): Block object containing product settings
+  - unique (required): Unique ID for scoped styling
+
+  Design Token Integration:
+  - Uses commerce-focused design patterns with fashion aesthetics
+  - Responsive product imagery with proper sizing
+  - Accessible pricing and vendor information display
+{% endcomment %}
+
+{%- liquid
+  assign featured_product = block.settings.featured_product
+  assign show_price = block.settings.show_price | default: true
+  assign show_vendor = block.settings.show_vendor | default: true
+  assign button_text = block.settings.button_text | default: 'Shop Now'
+  assign layout_style = block.settings.layout_style | default: 'card'
+  assign block_id = block.id | replace: '_', '' | downcase
+-%}
+
+{% style %}
+  .product-spotlight-{{ block_id }} {
+    /* ✅ Design token integration for product spotlights */
+    --product-bg: var(--surface-primary);
+    --product-text: var(--text-primary);
+    --product-accent: var(--brand-primary-500);
+    --product-border: var(--border-primary);
+    --product-radius: var(--border-radius-lg);
+    --product-spacing: var(--spacing-component-md);
+
+    background: var(--product-bg);
+    border: 1px solid var(--product-border);
+    border-radius: var(--product-radius);
+    padding: var(--product-spacing);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-spotlight-{{ block_id }}:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .product-spotlight-{{ block_id }}__image-container {
+    position: relative;
+    aspect-ratio: 1;
+    margin-bottom: var(--spacing-component-sm);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background: var(--surface-secondary);
+  }
+
+  .product-spotlight-{{ block_id }}__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-base);
+  }
+
+  .product-spotlight-{{ block_id }}:hover .product-spotlight-{{ block_id }}__image {
+    transform: scale(1.03);
+  }
+
+  .product-spotlight-{{ block_id }}__badge {
+    position: absolute;
+    top: var(--spacing-component-xs);
+    left: var(--spacing-component-xs);
+    background: var(--error-500);
+    color: white;
+    padding: var(--spacing-component-xs) var(--spacing-component-sm);
+    border-radius: var(--border-radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .product-spotlight-{{ block_id }}__content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-spotlight-{{ block_id }}__vendor {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-component-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .product-spotlight-{{ block_id }}__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--product-text);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-component-xs);
+    flex-grow: 1;
+  }
+
+  .product-spotlight-{{ block_id }}__price {
+    margin-bottom: var(--spacing-component-sm);
+  }
+
+  .product-spotlight-{{ block_id }}__price-current {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--product-text);
+  }
+
+  .product-spotlight-{{ block_id }}__price-compare {
+    font-size: var(--font-size-base);
+    color: var(--text-tertiary);
+    text-decoration: line-through;
+    margin-left: var(--spacing-component-xs);
+  }
+
+  .product-spotlight-{{ block_id }}__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-component-xs);
+    background: var(--product-accent);
+    color: white;
+    text-decoration: none;
+    padding: var(--spacing-component-sm) var(--spacing-component-md);
+    border-radius: var(--border-radius-md);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+    transition: var(--transition-base);
+    margin-top: auto;
+    text-align: center;
+  }
+
+  .product-spotlight-{{ block_id }}__button:hover {
+    background: var(--brand-primary-600);
+    transform: translateY(-1px);
+  }
+
+  .product-spotlight-{{ block_id }}__button:focus {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .product-spotlight-{{ block_id }}__placeholder {
+    text-align: center;
+    color: var(--text-tertiary);
+    padding: var(--spacing-component-lg);
+    border: 2px dashed var(--border-secondary);
+    border-radius: var(--product-radius);
+    font-style: italic;
+  }
+
+  /* Layout variants */
+  .product-spotlight-{{ block_id }}--minimal {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .product-spotlight-{{ block_id }}--artistic {
+    background: linear-gradient(135deg, var(--surface-primary) 0%, var(--surface-secondary) 100%);
+    border: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 749px) {
+    .product-spotlight-{{ block_id }}__title {
+      font-size: var(--font-size-base);
+    }
+
+    .product-spotlight-{{ block_id }}__price-current {
+      font-size: var(--font-size-lg);
+    }
+  }
+{% endstyle %}
+
+<div class="product-spotlight-{{ block_id }} product-spotlight-{{ block_id }}--{{ layout_style }}" {{ block.shopify_attributes }}>
+  {% if featured_product %}
+    {% assign product = featured_product %}
+
+    <div class="product-spotlight-{{ block_id }}__image-container">
+      {% if product.featured_image %}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          srcset="{{ product.featured_image | image_url: width: 300 }} 300w,
+                  {{ product.featured_image | image_url: width: 600 }} 600w"
+          sizes="(min-width: 750px) 300px, 100vw"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
+          class="product-spotlight-{{ block_id }}__image"
+          loading="lazy"
+          width="600"
+          height="600"
+        >
+      {% else %}
+        <div class="product-spotlight-{{ block_id }}__placeholder">
+          <p>No image available</p>
+        </div>
+      {% endif %}
+
+      {% if product.compare_at_price > product.price %}
+        <div class="product-spotlight-{{ block_id }}__badge">
+          Sale
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="product-spotlight-{{ block_id }}__content">
+      {% if show_vendor and product.vendor != blank %}
+        <div class="product-spotlight-{{ block_id }}__vendor">
+          {{ product.vendor | escape }}
+        </div>
+      {% endif %}
+
+      <h3 class="product-spotlight-{{ block_id }}__title">
+        {{ product.title | escape }}
+      </h3>
+
+      {% if show_price %}
+        <div class="product-spotlight-{{ block_id }}__price">
+          <span class="product-spotlight-{{ block_id }}__price-current">
+            {{ product.price | money }}
+          </span>
+          {% if product.compare_at_price > product.price %}
+            <span class="product-spotlight-{{ block_id }}__price-compare">
+              {{ product.compare_at_price | money }}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <a
+        href="{{ product.url }}"
+        class="product-spotlight-{{ block_id }}__button"
+        aria-label="{{ button_text | escape }} - {{ product.title | escape }}"
+      >
+        <span>{{ button_text | escape }}</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8.22 2.97a.75.75 0 0 1 1.06 0L14.03 7.7a.75.75 0 0 1 0 1.06L9.28 13.5a.75.75 0 0 1-1.06-1.06L11.44 9.25H2.75a.75.75 0 0 1 0-1.5h8.69L8.22 4.53a.75.75 0 0 1 0-1.06Z"/>
+        </svg>
+      </a>
+    </div>
+  {% else %}
+    <div class="product-spotlight-{{ block_id }}__placeholder">
+      <p>Select a product to showcase</p>
+    </div>
+  {% endif %}
+</div>

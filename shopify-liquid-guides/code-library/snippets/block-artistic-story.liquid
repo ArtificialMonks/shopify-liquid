@@ -1,0 +1,238 @@
+{% comment %}
+  Snippet: block-artistic-story
+  Usage: {% render 'block-artistic-story', block: block, unique: 'component-123' %}
+
+  Parameters:
+  - block (required): Block object containing story settings
+  - unique (required): Unique ID for scoped styling
+
+  Design Token Integration:
+  - Rich text storytelling with artistic typography
+  - Video integration for process documentation
+  - Flexible text alignment for visual composition
+{% endcomment %}
+
+{%- liquid
+  assign story_title = block.settings.story_title | default: 'Our Story'
+  assign story_content = block.settings.story_content | default: ''
+  assign story_video = block.settings.story_video
+  assign youtube_video = block.settings.youtube_video
+  assign text_alignment = block.settings.text_alignment | default: 'left'
+  assign block_id = block.id | replace: '_', '' | downcase
+-%}
+
+{% style %}
+  .artistic-story-{{ block_id }} {
+    /* ✅ Design token integration for storytelling content */
+    --story-bg: var(--surface-primary);
+    --story-text: var(--text-primary);
+    --story-accent: var(--brand-primary-500);
+    --story-spacing: var(--spacing-component-lg);
+    --story-radius: var(--border-radius-lg);
+    --story-alignment: {{ text_alignment }};
+
+    background: var(--story-bg);
+    color: var(--story-text);
+    padding: var(--story-spacing);
+    border-radius: var(--story-radius);
+    text-align: var(--story-alignment);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .artistic-story-{{ block_id }}__title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--story-text);
+    margin-bottom: var(--spacing-component-md);
+    line-height: var(--line-height-tight);
+  }
+
+  .artistic-story-{{ block_id }}__content {
+    flex-grow: 1;
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--spacing-component-md);
+  }
+
+  .artistic-story-{{ block_id }}__content p {
+    margin: 0 0 var(--spacing-component-sm) 0;
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+  }
+
+  .artistic-story-{{ block_id }}__content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .artistic-story-{{ block_id }}__content strong {
+    font-weight: var(--font-weight-bold);
+    color: var(--story-accent);
+  }
+
+  .artistic-story-{{ block_id }}__content em {
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+
+  .artistic-story-{{ block_id }}__video-container {
+    position: relative;
+    width: 100%;
+    margin-top: var(--spacing-component-md);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+
+  .artistic-story-{{ block_id }}__video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .artistic-story-{{ block_id }}__video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+  }
+
+  .artistic-story-{{ block_id }}__video-wrapper iframe,
+  .artistic-story-{{ block_id }}__video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .artistic-story-{{ block_id }}__play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-base);
+    border: 3px solid white;
+  }
+
+  .artistic-story-{{ block_id }}__play-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .artistic-story-{{ block_id }}__play-button svg {
+    width: 32px;
+    height: 32px;
+    fill: white;
+    margin-left: 4px; /* Visual centering adjustment */
+  }
+
+  .artistic-story-{{ block_id }}__placeholder {
+    text-align: center;
+    color: var(--text-tertiary);
+    padding: var(--spacing-component-xl);
+    border: 2px dashed var(--border-secondary);
+    border-radius: var(--story-radius);
+    font-style: italic;
+  }
+
+  /* Text alignment variants */
+  .artistic-story-{{ block_id }}--center {
+    text-align: center;
+  }
+
+  .artistic-story-{{ block_id }}--left {
+    text-align: left;
+  }
+
+  .artistic-story-{{ block_id }}--right {
+    text-align: right;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 749px) {
+    .artistic-story-{{ block_id }}__title {
+      font-size: var(--font-size-xl);
+    }
+
+    .artistic-story-{{ block_id }} {
+      padding: var(--spacing-component-md);
+    }
+
+    .artistic-story-{{ block_id }}__play-button {
+      width: 60px;
+      height: 60px;
+    }
+
+    .artistic-story-{{ block_id }}__play-button svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+{% endstyle %}
+
+<div class="artistic-story-{{ block_id }} artistic-story-{{ block_id }}--{{ text_alignment }}" {{ block.shopify_attributes }}>
+  {% if story_title != blank %}
+    <h3 class="artistic-story-{{ block_id }}__title">
+      {{ story_title | escape }}
+    </h3>
+  {% endif %}
+
+  {% if story_content != blank %}
+    <div class="artistic-story-{{ block_id }}__content">
+      {{ story_content }}
+    </div>
+  {% endif %}
+
+  {% comment %} Video content - prioritize uploaded video over external {% endcomment %}
+  {% if story_video %}
+    <div class="artistic-story-{{ block_id }}__video-container">
+      <video
+        class="artistic-story-{{ block_id }}__video"
+        controls
+        preload="metadata"
+        poster="{{ story_video.preview_image | image_url: width: 800 }}"
+        aria-label="Story video: {{ story_title | escape }}"
+      >
+        <source src="{{ story_video.sources[0].url }}" type="{{ story_video.sources[0].mime_type }}">
+        <p>Your browser doesn't support video playback. <a href="{{ story_video.sources[0].url }}">Download the video</a> instead.</p>
+      </video>
+    </div>
+  {% elsif youtube_video %}
+    <div class="artistic-story-{{ block_id }}__video-container">
+      <div class="artistic-story-{{ block_id }}__video-wrapper">
+        {% if youtube_video.type == 'youtube' %}
+          <iframe
+            src="https://www.youtube.com/embed/{{ youtube_video.id }}"
+            title="YouTube video: {{ story_title | escape }}"
+            allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          ></iframe>
+        {% elsif youtube_video.type == 'vimeo' %}
+          <iframe
+            src="https://player.vimeo.com/video/{{ youtube_video.id }}"
+            title="Vimeo video: {{ story_title | escape }}"
+            allowfullscreen
+            allow="autoplay; fullscreen; picture-in-picture"
+          ></iframe>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% comment %} Show placeholder if no content is provided {% endcomment %}
+  {% if story_title == blank and story_content == blank and story_video == nil and youtube_video == nil %}
+    <div class="artistic-story-{{ block_id }}__placeholder">
+      <p>Add story content to share your artistic journey</p>
+    </div>
+  {% endif %}
+</div>

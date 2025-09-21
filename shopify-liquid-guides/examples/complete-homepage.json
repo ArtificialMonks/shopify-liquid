@@ -21,7 +21,7 @@
       }
     },
     "featured_products": {
-      "type": "product-grid-paginate",
+      "type": "featured-products",
       "settings": {
         "heading": "Featured Products",
         "collection": "featured",

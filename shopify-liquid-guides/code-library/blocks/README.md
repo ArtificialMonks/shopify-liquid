@@ -35,6 +35,82 @@ Modern blocks for enhanced functionality:
 |-------|-------------|--------------|
 | **accordion.liquid** | Collapsible content sections | Smooth animations, multiple items, accessibility |
 | **countdown.liquid** | Timer for sales/events | Days/hours/minutes/seconds, expired handling |
+| **testimonial.liquid** | Customer review display | Avatar, rating system, multiple layouts, shadow effects |
+| **tabs.liquid** | Tabbed content interface | Horizontal/vertical tabs, smooth transitions, keyboard navigation |
+| **progress-bar.liquid** | Visual progress indicator | Animated progress, custom colors, percentage labels |
+| **icon-list.liquid** | List with custom icons | SVG icons, flexible layouts, hover effects |
+| **comparison-table.liquid** | Feature comparison grid | Responsive tables, highlight columns, checkmarks |
+| **sticky-banner.liquid** | Persistent notification | Top/bottom positioning, dismissible, call-to-action |
+| **video-system.liquid** | 🎥 **Complete video system** | **YouTube/Vimeo/MP4/Shopify files, full background system, typography controls, grid layouts, animations, mobile optimization, accessibility features** |
+
+## 🎥 **Complete Video System Block**
+
+The `video-system.liquid` block is our most comprehensive block, providing a complete video solution with every feature you need for modern video experiences:
+
+### Core Video Features
+- **Multiple Video Sources**: YouTube, Vimeo, MP4 URLs, Shopify file uploads
+- **Aspect Ratio Control**: 16:9, 4:3, 1:1, 21:9, 3:2, 9:16 with responsive handling
+- **Video Positioning**: Center, top, bottom, left, right positioning within container
+- **Scalability Options**: 50% to 150% scaling with smooth transitions
+- **Quality Settings**: From 240p to 1080p with adaptive streaming
+- **Playback Controls**: Autoplay, muted, loop, controls visibility, lazy loading
+
+### Advanced Styling System
+- **Video Effects**: Border radius, opacity, shadow with blur/spread/color controls
+- **Shadow System**: None, small, medium, large, extra-large with custom colors
+- **Fit Options**: Cover, contain, fill with object positioning
+
+### Complete Background System
+- **Solid Colors**: Full RGBA support with opacity controls
+- **Linear/Radial Gradients**: Multi-stop gradients with angle controls
+- **Background Images**: Position, size, repeat, attachment options
+- **Blend Modes**: 12 blend modes including multiply, overlay, difference
+- **Global Color Override**: Option to override theme colors with block-specific colors
+
+### Full Typography Controls
+- **Header Text**: Complete font control with family, size, weight, line height, letter spacing
+- **Body Text**: Independent typography controls for descriptive content
+- **Text Positioning**: Above, below, left, or right of video with flexible grid system
+- **Text Effects**: Shadow controls (X, Y, blur, color), text transform, alignment options
+- **Responsive Text**: Automatic scaling for mobile devices
+
+### Flexible Layout System
+- **Layout Types**: Stacked, side-by-side, custom 3x3 grid positioning
+- **Grid Positioning**: 9-point positioning system for video and text content
+- **Responsive Layouts**: Different layouts for mobile with orientation changes
+- **Spacing Controls**: Padding, margin, gap controls with mobile variants
+
+### Advanced Animations
+- **Scroll Animations**: Fade, slide, zoom, rotate with duration/delay controls
+- **Hover Effects**: Scale, lift, glow, rotate with smooth transitions
+- **Parallax Scrolling**: Background and video parallax with performance optimization
+- **Loading States**: Shimmer animation for loading content
+
+### Mobile Optimization
+- **Separate Mobile Layouts**: Stacked or reverse stacking for mobile
+- **Mobile Typography**: Independent font sizes for mobile devices
+- **Bandwidth Detection**: Automatic quality adjustment for slow connections
+- **Touch Optimization**: Larger touch targets (88px) for accessibility
+- **Mobile Background Images**: Different background images for mobile
+
+### Accessibility & Performance
+- **WCAG 2.1 AA Compliance**: Proper ARIA labels, keyboard navigation, focus management
+- **Reduced Motion Support**: Respects user preferences for motion
+- **Screen Reader Optimization**: Comprehensive screen reader support
+- **Performance Features**: Lazy loading, intersection observer, hardware acceleration
+- **High Contrast Mode**: Automatic adjustments for high contrast preferences
+
+### Usage Example
+```liquid
+<!-- In your section schema -->
+{
+  "blocks": [
+    {"type": "video-system"}
+  ]
+}
+```
+
+The video system block automatically handles all complexity while providing merchant-friendly controls in the theme editor.
 
 ## 🎯 **Understanding Theme Blocks**
 

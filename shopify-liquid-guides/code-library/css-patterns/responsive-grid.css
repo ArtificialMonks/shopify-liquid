@@ -15,7 +15,7 @@
  * ======================================== */
 
 /* Basic auto-fit grid that adapts to container width */
-.grid-auto-fit-UNIQUEID {
+.grid-auto-fit {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: var(--grid-gap, 24px);
@@ -23,7 +23,7 @@
 }
 
 /* Auto-fit with minimum and maximum constraints */
-.grid-constrained-UNIQUEID {
+.grid-constrained {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: var(--grid-gap, 24px);
@@ -37,7 +37,7 @@
  * ======================================== */
 
 /* Mobile-first responsive grid */
-.grid-responsive-UNIQUEID {
+.grid-responsive {
   display: grid;
   gap: var(--grid-gap-mobile, 16px);
   grid-template-columns: 1fr;
@@ -46,7 +46,7 @@
 
 /* Shopify tablet breakpoint */
 @media screen and (min-width: 750px) {
-  .grid-responsive-UNIQUEID {
+  .grid-responsive {
     grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
     gap: var(--grid-gap-tablet, 24px);
     padding: var(--grid-padding-tablet, 24px);
@@ -55,7 +55,7 @@
 
 /* Shopify desktop breakpoint */
 @media screen and (min-width: 990px) {
-  .grid-responsive-UNIQUEID {
+  .grid-responsive {
     grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
     gap: var(--grid-gap-desktop, 32px);
     padding: var(--grid-padding-desktop, 32px);
@@ -64,7 +64,7 @@
 
 /* Shopify large desktop breakpoint */
 @media screen and (min-width: 1200px) {
-  .grid-responsive-UNIQUEID {
+  .grid-responsive {
     grid-template-columns: repeat(var(--columns-large, 4), 1fr);
     gap: var(--grid-gap-large, 40px);
   }
@@ -75,14 +75,14 @@
  * ======================================== */
 
 /* Product grid with consistent aspect ratios */
-.product-grid-UNIQUEID {
+.product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--product-gap, 24px);
   padding: var(--grid-padding, 20px);
 }
 
-.product-grid-UNIQUEID .product-card {
+.product-grid .product-card {
   display: flex;
   flex-direction: column;
   background: var(--card-bg, #ffffff);
@@ -93,36 +93,36 @@
   will-change: transform;
 }
 
-.product-grid-UNIQUEID .product-card:hover {
+.product-grid .product-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.product-grid-UNIQUEID .product-image {
+.product-grid .product-image {
   aspect-ratio: var(--image-ratio, 1);
   overflow: hidden;
   background: var(--image-bg, #f8f9fa);
 }
 
-.product-grid-UNIQUEID .product-image img {
+.product-grid .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.product-grid-UNIQUEID .product-card:hover .product-image img {
+.product-grid .product-card:hover .product-image img {
   transform: scale(1.05);
 }
 
-.product-grid-UNIQUEID .product-info {
+.product-grid .product-info {
   padding: var(--card-padding, 16px);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-.product-grid-UNIQUEID .product-title {
+.product-grid .product-title {
   font-size: var(--title-size, 16px);
   font-weight: 600;
   color: var(--title-color, #333333);
@@ -130,7 +130,7 @@
   line-height: 1.3;
 }
 
-.product-grid-UNIQUEID .product-price {
+.product-grid .product-price {
   font-size: var(--price-size, 18px);
   font-weight: 700;
   color: var(--price-color, #007cba);
@@ -142,14 +142,14 @@
  * ======================================== */
 
 /* CSS-only masonry effect using subgrid */
-.masonry-grid-UNIQUEID {
+.masonry-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--masonry-gap, 20px);
   padding: var(--grid-padding, 20px);
 }
 
-.masonry-grid-UNIQUEID .masonry-item {
+.masonry-grid .masonry-item {
   break-inside: avoid;
   page-break-inside: avoid;
   background: var(--item-bg, #ffffff);
@@ -160,20 +160,20 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.masonry-grid-UNIQUEID .masonry-item:hover {
+.masonry-grid .masonry-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Fallback for browsers without subgrid support */
 @supports not (grid-template-rows: subgrid) {
-  .masonry-grid-UNIQUEID {
+  .masonry-grid {
     columns: var(--masonry-columns, 3);
     column-gap: var(--masonry-gap, 20px);
     grid-template-columns: none;
   }
 
-  .masonry-grid-UNIQUEID .masonry-item {
+  .masonry-grid .masonry-item {
     display: inline-block;
     width: 100%;
   }
@@ -184,7 +184,7 @@
  * ======================================== */
 
 /* Grid with featured item taking more space */
-.featured-grid-UNIQUEID {
+.featured-grid {
   display: grid;
   gap: var(--featured-gap, 24px);
   padding: var(--grid-padding, 20px);
@@ -193,16 +193,16 @@
 
 /* Shopify desktop layout with featured item */
 @media screen and (min-width: 990px) {
-  .featured-grid-UNIQUEID {
+  .featured-grid {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: repeat(var(--featured-rows, 2), 1fr);
   }
 
-  .featured-grid-UNIQUEID .featured-item {
+  .featured-grid .featured-item {
     grid-row: 1 / -1;
   }
 
-  .featured-grid-UNIQUEID .secondary-items {
+  .featured-grid .secondary-items {
     display: grid;
     gap: var(--secondary-gap, 16px);
     grid-template-rows: subgrid;
@@ -214,7 +214,7 @@
  * CARD GRID WITH EQUAL HEIGHTS
  * ======================================== */
 
-.card-grid-UNIQUEID {
+.card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--card-gap, 24px);
@@ -222,7 +222,7 @@
   align-items: stretch; /* Equal height cards */
 }
 
-.card-grid-UNIQUEID .card {
+.card-grid .card {
   display: flex;
   flex-direction: column;
   background: var(--card-bg, #ffffff);
@@ -232,23 +232,23 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card-grid-UNIQUEID .card:hover {
+.card-grid .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.card-grid-UNIQUEID .card-header {
+.card-grid .card-header {
   padding: var(--card-header-padding, 20px) var(--card-padding, 20px) 0;
 }
 
-.card-grid-UNIQUEID .card-body {
+.card-grid .card-body {
   padding: var(--card-padding, 20px);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-.card-grid-UNIQUEID .card-footer {
+.card-grid .card-footer {
   padding: 0 var(--card-padding, 20px) var(--card-padding, 20px);
   margin-top: auto;
 }
@@ -258,7 +258,7 @@
  * ======================================== */
 
 /* Complex asymmetric layout */
-.asymmetric-grid-UNIQUEID {
+.asymmetric-grid {
   display: grid;
   gap: var(--asymmetric-gap, 20px);
   padding: var(--grid-padding, 20px);
@@ -266,42 +266,42 @@
 }
 
 @media screen and (min-width: 750px) {
-  .asymmetric-grid-UNIQUEID {
+  .asymmetric-grid {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 200px);
   }
 
-  .asymmetric-grid-UNIQUEID .item-1 {
+  .asymmetric-grid .item-1 {
     grid-column: 1 / 3;
     grid-row: 1 / 3;
   }
 
-  .asymmetric-grid-UNIQUEID .item-2 {
+  .asymmetric-grid .item-2 {
     grid-column: 3 / 5;
     grid-row: 1 / 2;
   }
 
-  .asymmetric-grid-UNIQUEID .item-3 {
+  .asymmetric-grid .item-3 {
     grid-column: 3 / 4;
     grid-row: 2 / 4;
   }
 
-  .asymmetric-grid-UNIQUEID .item-4 {
+  .asymmetric-grid .item-4 {
     grid-column: 4 / 5;
     grid-row: 2 / 3;
   }
 
-  .asymmetric-grid-UNIQUEID .item-5 {
+  .asymmetric-grid .item-5 {
     grid-column: 1 / 2;
     grid-row: 3 / 4;
   }
 
-  .asymmetric-grid-UNIQUEID .item-6 {
+  .asymmetric-grid .item-6 {
     grid-column: 2 / 3;
     grid-row: 3 / 4;
   }
 
-  .asymmetric-grid-UNIQUEID .item-7 {
+  .asymmetric-grid .item-7 {
     grid-column: 4 / 5;
     grid-row: 3 / 4;
   }
@@ -311,14 +311,14 @@
  * RESPONSIVE IMAGE GRID
  * ======================================== */
 
-.image-grid-UNIQUEID {
+.image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: var(--image-gap, 16px);
   padding: var(--grid-padding, 20px);
 }
 
-.image-grid-UNIQUEID .image-item {
+.image-grid .image-item {
   position: relative;
   aspect-ratio: var(--image-ratio, 1);
   overflow: hidden;
@@ -326,18 +326,18 @@
   background: var(--image-bg, #f8f9fa);
 }
 
-.image-grid-UNIQUEID .image-item img {
+.image-grid .image-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.image-grid-UNIQUEID .image-item:hover img {
+.image-grid .image-item:hover img {
   transform: scale(1.1);
 }
 
-.image-grid-UNIQUEID .image-overlay {
+.image-grid .image-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -353,7 +353,7 @@
   transition: opacity 0.3s ease;
 }
 
-.image-grid-UNIQUEID .image-item:hover .image-overlay {
+.image-grid .image-item:hover .image-overlay {
   opacity: 1;
 }
 
@@ -361,7 +361,7 @@
  * CONTAINER QUERIES (PROGRESSIVE ENHANCEMENT)
  * ======================================== */
 
-.container-grid-UNIQUEID {
+.container-grid {
   container-type: inline-size;
   display: grid;
   gap: var(--container-gap, 20px);
@@ -371,19 +371,19 @@
 
 /* Container query breakpoints */
 @container (min-width: 400px) {
-  .container-grid-UNIQUEID {
+  .container-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @container (min-width: 600px) {
-  .container-grid-UNIQUEID {
+  .container-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @container (min-width: 800px) {
-  .container-grid-UNIQUEID {
+  .container-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
@@ -391,19 +391,19 @@
 /* Fallback for browsers without container queries */
 @supports not (container-type: inline-size) {
   @media (min-width: 400px) {
-    .container-grid-UNIQUEID {
+    .container-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 600px) {
-    .container-grid-UNIQUEID {
+    .container-grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
 
   @media (min-width: 800px) {
-    .container-grid-UNIQUEID {
+    .container-grid {
       grid-template-columns: repeat(4, 1fr);
     }
   }
@@ -414,63 +414,63 @@
  * ======================================== */
 
 /* Responsive column utilities */
-.cols-1-UNIQUEID { grid-template-columns: repeat(1, 1fr); }
-.cols-2-UNIQUEID { grid-template-columns: repeat(2, 1fr); }
-.cols-3-UNIQUEID { grid-template-columns: repeat(3, 1fr); }
-.cols-4-UNIQUEID { grid-template-columns: repeat(4, 1fr); }
-.cols-5-UNIQUEID { grid-template-columns: repeat(5, 1fr); }
-.cols-6-UNIQUEID { grid-template-columns: repeat(6, 1fr); }
+.cols-1 { grid-template-columns: repeat(1, 1fr); }
+.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.cols-6 { grid-template-columns: repeat(6, 1fr); }
 
 /* Gap utilities */
-.gap-xs-UNIQUEID { gap: 8px; }
-.gap-sm-UNIQUEID { gap: 16px; }
-.gap-md-UNIQUEID { gap: 24px; }
-.gap-lg-UNIQUEID { gap: 32px; }
-.gap-xl-UNIQUEID { gap: 40px; }
+.gap-xs { gap: 8px; }
+.gap-sm { gap: 16px; }
+.gap-md { gap: 24px; }
+.gap-lg { gap: 32px; }
+.gap-xl { gap: 40px; }
 
 /* Alignment utilities */
-.items-start-UNIQUEID { align-items: start; }
-.items-center-UNIQUEID { align-items: center; }
-.items-end-UNIQUEID { align-items: end; }
-.items-stretch-UNIQUEID { align-items: stretch; }
+.items-start { align-items: start; }
+.items-center { align-items: center; }
+.items-end { align-items: end; }
+.items-stretch { align-items: stretch; }
 
-.justify-start-UNIQUEID { justify-items: start; }
-.justify-center-UNIQUEID { justify-items: center; }
-.justify-end-UNIQUEID { justify-items: end; }
-.justify-stretch-UNIQUEID { justify-items: stretch; }
+.justify-start { justify-items: start; }
+.justify-center { justify-items: center; }
+.justify-end { justify-items: end; }
+.justify-stretch { justify-items: stretch; }
 
 /* Span utilities */
-.col-span-1-UNIQUEID { grid-column: span 1; }
-.col-span-2-UNIQUEID { grid-column: span 2; }
-.col-span-3-UNIQUEID { grid-column: span 3; }
-.col-span-4-UNIQUEID { grid-column: span 4; }
-.col-span-full-UNIQUEID { grid-column: 1 / -1; }
+.col-span-1 { grid-column: span 1; }
+.col-span-2 { grid-column: span 2; }
+.col-span-3 { grid-column: span 3; }
+.col-span-4 { grid-column: span 4; }
+.col-span-full { grid-column: 1 / -1; }
 
-.row-span-1-UNIQUEID { grid-row: span 1; }
-.row-span-2-UNIQUEID { grid-row: span 2; }
-.row-span-3-UNIQUEID { grid-row: span 3; }
-.row-span-4-UNIQUEID { grid-row: span 4; }
-.row-span-full-UNIQUEID { grid-row: 1 / -1; }
+.row-span-1 { grid-row: span 1; }
+.row-span-2 { grid-row: span 2; }
+.row-span-3 { grid-row: span 3; }
+.row-span-4 { grid-row: span 4; }
+.row-span-full { grid-row: 1 / -1; }
 
 /* ========================================
  * ACCESSIBILITY CONSIDERATIONS
  * ======================================== */
 
 /* Ensure grid items are keyboard accessible */
-.grid-interactive-UNIQUEID .grid-item:focus {
+.grid-interactive .grid-item:focus {
   outline: 2px solid var(--focus-color, #007cba);
   outline-offset: 2px;
 }
 
 /* Screen reader friendly grid */
-.grid-accessible-UNIQUEID {
+.grid-accessible {
   /* Maintain logical reading order */
   /* Use aria-label for complex grids */
 }
 
 /* Reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .grid-UNIQUEID * {
+  .grid * {
     transition: none !important;
     transform: none !important;
   }

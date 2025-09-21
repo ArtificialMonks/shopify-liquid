@@ -1,6 +1,21 @@
 # Complete Repository Structure
 
-Comprehensive file tree and organization of the Shopify Theme Development Resource - the most complete documentation covering all 7 Shopify file types with integrated validation automation for 100% Theme Store compliance.
+Comprehensive file tree and organization of the Shopify Theme Development Resource - the most complete documentation covering all 7 Shopify file types with **unified design system architecture** and integrated validation automation for 100% Theme Store compliance.
+
+## 🎨 Unified Design System Architecture
+
+This repository implements a **three-tier design token system** ensuring visual consistency across all components:
+
+```
+Primitive Tokens → Semantic Tokens → Component Tokens
+   (Base Values)     (Contextual)      (Specific Use)
+```
+
+**Key Design System Files:**
+- **`code-library/css-patterns/design-tokens.css`** - 450+ unified design tokens
+- **`docs/architecture/design-system-implementation.md`** - Complete implementation guide
+- **All components integrate tokens** - Consistent styling with merchant customization
+- **Theme Store compliant** - No external dependencies, optimized performance
 
 ## 📁 Root Level
 
@@ -63,6 +78,7 @@ docs/
 ├── README.md                          # Complete documentation navigation
 ├── architecture/                      # Theme structure and patterns
 │   ├── README.md                      # Architecture overview
+│   ├── design-system-implementation.md # 🎨 DESIGN SYSTEM IMPLEMENTATION GUIDE
 │   ├── theme-overview.md              # Complete theme architecture
 │   ├── file-taxonomy.md              # All 7 Shopify file types
 │   └── best-practices-2025.md         # Current development standards
@@ -106,6 +122,7 @@ docs/
 │   └── examples/                     # Section group examples
 ├── advanced-features/                 # Cutting-edge development techniques
 │   ├── README.md                      # Advanced features overview
+│   ├── shopify-2024-2025-features.md # 🚀 MODERN SHOPIFY FEATURES (Shop Pay, PWA, AI blocks)
 │   ├── ai-generated-blocks.md        # Machine learning automation
 │   ├── metaobject-integration.md     # Custom content beyond products
 │   ├── progressive-web-app.md        # App-like experiences
@@ -139,22 +156,28 @@ schema-validation/
 - Search exclusions for performance
 - Integrated validation workflow commands
 
-### Theme Check Configuration & Validation Automation
+### Enhanced Validation Scripts & Automation
 ```yaml
-# Multi-level validation strategy
+# Multi-level validation strategy with enhanced automation
 .theme-check.yml                       # Comprehensive validation (50+ rules)
 .theme-check-development.yml           # Fast development validation
 .theme-check-production.yml            # Theme Store compliance validation
-scripts/validate-theme.sh              # Automated validation workflow
+scripts/
+├── validate-theme.sh                  # 🚀 ENHANCED VALIDATION WORKFLOW
+├── scan-schema-integrity.py           # Python-based schema validation
+├── ultimate-validator.py              # Comprehensive repository validation
+└── README.md                         # Scripts documentation and usage
 ```
 
-**Validation Features:**
-- **50+ Validation Rules**: Complete Theme Store compliance checking
-- **Multi-Level Strategy**: Development, comprehensive, and production configs
-- **Automated Workflow**: One-command validation and auto-correction
-- **Security & Performance**: Header modification checks, asset limits
-- **Schema Validation**: Complete JSON schema validation with error prevention
-- **Auto-Fix Capabilities**: Automated correction of common issues
+**Enhanced Validation Features:**
+- **Multi-Language Validation**: Shell scripts + Python automation
+- **Ultimate Validation**: Repository-wide integrity checking
+- **Design System Validation**: Ensures token consistency across components
+- **Auto-Fix Capabilities**: Intelligent correction of schema and CSS issues
+- **Performance Optimization**: Automated Core Web Vitals validation
+- **Theme Store Compliance**: 100% compliance automation
+- **Schema Integrity**: Advanced Python-based schema validation
+- **Custom Pattern Detection**: Repository-specific validation rules
 
 ## 📚 Code Library Details
 
@@ -162,63 +185,92 @@ scripts/validate-theme.sh              # Automated validation workflow
 ```
 sections/
 ├── README.md                          # Section implementation guide
-├── hero-banner.liquid                 # Simple hero with heading/subtext
-├── hero-richtext-cta.liquid           # Advanced hero with blocks and CTA
-├── testimonial-carousel.liquid        # Customer testimonials with ratings
-├── faq-accordion.liquid               # Accessible collapsible FAQ
-└── product-grid-paginate.liquid       # Product grid with collection support
+├── essential/                         # Core theme sections
+│   ├── hero-banner.liquid             # Design token-integrated hero section
+│   ├── header.liquid                  # CSP-compliant header with design system
+│   ├── footer.liquid                  # Unified footer with token styling
+│   └── product-grid-simple.liquid     # Clean product grid with tokens
+├── enhanced/                          # Advanced functionality sections
+│   ├── contact-form.liquid            # Form with design token styling
+│   └── hero-richtext-cta.liquid       # Advanced hero with blocks and CTA
+├── legacy/                           # Legacy patterns for reference
+│   ├── hero-banner.liquid             # Original hero implementation
+│   ├── testimonial-carousel.liquid    # Customer testimonials with ratings
+│   ├── faq-accordion.liquid          # Accessible collapsible FAQ
+│   └── product-grid-paginate.liquid   # Product grid with collection support
+└── custom/                           # Repository-specific sections
 ```
 
-**Features:**
-- Complete JSON schema configurations
-- CSS scoping using unique section IDs
-- WCAG 2.1 AA accessibility compliance
-- Responsive design patterns
+**Design System Features:**
+- **Unified design token integration**: All sections use consistent styling system
+- **CSP compliance**: Theme Store approved security implementation
+- **Complete JSON schema configurations**: With design token fallback references
+- **CSS scoping using unique section IDs**: Plus design token-based styling
+- **WCAG 2.1 AA accessibility compliance**: Built into design token system
+- **Responsive design patterns**: Token-based breakpoint system
 
 ### Blocks (`code-library/blocks/`)
 ```
 blocks/
 ├── README.md                          # Block architecture and implementation
-├── block-media-text.liquid           # Media and text combination block
-└── block-feature-item.liquid         # Feature highlight with icon/text
+├── essential/                         # Core reusable blocks
+│   ├── image.liquid                   # Optimized image block with design tokens
+│   └── video-text.liquid              # Video with text overlay using token system
+├── enhanced/                          # Advanced block components
+│   ├── block-media-text.liquid       # Media and text combination block
+│   └── block-feature-item.liquid     # Feature highlight with icon/text
+└── custom/                           # Repository-specific block components
 ```
 
-**Architecture:**
-- Dynamic content through section settings
-- Nested CSS scoping (section + block IDs)
-- Reusable across multiple sections
+**Design System Architecture:**
+- **Design token integration**: All blocks use unified styling system
+- **Dynamic content through settings**: With design token fallbacks
+- **Nested CSS scoping**: Section + block IDs with token-based styling
+- **Reusable across multiple sections**: Consistent visual language
+- **Performance optimized**: Token-based CSS variables for efficiency
+- **Theme Store compliant**: No external dependencies
 
 ### Snippets (`code-library/snippets/`)
 ```
 snippets/
 ├── README.md                          # Snippet usage and parameters
 ├── responsive-image.liquid            # Optimized image rendering with lazy loading
+├── block-video-text.liquid            # Video text overlay with design token integration
 ├── metafield-render.liquid            # Safe metafield rendering with fallbacks
 ├── icon-svg.liquid                    # SVG icon system with accessibility
 ├── price-display.liquid               # Consistent price formatting
 └── loading-spinner.liquid             # Performance-optimized loading states
 ```
 
-**Design Principles:**
-- Parameter validation and graceful degradation
-- Performance optimized with minimal overhead
-- Accessibility-ready with proper ARIA labels
-- Validation-compliant implementations
+**Design System Principles:**
+- **Design token support**: Reusable styling patterns with token parameters
+- **Parameter validation**: Graceful degradation with design token fallbacks
+- **Performance optimized**: Minimal overhead with token-based styling
+- **Accessibility-ready**: ARIA labels integrated with design token system
+- **Validation-compliant**: All implementations pass enhanced validation
+- **Consistent styling**: Unified visual language through token system
 
 ### CSS Patterns (`code-library/css-patterns/`)
 ```
 css-patterns/
 ├── README.md                          # CSS methodology documentation
+├── design-tokens.css                  # 🎨 UNIFIED DESIGN SYSTEM (450+ tokens)
 ├── scoped-blocks.css                  # CSS scoping implementation examples
 ├── responsive-grid.css                # Mobile-first grid system patterns
-└── accessibility.css                  # WCAG 2.1 AA compliance patterns
+├── accessibility.css                  # WCAG 2.1 AA compliance patterns
+├── performance-optimization.css       # Core Web Vitals optimization patterns
+├── video-system-patterns.css          # Advanced video integration patterns
+└── custom/                           # Repository-specific custom patterns
 ```
 
-**Methodologies:**
-- Unique ID generation for conflict prevention
-- Mobile-first responsive design
-- Color contrast and focus management
-- Performance optimization patterns
+**Design System Methodologies:**
+- **Three-tier token architecture**: Primitive → Semantic → Component tokens
+- **Unified component styling**: Consistent visual language across all sections
+- **Dynamic customization**: Shopify settings with design token fallbacks
+- **Theme Store compliance**: No external dependencies, optimized performance
+- **Accessibility integration**: Built-in WCAG 2.1 AA compliance patterns
+- **Unique ID generation**: CSS scoping for conflict prevention
+- **Mobile-first responsive**: Design token-based breakpoint system
 
 ## 📋 JSON Template Examples
 

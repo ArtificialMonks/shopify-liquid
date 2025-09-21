@@ -4,8 +4,8 @@
     "banner": {
       "type": "hero-richtext-cta",
       "settings": {
-        "heading": "{{ collection.title }}",
-        "content": "{{ collection.description }}",
+        "heading": "Collection Name",
+        "content": "Collection description will appear here automatically when this template is used.",
         "align": "center",
         "bg_color": "#f8f9fa",
         "heading_color": "#333333",
@@ -17,7 +17,7 @@
       }
     },
     "main": {
-      "type": "main-collection-product-grid",
+      "type": "product-grid-simple",
       "settings": {
         "products_per_page": 24,
         "columns_desktop": 4,
@@ -37,7 +37,7 @@
     "collection_features": {
       "type": "hero-richtext-cta",
       "settings": {
-        "heading": "Why Choose Our {{ collection.title }}?",
+        "heading": "Why Choose Our Collection?",
         "content": "",
         "align": "center",
         "bg_color": "#ffffff",

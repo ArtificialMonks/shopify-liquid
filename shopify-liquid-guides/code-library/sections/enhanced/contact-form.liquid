@@ -765,7 +765,7 @@
     // Validate privacy consent if present
     const privacyCheckbox = form.querySelector('#contact-privacy-{{ unique }}');
     if (privacyCheckbox && !privacyCheckbox.checked) {
-      alert('Please agree to the privacy policy to continue.');
+      showError(privacyCheckbox, 'Please agree to the privacy policy to continue.');
       isFormValid = false;
     }
 

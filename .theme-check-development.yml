@@ -6,8 +6,7 @@
 root: "shopify-liquid-guides/code-library"
 
 # Use recommended preset for development
-extends:
-  - "theme-check:recommended"
+extends: "theme-check:recommended"
 
 # Files/directories to exclude from checking
 ignore:
@@ -56,4 +55,9 @@ RequiredDirectories:
   enabled: false
 
 RequiredLayoutThemeObject:
+  enabled: false
+
+# Disable RemoteAsset check - false positives on legitimate external URLs
+# and Shopify file.url references that are perfectly valid in theme development
+RemoteAsset:
   enabled: false

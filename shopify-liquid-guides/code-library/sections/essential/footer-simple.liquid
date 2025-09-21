@@ -1,0 +1,55 @@
+{%- comment -%}
+  Simple Footer - ZERO COMPLEXITY
+
+  Ultra-minimal footer that passes all validation
+{%- endcomment -%}
+
+{%- liquid
+  assign copyright_text = section.settings.copyright_text
+-%}
+
+<style>
+  .footer-simple-{{ section.id }} {
+    background-color: #f8f8f8;
+    padding: 2rem 1rem;
+    text-align: center;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .footer-simple-{{ section.id }}__copyright {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+</style>
+
+<footer class="footer-simple-{{ section.id }}" {{ section.shopify_attributes }}>
+  <p class="footer-simple-{{ section.id }}__copyright">
+    {% if copyright_text != blank %}
+      {{ copyright_text | escape }}
+    {% else %}
+      © {{ 'now' | date: '%Y' }} {{ shop.name | escape }}. All rights reserved.
+    {% endif %}
+  </p>
+</footer>
+
+{% schema %}
+{
+  "name": "Simple Footer",
+  "tag": "footer",
+  "class": "footer-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "info": "Leave blank for default copyright text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Simple Footer"
+    }
+  ]
+}
+{% endschema %}

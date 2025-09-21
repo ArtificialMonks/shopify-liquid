@@ -1,0 +1,462 @@
+{% comment %} sections/artist-collection-showcase.liquid {% endcomment %}
+{%- assign unique = section.id | replace: '_', '' | downcase -%}
+
+{% style %}
+  .artist-showcase-{{ unique }} {
+    /* ✅ Design token integration for fashion aesthetic */
+    --showcase-bg: var(--surface-primary);
+    --showcase-text: var(--text-primary);
+    --showcase-accent: var(--brand-primary-500);
+    --showcase-spacing: var(--spacing-section-lg);
+    --showcase-radius: var(--border-radius-lg);
+
+    /* ✅ Dynamic values from Shopify settings with token fallbacks */
+    --dynamic-bg: {{ section.settings.bg_color | default: 'var(--showcase-bg)' }};
+    --dynamic-text: {{ section.settings.text_color | default: 'var(--showcase-text)' }};
+    --dynamic-accent: {{ section.settings.accent_color | default: 'var(--showcase-accent)' }};
+    --dynamic-spacing: {{ section.settings.section_spacing | default: 64 }}px;
+    --dynamic-columns: {{ section.settings.grid_columns | default: 3 }};
+
+    /* Apply design tokens */
+    background: var(--dynamic-bg);
+    color: var(--dynamic-text);
+    padding: var(--dynamic-spacing) var(--spacing-component-md);
+    border-radius: var(--showcase-radius);
+
+    display: grid;
+    grid-template-columns: repeat(var(--dynamic-columns), 1fr);
+    gap: var(--spacing-component-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .artist-showcase-{{ unique }}__header {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-bottom: var(--spacing-component-xl);
+  }
+
+  .artist-showcase-{{ unique }}__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--dynamic-text);
+    margin-bottom: var(--spacing-component-sm);
+    line-height: var(--line-height-tight);
+  }
+
+  .artist-showcase-{{ unique }}__description {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .artist-showcase-{{ unique }}__blocks {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(var(--dynamic-columns), 1fr);
+    gap: var(--spacing-component-lg);
+  }
+
+  /* ✅ Focus states using design tokens */
+  .artist-showcase-{{ unique }}:focus-within {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* ✅ Responsive behavior using token system */
+  @media (max-width: 749px) {
+    .artist-showcase-{{ unique }} {
+      --dynamic-columns: 1;
+      padding: var(--spacing-section-sm) var(--spacing-component-sm);
+    }
+
+    .artist-showcase-{{ unique }}__title {
+      font-size: var(--font-size-2xl);
+    }
+  }
+
+  @media (min-width: 750px) and (max-width: 1199px) {
+    .artist-showcase-{{ unique }} {
+      --dynamic-columns: 2;
+    }
+  }
+{% endstyle %}
+
+<section
+  class="artist-showcase-{{ unique }}"
+  role="region"
+  aria-label="{{ section.settings.aria_label | default: section.settings.heading | default: 'Artist Collection Showcase' | escape }}"
+>
+  {% if section.settings.heading != blank or section.settings.description != blank %}
+    <header class="artist-showcase-{{ unique }}__header">
+      {% if section.settings.heading != blank %}
+        <h2 class="artist-showcase-{{ unique }}__title">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {% endif %}
+      {% if section.settings.description != blank %}
+        <div class="artist-showcase-{{ unique }}__description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+    </header>
+  {% endif %}
+
+  {% if section.blocks.size > 0 %}
+    <div class="artist-showcase-{{ unique }}__blocks">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'artist_feature' %}
+            {% render 'block-artist-feature', block: block, unique: unique %}
+          {% when 'collection_highlight' %}
+            {% render 'block-collection-highlight', block: block, unique: unique %}
+          {% when 'product_spotlight' %}
+            {% render 'block-product-spotlight', block: block, unique: unique %}
+          {% when 'artistic_story' %}
+            {% render 'block-artistic-story', block: block, unique: unique %}
+          {% when '@app' %}
+            {% render block %}
+        {% endcase %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="artist-showcase-{{ unique }}__placeholder">
+      <p>Add blocks to showcase your artistic collections</p>
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Artist Collection Showcase",
+  "tag": "section",
+  "class": "artist-collection-showcase",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Featured Artist Collections",
+      "info": "Main title for the showcase section"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Discover unique artistic clothing collections crafted by talented artists from around the world.</p>",
+      "info": "Brief description of your artistic collections"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessibility Label",
+      "info": "Screen reader description for this section"
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "label": "Desktop Columns",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "info": "Number of columns on desktop (automatically responsive)"
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Section Spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 64,
+      "unit": "px",
+      "info": "Vertical padding around the section"
+    },
+    {
+      "type": "header",
+      "content": "Design Tokens (Color Customization)"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "info": "Uses --surface-primary design token as fallback"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "info": "Uses --text-primary design token as fallback"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "info": "Uses --brand-primary-500 design token as fallback"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "artist_feature",
+      "name": "Artist Feature",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Artist Information"
+        },
+        {
+          "type": "text",
+          "id": "artist_name",
+          "label": "Artist Name",
+          "default": "Featured Artist",
+          "info": "Name of the featured artist"
+        },
+        {
+          "type": "textarea",
+          "id": "artist_bio",
+          "label": "Artist Bio",
+          "default": "Discover the story behind this talented artist and their unique creative vision.",
+          "info": "Brief biography or description of the artist"
+        },
+        {
+          "type": "image_picker",
+          "id": "artist_image",
+          "label": "Artist Photo",
+          "info": "Portrait or photo of the artist"
+        },
+        {
+          "type": "url",
+          "id": "artist_link",
+          "label": "Artist Link",
+          "info": "Link to artist's profile, portfolio, or collection page"
+        },
+        {
+          "type": "header",
+          "content": "Design Customization"
+        },
+        {
+          "type": "color",
+          "id": "feature_bg_color",
+          "label": "Background Color",
+          "info": "Uses design token --surface-secondary as fallback"
+        },
+        {
+          "type": "range",
+          "id": "image_border_radius",
+          "label": "Image Border Radius",
+          "min": 0,
+          "max": 50,
+          "step": 2,
+          "default": 8,
+          "unit": "px",
+          "info": "Rounded corners for artist image"
+        }
+      ]
+    },
+    {
+      "type": "collection_highlight",
+      "name": "Collection Highlight",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Collection Details"
+        },
+        {
+          "type": "text",
+          "id": "collection_title",
+          "label": "Collection Title",
+          "default": "Spring Collection 2024",
+          "info": "Name of the featured collection"
+        },
+        {
+          "type": "richtext",
+          "id": "collection_description",
+          "label": "Collection Description",
+          "default": "<p>Inspired by nature's awakening, this collection features vibrant colors and organic patterns.</p>",
+          "info": "Description of the collection's inspiration and features"
+        },
+        {
+          "type": "image_picker",
+          "id": "collection_image",
+          "label": "Collection Image",
+          "info": "Hero image representing the collection"
+        },
+        {
+          "type": "collection",
+          "id": "shopify_collection",
+          "label": "Shopify Collection",
+          "info": "Link to the actual Shopify collection"
+        },
+        {
+          "type": "header",
+          "content": "Visual Settings"
+        },
+        {
+          "type": "range",
+          "id": "image_overlay_opacity",
+          "label": "Image Overlay Opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "unit": "%",
+          "info": "Dark overlay over collection image for text readability"
+        }
+      ]
+    },
+    {
+      "type": "product_spotlight",
+      "name": "Product Spotlight",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Featured Product"
+        },
+        {
+          "type": "product",
+          "id": "featured_product",
+          "label": "Featured Product",
+          "info": "Showcase a specific product from the artist collection"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_price",
+          "label": "Show Price",
+          "default": true,
+          "info": "Display product pricing"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show Artist/Brand",
+          "default": true,
+          "info": "Display the product vendor/artist name"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Shop Now",
+          "info": "Text for the call-to-action button"
+        },
+        {
+          "type": "header",
+          "content": "Layout Options"
+        },
+        {
+          "type": "select",
+          "id": "layout_style",
+          "label": "Layout Style",
+          "options": [
+            { "value": "card", "label": "Card Style" },
+            { "value": "minimal", "label": "Minimal" },
+            { "value": "artistic", "label": "Artistic Overlay" }
+          ],
+          "default": "card",
+          "info": "Visual presentation style"
+        }
+      ]
+    },
+    {
+      "type": "artistic_story",
+      "name": "Artistic Story",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Storytelling Content"
+        },
+        {
+          "type": "text",
+          "id": "story_title",
+          "label": "Story Title",
+          "default": "The Creative Process",
+          "info": "Heading for the artistic story section"
+        },
+        {
+          "type": "richtext",
+          "id": "story_content",
+          "label": "Story Content",
+          "default": "<p>Every piece in this collection tells a story of artistic passion, cultural inspiration, and meticulous craftsmanship.</p>",
+          "info": "Rich text content for storytelling"
+        },
+        {
+          "type": "video",
+          "id": "story_video",
+          "label": "Story Video",
+          "info": "Optional video showcasing the artistic process"
+        },
+        {
+          "type": "video_url",
+          "id": "youtube_video",
+          "label": "YouTube Video URL",
+          "info": "Alternative: YouTube or Vimeo video URL",
+          "accept": ["youtube", "vimeo"]
+        },
+        {
+          "type": "header",
+          "content": "Visual Enhancement"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text Alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left",
+          "info": "Text alignment for story content"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "max_blocks": 50,
+  "presets": [
+    {
+      "name": "Artist Collection Showcase",
+      "category": "Fashion",
+      "settings": {
+        "heading": "Featured Artist Collections",
+        "description": "<p>Discover unique artistic clothing collections crafted by talented artists from around the world.</p>"
+      },
+      "blocks": [
+        {
+          "type": "artist_feature",
+          "settings": {
+            "artist_name": "Elena Rodriguez",
+            "artist_bio": "Contemporary textile artist known for bold geometric patterns inspired by urban architecture."
+          }
+        },
+        {
+          "type": "collection_highlight",
+          "settings": {
+            "collection_title": "Urban Geometrics Collection",
+            "collection_description": "<p>A stunning fusion of architectural elements and wearable art, featuring bold lines and metropolitan inspiration.</p>"
+          }
+        },
+        {
+          "type": "product_spotlight",
+          "settings": {
+            "button_text": "Explore Collection"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

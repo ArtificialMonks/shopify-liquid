@@ -1,5 +1,27 @@
 # CLAUDE.md
 
+## CRITICAL RULE: SUBSTANCE OVER PRAISE
+
+**In all your responses, please focus on substance over praise. Skip unnecessary compliments, engage critically with my ideas, question my assumptions, identify my biases, and offer counterpoints when relevant. Don't shy away from disagreement, and ensure that any agreements you have are grounded in reason and evidence.**
+
+**When writing your response, please ensure you include the following information:**
+1. **A neutral, unbiased view of the request**, unfiltered by your desire to be a helpful and positive assistant
+2. **A devil's advocate view**, pointing out any logical counterpoints or things that I have overlooked
+3. **An encouraging, positive view of the request**
+
+### Practical Application Guidelines
+
+**Default Behavior**: Apply the full three-perspective format above.
+
+**Exceptions** - Use streamlined responses for:
+- Simple technical fixes with clear solutions ("How do I fix this TypeScript error?")
+- Direct factual queries ("What's the syntax for X?")
+- Routine implementation tasks with established patterns
+
+**For exceptions**: Still maintain substance over praise and question assumptions, but focus on accuracy and directness rather than multiple perspectives.
+
+**When in doubt**: Default to the full three-perspective format.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Core Execution Principles
@@ -30,6 +52,27 @@ When working with this Shopify Liquid documentation repository, prioritize pract
 6. **Development Efficiency Focus**: Select Liquid patterns and CSS methodologies that are both development-efficient (faster to implement and debug) and runtime-efficient (fast page loads, minimal CSS). Balance developer productivity with theme performance and merchant ease-of-use.
 
 The goal is production-ready Liquid code and documentation that can be confidently used in live Shopify themes, maintained by theme developers, and extended without unnecessary complexity.
+
+## Follow-Up Request Protocol
+
+**FOLLOW-UP REQUEST**:
+
+Provide up to 4 additional high-value, necessary follow-up improvements for the Shopify Liquid documentation and code library repository. Apply strict criteria:
+
+- **High-Value**: Must deliver measurable developer productivity improvements, theme performance gains, or merchant usability enhancements
+- **Necessary**: Must address genuine gaps in Liquid implementation patterns, schema validation failures, or Theme Store compliance issues
+- **Evidence-Based**: Must be justified by concrete issues in the current codebase, missing documentation patterns, or production deployment blockers
+- **Scoped**: Must be implementable within the existing documentation structure and code library organization without requiring major architectural changes to the theme development workflow
+
+Focus specifically on:
+- Liquid template optimization and performance patterns
+- Schema validation and Theme Store compliance gaps
+- CSS scoping methodology improvements
+- Production-ready section/block implementation missing pieces
+- Developer experience enhancements for theme building
+- Accessibility and responsive design pattern completeness
+
+If fewer than the genuinely necessary improvements exist, provide fewer items rather than padding the list.
 
 ## Repository Overview
 
@@ -64,9 +107,12 @@ The repository contains unified Shopify Liquid documentation, production code, a
 
 ### 🔧 Production Code Library (`code-library/`)
 - `sections/` - Complete section templates with schema (5 production-ready sections)
+  - `custom/` - 🆕 Repository-specific custom section templates
 - `blocks/` - Reusable block components with scoped CSS (2 essential blocks)
+  - `custom/` - 🆕 Repository-specific custom block components
 - `snippets/` - Utility functions and helpers (2 optimized snippets)
 - `css-patterns/` - CSS methodologies and responsive patterns (3 pattern files)
+  - `custom/` - 🆕 Repository-specific CSS patterns and scoping methodologies
 
 ### 🛡️ Schema Validation (`schema-validation/`)
 - `schema-guidelines.md` - Comprehensive validation rules preventing "FileSaveError: Invalid schema"
@@ -172,10 +218,41 @@ Opening this project in VS Code provides:
 
 ## MCP Server Configuration
 
-This repository includes MCP server configuration in `.mcp.json`:
+This repository includes comprehensive MCP server configuration in `.mcp.json`:
 - **context7**: Documentation lookup and library research
 - **exa**: Web search and content crawling
 - **sequential-thinking**: Complex problem-solving workflows
+- **shopify-dev-mcp**: 🆕 **Direct Shopify API integration for enhanced development**
+
+### 🚀 Shopify MCP Server Integration
+
+The Shopify MCP server provides direct access to Shopify APIs and documentation for enhanced development capabilities:
+
+**Key MCP Tools Available:**
+- `learn_shopify_api` - Initialize Shopify API context (REQUIRED first step)
+- `validate_theme` - Real-time theme validation against live Shopify standards
+- `validate_graphql_codeblocks` - Live GraphQL query validation
+- `introspect_graphql_schema` - Live schema exploration for accurate API development
+- `search_docs_chunks` - Direct access to official Shopify documentation
+- `fetch_full_docs` - Retrieve complete documentation pages
+
+### 🎯 When to Use Shopify MCP Server
+
+**ALWAYS use when:**
+- Validating Liquid templates and theme components
+- Developing or documenting GraphQL API integrations
+- Researching official Shopify documentation and best practices
+- Ensuring Theme Store compliance and validation
+- Exploring Shopify's schema for accurate API development
+
+**MCP Usage Workflow:**
+1. **Initialize Context**: `learn_shopify_api` (required first step)
+2. **Development**: Use `validate_theme` for comprehensive validation
+3. **API Work**: Use `introspect_graphql_schema` and `validate_graphql_codeblocks`
+4. **Documentation**: Use `search_docs_chunks` and `fetch_full_docs`
+5. **Quality Assurance**: Regular `validate_theme` throughout development
+
+📖 **[Complete MCP Setup Guide](./SHOPIFY-MCP-SETUP.md)** - Comprehensive integration and usage documentation
 
 MCP servers are enabled in `.claude/settings.local.json` for enhanced development capabilities.
 
@@ -196,6 +273,17 @@ MCP servers are enabled in `.claude/settings.local.json` for enhanced developmen
 - **Clear labels**: Use descriptive labels and helpful `info` text
 - **Sensible limits**: Keep `max_blocks` reasonable (≤50)
 - **Logical grouping**: Group related settings together
+
+### 🆕 Custom Directory Standards
+- **All custom components MUST pass**: `./scripts/validate-theme.sh ultimate` validation
+- **Placement**: Repository-specific components go in `/custom` subdirectories:
+  - `code-library/blocks/custom/` - Custom block components
+  - `code-library/sections/custom/` - Custom section templates  
+  - `code-library/css-patterns/custom/` - Custom CSS patterns
+- **Documentation**: Each `/custom` directory includes comprehensive README.md
+- **Validation Integration**: Custom directories are automatically scanned by validation scripts
+- **Standards Compliance**: Follow same patterns as `essential/` and `advanced/` directories
+- **Schema Validation**: All custom components must comply with schema guidelines (range steps, unique IDs, valid types)
 
 ### Performance Requirements
 - **Paginate large lists**: Use `{% paginate %}` for >50 items

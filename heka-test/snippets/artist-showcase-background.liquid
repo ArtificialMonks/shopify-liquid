@@ -1,0 +1,147 @@
+{%- comment -%}
+  Artist Showcase Background - Advanced Background System
+
+  Usage: {% render 'artist-showcase-background', section: section, unique: unique %}
+
+  Supports:
+  - Solid colors and gradients
+  - Image backgrounds with parallax
+  - Video backgrounds
+  - Multiple layers with blend modes
+  - Animated effects
+{%- endcomment -%}
+
+{%- liquid
+  assign bg_type = section.settings.background_type | default: 'none'
+  assign bg_color = section.settings.background_color
+  assign bg_image = section.settings.background_image
+  assign bg_video = section.settings.background_video
+  assign bg_gradient_type = section.settings.background_gradient_type | default: 'linear'
+  assign bg_gradient_angle = section.settings.background_gradient_angle | default: 45
+  assign bg_gradient_color_1 = section.settings.background_gradient_color_1
+  assign bg_gradient_color_2 = section.settings.background_gradient_color_2
+  assign bg_gradient_color_3 = section.settings.background_gradient_color_3
+  assign bg_parallax = section.settings.background_parallax | default: false
+  assign bg_blend_mode = section.settings.background_blend_mode | default: 'normal'
+  assign bg_animation = section.settings.background_animation | default: 'none'
+  assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0
+  assign bg_overlay_color = section.settings.background_overlay_color
+-%}
+
+{%- comment -%} Background Container {%- endcomment -%}
+<div class="artist-showcase__background artist-showcase__background--{{ bg_type }}{% if bg_parallax %} artist-showcase__background--parallax{% endif %}{% if bg_animation != 'none' %} artist-showcase__background--{{ bg_animation }}{% endif %}"
+     data-background-type="{{ bg_type }}"
+     data-blend-mode="{{ bg_blend_mode }}"
+     {% if bg_parallax %}data-parallax="true"{% endif %}>
+
+  {%- comment -%} Color/Gradient Background {%- endcomment -%}
+  {%- case bg_type -%}
+    {%- when 'color' -%}
+      <div class="artist-showcase__background-layer artist-showcase__background-layer--color"
+           style="background-color: {{ bg_color }}; mix-blend-mode: {{ bg_blend_mode }};"></div>
+
+    {%- when 'gradient' -%}
+      {%- liquid
+        case bg_gradient_type
+          when 'linear'
+            assign gradient_direction = bg_gradient_angle | append: 'deg'
+          when 'radial'
+            assign gradient_direction = 'circle'
+          when 'conic'
+            assign gradient_direction = 'from ' | append: bg_gradient_angle | append: 'deg'
+        endcase
+
+        assign gradient_colors = bg_gradient_color_1
+        if bg_gradient_color_2 != blank
+          assign gradient_colors = gradient_colors | append: ', ' | append: bg_gradient_color_2
+        endif
+        if bg_gradient_color_3 != blank
+          assign gradient_colors = gradient_colors | append: ', ' | append: bg_gradient_color_3
+        endif
+
+        case bg_gradient_type
+          when 'linear'
+            assign gradient_css = 'linear-gradient(' | append: gradient_direction | append: ', ' | append: gradient_colors | append: ')'
+          when 'radial'
+            assign gradient_css = 'radial-gradient(' | append: gradient_direction | append: ', ' | append: gradient_colors | append: ')'
+          when 'conic'
+            assign gradient_css = 'conic-gradient(' | append: gradient_direction | append: ', ' | append: gradient_colors | append: ')'
+        endcase
+      -%}
+      <div class="artist-showcase__background-layer artist-showcase__background-layer--gradient"
+           style="background: {{ gradient_css }}; mix-blend-mode: {{ bg_blend_mode }};"></div>
+
+    {%- when 'image' -%}
+      {%- if bg_image != blank -%}
+        <div class="artist-showcase__background-layer artist-showcase__background-layer--image"
+             style="mix-blend-mode: {{ bg_blend_mode }};">
+          <img src="{{ bg_image | image_url: width: 2000 }}"
+               alt=""
+               width="2000"
+               height="{{ 2000 | divided_by: bg_image.aspect_ratio | round }}"
+               loading="lazy"
+               class="artist-showcase__background-image{% if bg_parallax %} artist-showcase__background-image--parallax{% endif %}"
+               data-parallax-speed="0.5">
+        </div>
+      {%- endif -%}
+
+    {%- when 'video' -%}
+      {%- if bg_video != blank -%}
+        <div class="artist-showcase__background-layer artist-showcase__background-layer--video"
+             style="mix-blend-mode: {{ bg_blend_mode }};">
+          <video class="artist-showcase__background-video"
+                 autoplay
+                 muted
+                 loop
+                 playsinline
+                 preload="metadata">
+            <source src="{{ bg_video | file_url }}" type="video/mp4">
+          </video>
+        </div>
+      {%- endif -%}
+
+    {%- when 'layered' -%}
+      {%- comment -%} Multiple background layers {%- endcomment -%}
+      {%- if bg_color != blank -%}
+        <div class="artist-showcase__background-layer artist-showcase__background-layer--color"
+             style="background-color: {{ bg_color }};"></div>
+      {%- endif -%}
+
+      {%- if bg_image != blank -%}
+        <div class="artist-showcase__background-layer artist-showcase__background-layer--image"
+             style="mix-blend-mode: {{ bg_blend_mode }};">
+          <img src="{{ bg_image | image_url: width: 2000 }}"
+               alt=""
+               width="2000"
+               height="{{ 2000 | divided_by: bg_image.aspect_ratio | round }}"
+               loading="lazy"
+               class="artist-showcase__background-image{% if bg_parallax %} artist-showcase__background-image--parallax{% endif %}">
+        </div>
+      {%- endif -%}
+  {%- endcase -%}
+
+  {%- comment -%} Background Overlay {%- endcomment -%}
+  {%- if bg_overlay_opacity > 0 -%}
+    <div class="artist-showcase__background-overlay"
+         style="background-color: {{ bg_overlay_color | default: 'rgba(0,0,0,0.5)' }}; opacity: {{ bg_overlay_opacity | divided_by: 100.0 }};"></div>
+  {%- endif -%}
+
+  {%- comment -%} Particle Effects {%- endcomment -%}
+  {%- if bg_animation == 'particles' -%}
+    <div class="artist-showcase__background-particles">
+      {%- for i in (1..20) -%}
+        <div class="artist-showcase__particle" data-particle="{{ i }}"></div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Floating Elements {%- endcomment -%}
+  {%- if bg_animation == 'floating' -%}
+    <div class="artist-showcase__background-floating">
+      {%- for i in (1..6) -%}
+        <div class="artist-showcase__floating-element" data-element="{{ i }}"></div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+</div>

@@ -18,7 +18,7 @@
  * ======================================== */
 
 /* Prevent layout shifts (CLS optimization) */
-.stable-layout-UNIQUEID {
+.stable-layout {
   /* Reserve space for dynamic content */
   min-height: var(--min-height, 200px);
   contain: layout style size;
@@ -29,7 +29,7 @@
 }
 
 /* Optimize for Largest Contentful Paint (LCP) */
-.hero-image-UNIQUEID {
+.hero-image {
   /* Critical images above the fold */
   content-visibility: auto;
   contain-intrinsic-size: var(--hero-width, 100vw) var(--hero-height, 50vh);
@@ -44,7 +44,7 @@
   fetchpriority: high;
 }
 
-.lazy-image-UNIQUEID {
+.lazy-image {
   /* Below-fold images */
   loading: lazy;
   content-visibility: auto;
@@ -55,7 +55,7 @@
   transition: opacity 0.3s ease;
 }
 
-.lazy-image-UNIQUEID.loaded {
+.lazy-image.loaded {
   opacity: 1;
 }
 
@@ -64,7 +64,7 @@
  * ======================================== */
 
 /* Component-level containment */
-.isolated-component-UNIQUEID {
+.isolated-component {
   /* Isolate layout, style, and paint */
   contain: layout style paint;
 
@@ -77,7 +77,7 @@
 }
 
 /* Animation containment */
-.animated-component-UNIQUEID {
+.animated-component {
   /* Limit animation impact */
   contain: layout style;
   will-change: transform, opacity;
@@ -86,7 +86,7 @@
   transform: translate3d(0, 0, 0);
 }
 
-.animated-component-UNIQUEID:not(:hover):not(:focus) {
+.animated-component:not(:hover):not(:focus) {
   /* Remove will-change when not needed */
   will-change: auto;
 }
@@ -96,19 +96,19 @@
  * ======================================== */
 
 /* Virtualize off-screen content */
-.virtualized-content-UNIQUEID {
+.virtualized-content {
   content-visibility: auto;
   contain-intrinsic-size: var(--content-width, 100%) var(--content-height, 300px);
 }
 
 /* Product grid virtualization */
-.product-grid-virtual-UNIQUEID {
+.product-grid-virtual {
   content-visibility: auto;
   contain-intrinsic-size: 300px 400px;
   contain: layout style paint;
 }
 
-.product-grid-virtual-UNIQUEID:hover {
+.product-grid-virtual:hover {
   content-visibility: visible;
 }
 
@@ -117,7 +117,7 @@
  * ======================================== */
 
 /* Skeleton loading states */
-.skeleton-UNIQUEID {
+.skeleton {
   background: linear-gradient(
     90deg,
     var(--skeleton-bg, #f0f0f0) 25%,
@@ -138,13 +138,13 @@
 }
 
 /* Progressive image loading */
-.progressive-image-UNIQUEID {
+.progressive-image {
   position: relative;
   overflow: hidden;
   background: var(--image-placeholder, #f8f9fa);
 }
 
-.progressive-image-UNIQUEID .placeholder {
+.progressive-image .placeholder {
   position: absolute;
   inset: 0;
   filter: blur(10px);
@@ -152,16 +152,16 @@
   transition: opacity 0.3s ease;
 }
 
-.progressive-image-UNIQUEID .full-image {
+.progressive-image .full-image {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.progressive-image-UNIQUEID.loaded .placeholder {
+.progressive-image.loaded .placeholder {
   opacity: 0;
 }
 
-.progressive-image-UNIQUEID.loaded .full-image {
+.progressive-image.loaded .full-image {
   opacity: 1;
 }
 
@@ -170,7 +170,7 @@
  * ======================================== */
 
 /* Optimize scroll-triggered animations */
-.scroll-optimized-UNIQUEID {
+.scroll-optimized {
   /* Reduce paint during scroll */
   contain: layout style;
   transform: translateZ(0);
@@ -180,7 +180,7 @@
 }
 
 /* Intersection observer targets */
-.observe-UNIQUEID {
+.observe {
   /* Prepare for intersection observer */
   opacity: 0;
   transform: translateY(20px);
@@ -191,14 +191,14 @@
   contain: layout style;
 }
 
-.observe-UNIQUEID.in-view {
+.observe.in-view {
   opacity: 1;
   transform: translateY(0);
 }
 
 /* Disable scroll animations on mobile for performance */
 @media screen and (max-width: 749px) {
-  .observe-UNIQUEID {
+  .observe {
     opacity: 1;
     transform: none;
     transition: none;
@@ -210,7 +210,7 @@
  * ======================================== */
 
 /* Above-the-fold critical styles */
-.critical-UNIQUEID {
+.critical {
   /* Essential styles only */
   display: block;
   width: 100%;
@@ -223,7 +223,7 @@
 }
 
 /* Non-critical styles loaded async */
-.enhanced-UNIQUEID {
+.enhanced {
   /* Progressive enhancement */
   opacity: 0;
   transform: translateY(10px);
@@ -231,7 +231,7 @@
 }
 
 /* Applied when non-critical CSS loads */
-.css-loaded .enhanced-UNIQUEID {
+.css-loaded .enhanced {
   opacity: 1;
   transform: translateY(0);
 }
@@ -241,7 +241,7 @@
  * ======================================== */
 
 /* Font display optimization */
-.optimized-text-UNIQUEID {
+.optimized-text {
   /* Prevent invisible text during font load */
   font-display: swap;
 
@@ -255,7 +255,7 @@
 }
 
 /* Custom font with fallback */
-.custom-font-UNIQUEID {
+.custom-font {
   font-family: var(--custom-font, 'Helvetica Neue', Arial, sans-serif);
   font-display: swap;
 
@@ -268,7 +268,7 @@
  * ======================================== */
 
 /* GPU-accelerated animations */
-.gpu-animated-UNIQUEID {
+.gpu-animated {
   /* Force GPU layer */
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
@@ -280,19 +280,19 @@
 }
 
 /* Efficient hover effects */
-.efficient-hover-UNIQUEID {
+.efficient-hover {
   /* Use transform instead of changing layout properties */
   transition: transform 0.2s ease, opacity 0.2s ease;
   will-change: transform;
 }
 
-.efficient-hover-UNIQUEID:hover {
+.efficient-hover:hover {
   /* GPU-accelerated transform */
   transform: translateY(-2px) scale(1.02);
 }
 
 /* Remove will-change when not hovering */
-.efficient-hover-UNIQUEID:not(:hover) {
+.efficient-hover:not(:hover) {
   will-change: auto;
 }
 
@@ -301,7 +301,7 @@
  * ======================================== */
 
 /* Limit reflow scope */
-.contained-updates-UNIQUEID {
+.contained-updates {
   contain: layout style;
 
   /* Isolate from parent layout */
@@ -313,7 +313,7 @@
 }
 
 /* Efficient list rendering */
-.virtual-list-UNIQUEID {
+.virtual-list {
   /* Virtualize long lists */
   overflow-y: auto;
   height: var(--list-height, 400px);
@@ -321,7 +321,7 @@
   content-visibility: auto;
 }
 
-.virtual-list-UNIQUEID .list-item {
+.virtual-list .list-item {
   contain: layout style;
   height: var(--item-height, 60px);
   content-visibility: auto;
@@ -334,10 +334,10 @@
 
 /* Respect user preferences for performance */
 @media (prefers-reduced-motion: reduce) {
-  .performance-respectful-UNIQUEID,
-  .performance-respectful-UNIQUEID *,
-  .performance-respectful-UNIQUEID *::before,
-  .performance-respectful-UNIQUEID *::after {
+  .performance-respectful,
+  .performance-respectful *,
+  .performance-respectful *::before,
+  .performance-respectful *::after {
     /* Remove all animations */
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

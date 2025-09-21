@@ -1,0 +1,152 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Validate: Development (Ultimate)",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh development",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Fast validation with ultimate liquid checks for daily development"
+    },
+    {
+      "label": "Validate: Ultimate (Zero Tolerance)",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh ultimate",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Zero tolerance liquid validation - hallucinated filters, over-engineering, performance killers"
+    },
+    {
+      "label": "Validate: Deep (Pre-deployment)",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh deep",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Ultimate + integrity + comprehensive validation for pre-deployment"
+    },
+    {
+      "label": "Validate: Comprehensive",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh comprehensive",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Complete validation suite with all available checks"
+    },
+    {
+      "label": "Validate: Production (Theme Store)",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh production",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Theme Store submission ready validation with all requirements"
+    },
+    {
+      "label": "Validate: Auto-Fix",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh auto-fix",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Automatically fix correctable validation issues"
+    },
+    {
+      "label": "Validate: Complete Workflow",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh all",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Complete validation workflow - ultimate, auto-fix, all checks, and reporting"
+    },
+    {
+      "label": "Validate: Schema Integrity Only",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh integrity",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Deep schema integrity scan - settings, presets, range validation"
+    },
+    {
+      "label": "Validate: Generate Report",
+      "type": "shell",
+      "command": "./scripts/validate-theme.sh report",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Generate detailed JSON validation report for analysis"
+    }
+  ]
+}

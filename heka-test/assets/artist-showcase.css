@@ -1,0 +1,1404 @@
+/* ==========================================================================
+   Artist Showcase - Olympic-Level CSS Architecture
+   ========================================================================== */
+
+/* Design Tokens - Single Source of Truth */
+:root {
+  /* Spacing Scale */
+  --artist-showcase-space-xs: 0.5rem;
+  --artist-showcase-space-sm: 1rem;
+  --artist-showcase-space-md: 1.5rem;
+  --artist-showcase-space-lg: 2rem;
+  --artist-showcase-space-xl: 3rem;
+  --artist-showcase-space-xxl: 4rem;
+
+  /* Grid System */
+  --artist-showcase-grid-gap: var(--artist-showcase-space-lg);
+  --artist-showcase-grid-gap-mobile: var(--artist-showcase-space-md);
+
+  /* Border Radius Scale */
+  --artist-showcase-radius-sm: 4px;
+  --artist-showcase-radius-md: 8px;
+  --artist-showcase-radius-lg: 12px;
+  --artist-showcase-radius-xl: 16px;
+
+  /* Shadows */
+  --artist-showcase-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --artist-showcase-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --artist-showcase-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --artist-showcase-transition-fast: 150ms ease-out;
+  --artist-showcase-transition-normal: 250ms ease-out;
+  --artist-showcase-transition-slow: 350ms ease-out;
+
+  /* Color Scheme Variables (will be overridden by theme) */
+  --artist-showcase-color-text: rgb(17 24 39);
+  --artist-showcase-color-text-muted: rgb(107 114 128);
+  --artist-showcase-color-background: rgb(255 255 255);
+  --artist-showcase-color-border: rgb(229 231 235);
+  --artist-showcase-color-accent: rgb(59 130 246);
+
+  /* Social Media Brand Colors */
+  --artist-showcase-color-facebook: #1877f2;
+  --artist-showcase-color-twitter: #1da1f2;
+  --artist-showcase-color-pinterest: #bd081c;
+  --artist-showcase-color-success: #27ae60;
+  --artist-showcase-color-warning: #f39c12;
+  --artist-showcase-color-error: #e74c3c;
+  --artist-showcase-color-star: #ffd700;
+}
+
+/* ==========================================================================
+   Section Container
+   ========================================================================== */
+
+.artist-showcase {
+  container-type: inline-size;
+  container-name: artist-showcase;
+}
+
+.artist-showcase__container {
+  margin: 0 auto;
+  padding-inline: var(--artist-showcase-space-md);
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .artist-showcase__container {
+    padding-inline: var(--artist-showcase-space-lg);
+  }
+}
+
+/* ==========================================================================
+   Header Section
+   ========================================================================== */
+
+.artist-showcase__header {
+  text-align: center;
+  margin-bottom: var(--artist-showcase-space-xl);
+}
+
+.artist-showcase__heading {
+  margin: 0 0 var(--artist-showcase-space-md) 0;
+  color: var(--artist-showcase-color-text);
+}
+
+.artist-showcase__description {
+  margin: 0;
+  color: var(--artist-showcase-color-text-muted);
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   Grid System - Responsive & Flexible
+   ========================================================================== */
+
+.artist-showcase__grid {
+  display: grid;
+  gap: var(--artist-showcase-grid-gap-mobile);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .artist-showcase__grid {
+    gap: var(--artist-showcase-grid-gap);
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .artist-showcase__grid {
+    grid-template-columns: repeat(var(--blocks-per-row, 3), 1fr);
+  }
+}
+
+/* Grid Layout Variants */
+.artist-showcase__grid--masonry {
+  display: block;
+  column-count: 1;
+  column-gap: var(--artist-showcase-grid-gap-mobile);
+}
+
+@media (min-width: 640px) {
+  .artist-showcase__grid--masonry {
+    column-count: 2;
+    column-gap: var(--artist-showcase-grid-gap);
+  }
+}
+
+@media (min-width: 768px) {
+  .artist-showcase__grid--masonry {
+    column-count: var(--blocks-per-row, 3);
+  }
+}
+
+.artist-showcase__grid--carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: var(--artist-showcase-grid-gap);
+  padding-bottom: var(--artist-showcase-space-sm);
+}
+
+.artist-showcase__grid--carousel .artist-showcase__block {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+  .artist-showcase__grid--carousel .artist-showcase__block {
+    flex: 0 0 320px;
+  }
+}
+
+/* ==========================================================================
+   Block Container
+   ========================================================================== */
+
+.artist-showcase__block {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  break-inside: avoid; /* For masonry layout */
+}
+
+.artist-showcase__grid--masonry .artist-showcase__block {
+  margin-bottom: var(--artist-showcase-grid-gap);
+  display: inline-block;
+  width: 100%;
+}
+
+/* Animation Support */
+.artist-showcase--animated .artist-showcase__block {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: artist-showcase-fade-in var(--artist-showcase-transition-slow) ease-out forwards;
+  animation-delay: calc(var(--animation-delay, 0) * 1ms);
+}
+
+@keyframes artist-showcase-fade-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .artist-showcase--animated .artist-showcase__block {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   Card Styles
+   ========================================================================== */
+
+.artist-showcase__card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--artist-showcase-color-background);
+  border-radius: var(--artist-showcase-radius-lg);
+  overflow: hidden;
+  transition: all var(--artist-showcase-transition-normal);
+  position: relative;
+}
+
+/* Card Style Variants */
+.artist-showcase__card--minimal {
+  background: transparent;
+  box-shadow: none;
+}
+
+.artist-showcase__card--card {
+  box-shadow: var(--artist-showcase-shadow-md);
+  border: 1px solid var(--artist-showcase-color-border);
+}
+
+.artist-showcase__card--overlay {
+  position: relative;
+}
+
+.artist-showcase__card--split {
+  flex-direction: row;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .artist-showcase__card--split {
+    flex-direction: column;
+  }
+}
+
+/* Hover Effects */
+.artist-showcase__block--hover .artist-showcase__card {
+  cursor: pointer;
+}
+
+.artist-showcase__block--hover .artist-showcase__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--artist-showcase-shadow-lg);
+}
+
+.artist-showcase__block--hover .artist-showcase__card--minimal:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--artist-showcase-shadow-md);
+}
+
+/* ==========================================================================
+   Image Styles
+   ========================================================================== */
+
+.artist-showcase__image {
+  position: relative;
+  overflow: hidden;
+  background: var(--artist-showcase-color-border);
+}
+
+.artist-showcase__image-img {
+  width: 100%;
+  height: 100%;
+  transition: transform var(--artist-showcase-transition-normal);
+}
+
+.artist-showcase__image-link {
+  display: block;
+  text-decoration: none;
+}
+
+/* Image Aspect Ratios */
+.artist-showcase__image--square {
+  aspect-ratio: 1 / 1;
+}
+
+.artist-showcase__image--portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.artist-showcase__image--landscape {
+  aspect-ratio: 4 / 3;
+}
+
+.artist-showcase__image--wide {
+  aspect-ratio: 16 / 9;
+}
+
+/* Image Hover Effects */
+.artist-showcase__block--hover .artist-showcase__image-img:hover {
+  transform: scale(1.05);
+}
+
+/* Split Layout Image */
+.artist-showcase__card--split .artist-showcase__image {
+  flex: 0 0 40%;
+  aspect-ratio: 1 / 1;
+}
+
+@media (max-width: 640px) {
+  .artist-showcase__card--split .artist-showcase__image {
+    flex: none;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* ==========================================================================
+   Content Styles
+   ========================================================================== */
+
+.artist-showcase__content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: var(--artist-showcase-space-lg);
+}
+
+.artist-showcase__card--minimal .artist-showcase__content {
+  padding: var(--artist-showcase-space-md) 0;
+}
+
+.artist-showcase__card--split .artist-showcase__content {
+  flex: 1;
+  padding: var(--artist-showcase-space-xl);
+}
+
+@media (max-width: 640px) {
+  .artist-showcase__card--split .artist-showcase__content {
+    padding: var(--artist-showcase-space-lg);
+  }
+}
+
+/* Content Header */
+.artist-showcase__content-header {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__content-title {
+  margin: 0 0 var(--artist-showcase-space-xs) 0;
+  color: var(--artist-showcase-color-text);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.artist-showcase__content-title-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__content-title-link:hover {
+  color: var(--artist-showcase-color-accent);
+}
+
+.artist-showcase__content-subtitle {
+  margin: 0;
+  color: var(--artist-showcase-color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Content Description */
+.artist-showcase__content-description {
+  margin-bottom: var(--artist-showcase-space-md);
+  color: var(--artist-showcase-color-text-muted);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.artist-showcase__content-description p {
+  margin: 0 0 var(--artist-showcase-space-sm) 0;
+}
+
+.artist-showcase__content-description p:last-child {
+  margin-bottom: 0;
+}
+
+/* Content Meta */
+.artist-showcase__content-meta {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__content-type {
+  display: inline-block;
+  padding: var(--artist-showcase-space-xs) var(--artist-showcase-space-sm);
+  background: var(--artist-showcase-color-accent);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--artist-showcase-radius-sm);
+}
+
+/* Type-specific styling */
+.artist-showcase__content-meta--artist .artist-showcase__content-type {
+  background: #8b5cf6; /* Purple for artists */
+}
+
+.artist-showcase__content-meta--collection .artist-showcase__content-type {
+  background: #10b981; /* Green for collections */
+}
+
+.artist-showcase__content-meta--product .artist-showcase__content-type {
+  background: #f59e0b; /* Orange for products */
+}
+
+.artist-showcase__content-meta--story .artist-showcase__content-type {
+  background: #ef4444; /* Red for stories */
+}
+
+/* Action Button */
+.artist-showcase__content-action {
+  margin-top: auto;
+}
+
+.artist-showcase__content-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--artist-showcase-space-xs);
+  padding: var(--artist-showcase-space-sm) var(--artist-showcase-space-md);
+  background: transparent;
+  color: var(--artist-showcase-color-accent);
+  border: 1px solid var(--artist-showcase-color-accent);
+  border-radius: var(--artist-showcase-radius-md);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__content-button:hover {
+  background: var(--artist-showcase-color-accent);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.artist-showcase__content-button-icon {
+  transition: transform var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__content-button:hover .artist-showcase__content-button-icon {
+  transform: translateX(2px);
+}
+
+/* ==========================================================================
+   Overlay Card Styles
+   ========================================================================== */
+
+.artist-showcase__card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: var(--artist-showcase-space-lg);
+  opacity: 0;
+  transition: opacity var(--artist-showcase-transition-normal);
+}
+
+.artist-showcase__card--overlay:hover .artist-showcase__card-overlay {
+  opacity: 1;
+}
+
+.artist-showcase__card-overlay-content {
+  color: white;
+}
+
+.artist-showcase__card-overlay-title {
+  margin: 0 0 var(--artist-showcase-space-xs) 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.artist-showcase__card-overlay-subtitle {
+  margin: 0 0 var(--artist-showcase-space-md) 0;
+  opacity: 0.9;
+  font-size: 0.875rem;
+}
+
+.artist-showcase__card-overlay-button {
+  padding: var(--artist-showcase-space-sm) var(--artist-showcase-space-md);
+  background: white;
+  color: var(--artist-showcase-color-text);
+  border: none;
+  border-radius: var(--artist-showcase-radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__card-overlay-button:hover {
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.artist-showcase__empty {
+  text-align: center;
+  padding: var(--artist-showcase-space-xxl) var(--artist-showcase-space-lg);
+  color: var(--artist-showcase-color-text-muted);
+  background: var(--artist-showcase-color-border);
+  border-radius: var(--artist-showcase-radius-lg);
+  border: 2px dashed currentColor;
+}
+
+/* ==========================================================================
+   Color Scheme Support
+   ========================================================================== */
+
+.artist-showcase.color-scheme-inverse {
+  --artist-showcase-color-text: rgb(243 244 246);
+  --artist-showcase-color-text-muted: rgb(156 163 175);
+  --artist-showcase-color-background: rgb(17 24 39);
+  --artist-showcase-color-border: rgb(55 65 81);
+}
+
+.artist-showcase.color-scheme-accent {
+  --artist-showcase-color-text: rgb(30 58 138);
+  --artist-showcase-color-text-muted: rgb(59 130 246);
+  --artist-showcase-color-background: rgb(239 246 255);
+  --artist-showcase-color-border: rgb(191 219 254);
+}
+
+/* ==========================================================================
+   Container Queries for Advanced Responsiveness
+   ========================================================================== */
+
+@container artist-showcase (max-width: 500px) {
+  .artist-showcase__content {
+    padding: var(--artist-showcase-space-md);
+  }
+
+  .artist-showcase__content-title {
+    font-size: 1.125rem;
+  }
+}
+
+@container artist-showcase (min-width: 1200px) {
+  .artist-showcase__content-title {
+    font-size: 1.375rem;
+  }
+}
+
+/* ==========================================================================
+   Rich Content - Gallery Styles
+   ========================================================================== */
+
+.artist-showcase__gallery {
+  position: relative;
+  overflow: hidden;
+}
+
+.artist-showcase__gallery--grid {
+  display: grid;
+  gap: var(--artist-showcase-space-sm);
+  grid-template-columns: var(--gallery-columns);
+}
+
+.artist-showcase__gallery--masonry {
+  display: block;
+  column-count: 2;
+  column-gap: var(--artist-showcase-space-sm);
+}
+
+@media (min-width: 768px) {
+  .artist-showcase__gallery--masonry {
+    column-count: 3;
+  }
+}
+
+.artist-showcase__gallery--carousel {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.artist-showcase__gallery--stack .artist-showcase__gallery-item {
+  margin-bottom: var(--artist-showcase-space-sm);
+}
+
+.artist-showcase__gallery-item {
+  position: relative;
+  break-inside: avoid;
+}
+
+.artist-showcase__gallery--carousel .artist-showcase__gallery-item {
+  flex: 0 0 100%;
+  transition: transform var(--artist-showcase-transition-normal);
+}
+
+.artist-showcase__gallery-item-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  position: relative;
+}
+
+.artist-showcase__gallery-item-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.artist-showcase__gallery-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--artist-showcase-transition-normal);
+}
+
+.artist-showcase__gallery-item-button:hover .artist-showcase__gallery-item-overlay {
+  opacity: 1;
+}
+
+.artist-showcase__gallery-item-zoom-icon {
+  color: white;
+  width: 48px;
+  height: 48px;
+}
+
+.artist-showcase__gallery-navigation {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  padding: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__gallery-nav {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all var(--artist-showcase-transition-fast);
+  box-shadow: var(--artist-showcase-shadow-md);
+}
+
+.artist-showcase__gallery-nav:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+.artist-showcase__gallery-dots {
+  position: absolute;
+  bottom: var(--artist-showcase-space-md);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--artist-showcase-space-xs);
+}
+
+.artist-showcase__gallery-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__gallery-dot--active {
+  background: white;
+}
+
+.artist-showcase__gallery-counter {
+  text-align: center;
+  margin-top: var(--artist-showcase-space-sm);
+  font-size: 0.875rem;
+  color: var(--artist-showcase-color-text-muted);
+}
+
+/* ==========================================================================
+   Rich Content - Video Styles
+   ========================================================================== */
+
+.artist-showcase__video {
+  position: relative;
+}
+
+.artist-showcase__video-container {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--artist-showcase-radius-lg);
+  background: var(--artist-showcase-color-border);
+}
+
+.artist-showcase__video-element,
+.artist-showcase__video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.artist-showcase__video-thumbnail {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.artist-showcase__video-thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.artist-showcase__video-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__video-play-button:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.artist-showcase__video-play-icon {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.artist-showcase__video-meta {
+  margin-top: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__video-title {
+  margin: 0 0 var(--artist-showcase-space-xs) 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.artist-showcase__video-subtitle {
+  margin: 0;
+  color: var(--artist-showcase-color-text-muted);
+  font-size: 0.875rem;
+}
+
+.artist-showcase__video-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
+.artist-showcase__video-loading-spinner {
+  margin-bottom: var(--artist-showcase-space-sm);
+}
+
+/* ==========================================================================
+   Rich Content - Product Styles
+   ========================================================================== */
+
+.artist-showcase__product {
+  position: relative;
+}
+
+.artist-showcase__product-badge {
+  position: absolute;
+  top: var(--artist-showcase-space-sm);
+  right: var(--artist-showcase-space-sm);
+  background: var(--artist-showcase-color-accent);
+  color: white;
+  padding: var(--artist-showcase-space-xs) var(--artist-showcase-space-sm);
+  border-radius: var(--artist-showcase-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+
+.artist-showcase__product-badge--sale {
+  background: var(--artist-showcase-color-error);
+}
+
+.artist-showcase__product-badge--sold-out {
+  background: var(--artist-showcase-color-text-muted);
+}
+
+.artist-showcase__product-header {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__product-title {
+  margin: 0 0 var(--artist-showcase-space-xs) 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.artist-showcase__product-title-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__product-title-link:hover {
+  color: var(--artist-showcase-color-accent);
+}
+
+.artist-showcase__product-vendor {
+  margin: 0;
+  color: var(--artist-showcase-color-text-muted);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.artist-showcase__product-price {
+  margin-bottom: var(--artist-showcase-space-md);
+  display: flex;
+  align-items: baseline;
+  gap: var(--artist-showcase-space-sm);
+}
+
+.artist-showcase__product-price-current {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--artist-showcase-color-text);
+}
+
+.artist-showcase__product-price-compare {
+  font-size: 1.125rem;
+  color: var(--artist-showcase-color-text-muted);
+  text-decoration: line-through;
+}
+
+.artist-showcase__product-price-save {
+  font-size: 0.875rem;
+  color: var(--artist-showcase-color-error);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--artist-showcase-color-error) 10%, transparent);
+  padding: 2px 6px;
+  border-radius: var(--artist-showcase-radius-sm);
+}
+
+.artist-showcase__product-description {
+  margin-bottom: var(--artist-showcase-space-md);
+  color: var(--artist-showcase-color-text-muted);
+  line-height: 1.6;
+}
+
+.artist-showcase__product-variants {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__product-option {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__product-option-label {
+  display: block;
+  margin-bottom: var(--artist-showcase-space-xs);
+  font-weight: 600;
+}
+
+.artist-showcase__product-option-select {
+  width: 100%;
+  padding: var(--artist-showcase-space-sm);
+  border: 1px solid var(--artist-showcase-color-border);
+  border-radius: var(--artist-showcase-radius-md);
+  background: var(--artist-showcase-color-background);
+}
+
+.artist-showcase__product-availability {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__product-stock {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.artist-showcase__product-stock--available {
+  color: var(--artist-showcase-color-success);
+}
+
+.artist-showcase__product-stock--low {
+  color: var(--artist-showcase-color-warning);
+}
+
+.artist-showcase__product-stock--unavailable {
+  color: var(--artist-showcase-color-error);
+}
+
+.artist-showcase__product-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--artist-showcase-space-sm);
+}
+
+@media (min-width: 640px) {
+  .artist-showcase__product-actions {
+    flex-direction: row;
+  }
+}
+
+.artist-showcase__product-add-to-cart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--artist-showcase-space-xs);
+  padding: var(--artist-showcase-space-md) var(--artist-showcase-space-lg);
+  background: var(--artist-showcase-color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--artist-showcase-radius-md);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--artist-showcase-transition-fast);
+  cursor: pointer;
+}
+
+.artist-showcase__product-add-to-cart:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--artist-showcase-color-accent) 90%, black);
+  transform: translateY(-1px);
+}
+
+.artist-showcase__product-add-to-cart:disabled {
+  background: var(--artist-showcase-color-border);
+  color: var(--artist-showcase-color-text-muted);
+  cursor: not-allowed;
+}
+
+.artist-showcase__product-view-details {
+  flex: 1;
+}
+
+.artist-showcase__product-features {
+  margin-top: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__product-features-title {
+  margin: 0 0 var(--artist-showcase-space-sm) 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.artist-showcase__product-features-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.artist-showcase__product-features-item {
+  display: flex;
+  align-items: center;
+  gap: var(--artist-showcase-space-xs);
+  margin-bottom: var(--artist-showcase-space-xs);
+  font-size: 0.875rem;
+  color: var(--artist-showcase-color-text-muted);
+}
+
+.artist-showcase__product-features-item svg {
+  color: var(--artist-showcase-color-success);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Rich Content - Testimonial Styles
+   ========================================================================== */
+
+.artist-showcase__testimonial {
+  padding: var(--artist-showcase-space-lg);
+}
+
+.artist-showcase__testimonial-rating {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__testimonial-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.artist-showcase__testimonial-star {
+  color: #ddd;
+  transition: color var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__testimonial-star--filled {
+  color: var(--artist-showcase-color-star);
+}
+
+.artist-showcase__testimonial-quote {
+  position: relative;
+  margin: 0 0 var(--artist-showcase-space-lg) 0;
+  padding: 0;
+}
+
+.artist-showcase__testimonial-quote-icon {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  color: var(--artist-showcase-color-border);
+  z-index: -1;
+}
+
+.artist-showcase__testimonial-text {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0;
+}
+
+.artist-showcase__testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: var(--artist-showcase-space-md);
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__testimonial-avatar {
+  flex-shrink: 0;
+}
+
+.artist-showcase__testimonial-avatar-image {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.artist-showcase__testimonial-author-name {
+  font-style: normal;
+  font-weight: 600;
+  margin: 0 0 var(--artist-showcase-space-xs) 0;
+}
+
+.artist-showcase__testimonial-author-role {
+  margin: 0;
+  color: var(--artist-showcase-color-text-muted);
+  font-size: 0.875rem;
+}
+
+.artist-showcase__testimonial-verification {
+  display: flex;
+  align-items: center;
+  gap: var(--artist-showcase-space-xs);
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__testimonial-verification-icon {
+  color: var(--artist-showcase-color-success);
+}
+
+.artist-showcase__testimonial-verification-text {
+  font-size: 0.875rem;
+  color: var(--artist-showcase-color-text-muted);
+}
+
+.artist-showcase__testimonial-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--artist-showcase-space-md);
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__testimonial-social-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--artist-showcase-space-xs);
+  font-size: 0.875rem;
+  color: var(--artist-showcase-color-text-muted);
+}
+
+.artist-showcase__testimonial-social-link {
+  color: var(--artist-showcase-color-accent);
+  text-decoration: none;
+}
+
+.artist-showcase__testimonial-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--artist-showcase-space-xs);
+  font-size: 0.875rem;
+  color: var(--artist-showcase-color-text-muted);
+}
+
+/* ==========================================================================
+   Interactive Features - Expandable Content
+   ========================================================================== */
+
+.artist-showcase__content-expandable {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__content-expand-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--artist-showcase-space-xs);
+  background: none;
+  border: none;
+  color: var(--artist-showcase-color-accent);
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--artist-showcase-space-sm) 0;
+  transition: color var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__content-expand-trigger:hover {
+  color: color-mix(in srgb, var(--artist-showcase-color-accent) 80%, black);
+}
+
+.artist-showcase__content-expand-icon {
+  transition: transform var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__content-expand-trigger[aria-expanded="true"] .artist-showcase__content-expand-icon {
+  transform: rotate(180deg);
+}
+
+.artist-showcase__content-expandable-content {
+  transition: height var(--artist-showcase-transition-normal);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Interactive Features - Tabbed Content
+   ========================================================================== */
+
+.artist-showcase__content-tabs {
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__content-tabs-nav {
+  display: flex;
+  border-bottom: 1px solid var(--artist-showcase-color-border);
+  margin-bottom: var(--artist-showcase-space-md);
+}
+
+.artist-showcase__content-tab-trigger {
+  background: none;
+  border: none;
+  padding: var(--artist-showcase-space-md) var(--artist-showcase-space-lg);
+  color: var(--artist-showcase-color-text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__content-tab-trigger:hover {
+  color: var(--artist-showcase-color-text);
+}
+
+.artist-showcase__content-tab-trigger--active {
+  color: var(--artist-showcase-color-accent);
+  border-bottom-color: var(--artist-showcase-color-accent);
+}
+
+.artist-showcase__content-tab-panel {
+  min-height: 100px;
+}
+
+/* ==========================================================================
+   Interactive Features - Social Sharing
+   ========================================================================== */
+
+.artist-showcase__content-social-sharing {
+  margin-bottom: var(--artist-showcase-space-md);
+  padding-top: var(--artist-showcase-space-md);
+  border-top: 1px solid var(--artist-showcase-color-border);
+}
+
+.artist-showcase__content-sharing-label {
+  margin: 0 0 var(--artist-showcase-space-sm) 0;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.artist-showcase__content-sharing-buttons {
+  display: flex;
+  gap: var(--artist-showcase-space-sm);
+}
+
+.artist-showcase__content-share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: transform var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__content-share-button:hover {
+  transform: translateY(-2px);
+}
+
+.artist-showcase__content-share-button--facebook {
+  background: var(--artist-showcase-color-facebook);
+  color: white;
+}
+
+.artist-showcase__content-share-button--twitter {
+  background: var(--artist-showcase-color-twitter);
+  color: white;
+}
+
+.artist-showcase__content-share-button--pinterest {
+  background: var(--artist-showcase-color-pinterest);
+  color: white;
+}
+
+/* ==========================================================================
+   Interactive Features - Lightbox
+   ========================================================================== */
+
+.artist-showcase__lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.artist-showcase__lightbox-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+}
+
+.artist-showcase__lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.artist-showcase__lightbox-close {
+  position: absolute;
+  top: -60px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.artist-showcase__lightbox-image-container {
+  position: relative;
+  max-width: 100%;
+  max-height: calc(100% - 80px);
+}
+
+.artist-showcase__lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.artist-showcase__lightbox-navigation {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  padding: var(--artist-showcase-space-lg);
+}
+
+.artist-showcase__lightbox-nav {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--artist-showcase-transition-fast);
+}
+
+.artist-showcase__lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.artist-showcase__lightbox-counter {
+  color: white;
+  margin-top: var(--artist-showcase-space-md);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Performance Optimizations
+   ========================================================================== */
+
+/* Promote interactive elements to their own layer for better performance */
+.artist-showcase__gallery-nav,
+.artist-showcase__video-play-button,
+.artist-showcase__lightbox,
+.artist-showcase__card:hover {
+  will-change: transform;
+}
+
+/* Remove will-change after animation completes */
+.artist-showcase__card:not(:hover) {
+  will-change: auto;
+}
+
+/* Use transform3d for hardware acceleration */
+.artist-showcase__gallery-item {
+  transform: translate3d(0, 0, 0);
+}
+
+/* ==========================================================================
+   Animation and Transition Support
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .artist-showcase * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Remove performance hints when motion is reduced */
+  .artist-showcase__gallery-nav,
+  .artist-showcase__video-play-button,
+  .artist-showcase__lightbox,
+  .artist-showcase__card {
+    will-change: auto;
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+  .artist-showcase__card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .artist-showcase__content-button,
+  .artist-showcase__gallery-nav,
+  .artist-showcase__gallery-dots,
+  .artist-showcase__video-play-button,
+  .artist-showcase__product-add-to-cart,
+  .artist-showcase__content-sharing-buttons {
+    display: none;
+  }
+
+  .artist-showcase__lightbox {
+    display: none;
+  }
+}

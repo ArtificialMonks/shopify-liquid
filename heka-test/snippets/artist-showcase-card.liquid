@@ -1,0 +1,306 @@
+{%- comment -%}
+  Artist Showcase Card - Reusable Card Component
+
+  Usage: {% render 'artist-showcase-card', item_type: 'artist', card_style: 'card', image: image, title: title, ... %}
+
+  Renders different card layouts based on item_type and card_style:
+  - Artist: Profile-focused with emphasis on image and bio
+  - Collection: Product-focused with call-to-action
+  - Product: Commercial-focused with pricing/purchase
+  - Story: Content-focused with narrative elements
+{%- endcomment -%}
+
+{%- liquid
+  assign card_class = 'artist-showcase__card'
+  assign image_class = 'artist-showcase__image'
+  assign content_class = 'artist-showcase__content'
+
+  # Generate unique IDs
+  assign card_id = 'card-' | append: unique | append: '-' | append: block_id
+-%}
+
+<div class="{{ card_class }} {{ card_class }}--{{ card_style }}" id="{{ card_id }}">
+
+  {%- comment -%} Rich Media Section {%- endcomment -%}
+  {%- liquid
+    assign has_media = false
+    if image != blank or block.settings.enable_gallery or block.settings.enable_video
+      assign has_media = true
+    endif
+  -%}
+
+  {%- if has_media -%}
+    <div class="{{ image_class }} {{ image_class }}--{{ image_aspect_ratio }} artist-showcase__media">
+
+      {%- comment -%} Gallery Mode {%- endcomment -%}
+      {%- if block.settings.enable_gallery -%}
+        {%- render 'artist-showcase-gallery',
+            block: block,
+            unique: unique,
+            image_aspect_ratio: image_aspect_ratio -%}
+
+      {%- comment -%} Video Mode {%- endcomment -%}
+      {%- elsif block.settings.enable_video -%}
+        {%- render 'artist-showcase-video',
+            block: block,
+            unique: unique -%}
+
+      {%- comment -%} Standard Image Mode {%- endcomment -%}
+      {%- elsif image != blank -%}
+        {%- if link != blank -%}
+          <a href="{{ link }}" class="{{ image_class }}-link" aria-labelledby="{{ card_id }}-title">
+        {%- endif -%}
+
+        {%- liquid
+          case image_aspect_ratio
+            when 'square'
+              assign aspect_ratio = '1/1'
+            when 'portrait'
+              assign aspect_ratio = '3/4'
+            when 'landscape'
+              assign aspect_ratio = '4/3'
+            when 'wide'
+              assign aspect_ratio = '16/9'
+            else
+              assign aspect_ratio = '3/4'
+          endcase
+        -%}
+
+        <img
+          src="{{ image | image_url: width: 800 }}"
+          alt="{{ title | escape | default: 'Showcase image' }}"
+          width="800"
+          height="auto"
+          loading="lazy"
+          style="aspect-ratio: {{ aspect_ratio }}; object-fit: cover;"
+          class="{{ image_class }}-img"
+        >
+
+        {%- if link != blank -%}
+          </a>
+        {%- endif -%}
+      {%- endif -%}
+
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Content Section {%- endcomment -%}
+  {%- liquid
+    assign show_content = false
+    if has_content or block.settings.enable_testimonial or block.settings.enable_product
+      assign show_content = true
+    endif
+  -%}
+
+  {%- if show_content -%}
+    <div class="{{ content_class }} {{ content_class }}--{{ item_type }}">
+
+      {%- comment -%} Testimonial Content {%- endcomment -%}
+      {%- if block.settings.enable_testimonial -%}
+        {%- render 'artist-showcase-testimonial',
+            block: block,
+            unique: unique -%}
+
+      {%- comment -%} Product Showcase Content {%- endcomment -%}
+      {%- elsif block.settings.enable_product -%}
+        {%- render 'artist-showcase-product',
+            block: block,
+            unique: unique -%}
+
+      {%- comment -%} Standard Content {%- endcomment -%}
+      {%- else -%}
+        {%- comment -%} Title & Subtitle {%- endcomment -%}
+        {%- if title != blank or subtitle != blank -%}
+          <div class="{{ content_class }}-header">
+            {%- if title != blank -%}
+              <h3 id="{{ card_id }}-title" class="{{ content_class }}-title">
+                {%- if link != blank and card_style != 'overlay' -%}
+                  <a href="{{ link }}" class="{{ content_class }}-title-link">
+                    {{ title | escape }}
+                  </a>
+                {%- else -%}
+                  {{ title | escape }}
+                {%- endif -%}
+              </h3>
+            {%- endif -%}
+
+            {%- if subtitle != blank -%}
+              <p class="{{ content_class }}-subtitle">{{ subtitle | escape }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Description Content {%- endcomment -%}
+        {%- if content != blank -%}
+          <div class="{{ content_class }}-description rte">
+            {{ content }}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Expandable Content {%- endcomment -%}
+        {%- if block.settings.enable_expandable and block.settings.expandable_content != blank -%}
+          <div class="{{ content_class }}-expandable">
+            <button
+              class="{{ content_class }}-expand-trigger"
+              aria-expanded="false"
+              aria-controls="{{ card_id }}-expandable"
+              data-expandable-trigger
+            >
+              <span class="{{ content_class }}-expand-text">{{ block.settings.expand_button_text | default: 'Read More' | escape }}</span>
+              <span class="{{ content_class }}-collapse-text" style="display: none;">{{ block.settings.collapse_button_text | default: 'Read Less' | escape }}</span>
+              <svg class="{{ content_class }}-expand-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div
+              id="{{ card_id }}-expandable"
+              class="{{ content_class }}-expandable-content rte"
+              style="display: none;"
+              data-expandable-content
+            >
+              {{ block.settings.expandable_content }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Tabbed Content {%- endcomment -%}
+        {%- if block.settings.enable_tabs -%}
+          <div class="{{ content_class }}-tabs" data-tabs-container>
+            <div class="{{ content_class }}-tabs-nav">
+              {%- if block.settings.tab_1_title != blank -%}
+                <button class="{{ content_class }}-tab-trigger {{ content_class }}-tab-trigger--active" data-tab-trigger="1" aria-controls="{{ card_id }}-tab-1">
+                  {{ block.settings.tab_1_title | escape }}
+                </button>
+              {%- endif -%}
+              {%- if block.settings.tab_2_title != blank -%}
+                <button class="{{ content_class }}-tab-trigger" data-tab-trigger="2" aria-controls="{{ card_id }}-tab-2">
+                  {{ block.settings.tab_2_title | escape }}
+                </button>
+              {%- endif -%}
+              {%- if block.settings.tab_3_title != blank -%}
+                <button class="{{ content_class }}-tab-trigger" data-tab-trigger="3" aria-controls="{{ card_id }}-tab-3">
+                  {{ block.settings.tab_3_title | escape }}
+                </button>
+              {%- endif -%}
+            </div>
+            <div class="{{ content_class }}-tabs-content">
+              {%- if block.settings.tab_1_content != blank -%}
+                <div id="{{ card_id }}-tab-1" class="{{ content_class }}-tab-panel {{ content_class }}-tab-panel--active rte" data-tab-panel="1">
+                  {{ block.settings.tab_1_content }}
+                </div>
+              {%- endif -%}
+              {%- if block.settings.tab_2_content != blank -%}
+                <div id="{{ card_id }}-tab-2" class="{{ content_class }}-tab-panel rte" data-tab-panel="2" style="display: none;">
+                  {{ block.settings.tab_2_content }}
+                </div>
+              {%- endif -%}
+              {%- if block.settings.tab_3_content != blank -%}
+                <div id="{{ card_id }}-tab-3" class="{{ content_class }}-tab-panel rte" data-tab-panel="3" style="display: none;">
+                  {{ block.settings.tab_3_content }}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Type-Specific Content {%- endcomment -%}
+        {%- case item_type -%}
+          {%- when 'artist' -%}
+            <div class="{{ content_class }}-meta {{ content_class }}-meta--artist">
+              <span class="{{ content_class }}-type">Featured Artist</span>
+            </div>
+          {%- when 'collection' -%}
+            <div class="{{ content_class }}-meta {{ content_class }}-meta--collection">
+              <span class="{{ content_class }}-type">Collection</span>
+            </div>
+          {%- when 'product' -%}
+            <div class="{{ content_class }}-meta {{ content_class }}-meta--product">
+              <span class="{{ content_class }}-type">Featured Product</span>
+            </div>
+          {%- when 'story' -%}
+            <div class="{{ content_class }}-meta {{ content_class }}-meta--story">
+              <span class="{{ content_class }}-type">Our Story</span>
+            </div>
+        {%- endcase -%}
+
+        {%- comment -%} Social Sharing {%- endcomment -%}
+        {%- if block.settings.enable_sharing -%}
+          <div class="{{ content_class }}-social-sharing">
+            <p class="{{ content_class }}-sharing-label">Share:</p>
+            <div class="{{ content_class }}-sharing-buttons">
+              <a
+                href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ request.path | url_encode }}"
+                target="_blank"
+                rel="noopener"
+                class="{{ content_class }}-share-button {{ content_class }}-share-button--facebook"
+                aria-label="Share on Facebook"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M20 10C20 4.477 15.523 0 10 0S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" fill="currentColor"/>
+                </svg>
+              </a>
+              <a
+                href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ request.path | url_encode }}&text={{ title | url_encode }}"
+                target="_blank"
+                rel="noopener"
+                class="{{ content_class }}-share-button {{ content_class }}-share-button--twitter"
+                aria-label="Share on Twitter"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" fill="currentColor"/>
+                </svg>
+              </a>
+              <a
+                href="https://www.pinterest.com/pin/create/button/?url={{ shop.url }}{{ request.path | url_encode }}&description={{ title | url_encode }}"
+                target="_blank"
+                rel="noopener"
+                class="{{ content_class }}-share-button {{ content_class }}-share-button--pinterest"
+                aria-label="Share on Pinterest"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M10 0C4.477 0 0 4.477 0 10c0 4.237 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.6-.299-1.486c0-1.39.806-2.428 1.81-2.428.853 0 1.264.641 1.264 1.408 0 .858-.546 2.14-.828 3.33-.236.995.5 1.807 1.48 1.807 1.778 0 3.144-1.874 3.144-4.58 0-2.393-1.72-4.068-4.176-4.068-2.845 0-4.516 2.135-4.516 4.34 0 .859.331 1.781.745 2.281a.3.3 0 01.069.288l-.278 1.133c-.044.183-.145.223-.334.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.965-.525-2.291-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S15.523 0 10 0z" fill="currentColor"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Action Button {%- endcomment -%}
+        {%- if has_action -%}
+          <div class="{{ content_class }}-action">
+            <a
+              href="{{ link }}"
+              class="{{ content_class }}-button button button--secondary"
+              {% if item_type == 'product' %}aria-describedby="{{ card_id }}-title"{% endif %}
+            >
+              {{ button_text | escape }}
+              <svg class="{{ content_class }}-button-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M8 0L6.59 1.41L12.17 7H0V9H12.17L6.59 14.59L8 16L16 8L8 0Z" fill="currentColor"/>
+              </svg>
+            </a>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Overlay Content (for overlay card style) {%- endcomment -%}
+  {%- if card_style == 'overlay' and has_content -%}
+    <div class="{{ card_class }}-overlay">
+      <div class="{{ card_class }}-overlay-content">
+        {%- if title != blank -%}
+          <h3 class="{{ card_class }}-overlay-title">{{ title | escape }}</h3>
+        {%- endif -%}
+        {%- if subtitle != blank -%}
+          <p class="{{ card_class }}-overlay-subtitle">{{ subtitle | escape }}</p>
+        {%- endif -%}
+        {%- if has_action -%}
+          <a href="{{ link }}" class="{{ card_class }}-overlay-button button button--primary">
+            {{ button_text | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>

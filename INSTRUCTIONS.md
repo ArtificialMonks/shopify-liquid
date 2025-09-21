@@ -48,7 +48,9 @@ This guide provides comprehensive instructions for all types of Shopify theme de
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
-| `./scripts/validate-theme.sh development` | Fast validation with essential checks | During daily development |
+| `./scripts/validate-theme.sh development` | Fast validation with ultimate checks | During daily development |
+| `./scripts/validate-theme.sh ultimate` | Zero tolerance liquid validation only | Quick quality check |
+| `./scripts/validate-theme.sh deep` | Ultimate + integrity + comprehensive | Pre-deployment validation |
 | `./scripts/validate-theme.sh comprehensive` | Complete validation suite | Before committing changes |
 | `./scripts/validate-theme.sh production` | Theme Store submission ready | Before going live |
 | `./scripts/validate-theme.sh auto-fix` | Auto-correct fixable issues | When validation shows errors |
@@ -321,14 +323,75 @@ When your theme passes all validation levels:
 
 When given a prompt like *"Create a product comparison section"* or *"Build a newsletter signup block"*, follow these instructions **exactly** to ensure consistency with our established methodology.
 
-### **🚀 Validation-First Development**
+### 🎨 **Design System First Approach**
 
-Every file creation must include validation steps:
+This repository uses a **unified design token system** that ensures consistency across all components. Before coding, understand our design hierarchy:
 
-1. **Before coding**: Run quick validation check
-2. **During development**: Validate schema as you build it
-3. **After completion**: Comprehensive validation
-4. **Before deployment**: Production-ready validation
+```
+Primitive Tokens → Semantic Tokens → Component Tokens
+   (Base Values)     (Contextual)      (Specific Use)
+```
+
+**Key Design System Files:**
+- **Design Tokens**: `code-library/css-patterns/design-tokens.css` (450+ tokens)
+- **Implementation Guide**: `docs/architecture/design-system-implementation.md`
+- **Token Integration**: All components use token-based CSS for consistency
+
+**Design Token Usage Pattern:**
+```liquid
+{% style %}
+  .component-{{ unique }} {
+    /* ✅ Component tokens with semantic fallbacks */
+    --component-bg: var(--surface-primary);
+    --component-text: var(--text-primary);
+    --component-spacing: var(--spacing-component-md);
+
+    /* ✅ Shopify setting integration with token fallbacks */
+    --dynamic-bg: {{ block.settings.bg_color | default: 'var(--component-bg)' }};
+    --dynamic-text: {{ block.settings.text_color | default: 'var(--component-text)' }};
+
+    /* Apply tokens to properties */
+    background: var(--dynamic-bg);
+    color: var(--dynamic-text);
+    padding: var(--component-spacing);
+  }
+{% endstyle %}
+```
+
+### **🚀 Validation-First Development with Shopify MCP**
+
+Every file creation must include validation steps with Shopify MCP integration:
+
+1. **Before coding**: Run quick validation check + MCP documentation lookup
+2. **During development**: Validate schema as you build it + live GraphQL validation
+3. **After completion**: Comprehensive validation + MCP theme validation
+4. **Before deployment**: Production-ready validation + Theme Store compliance
+
+### **🔗 Shopify MCP Server Integration**
+
+This repository includes comprehensive Shopify MCP server integration for enhanced development capabilities:
+
+**MCP Tools Available:**
+- `learn_shopify_api` - Initialize Shopify API context for development
+- `validate_theme` - Comprehensive theme validation against Shopify standards
+- `validate_graphql_codeblocks` - Real-time GraphQL query validation
+- `introspect_graphql_schema` - Live schema introspection for API development
+- `search_docs_chunks` - Search official Shopify documentation
+- `fetch_full_docs` - Retrieve complete documentation pages
+
+**MCP Usage in Development Workflow:**
+```bash
+# 1. Traditional validation
+./scripts/validate-theme.sh development
+
+# 2. Enhanced MCP validation (when working with AI assistants)
+# - Use validate_theme for comprehensive Liquid validation
+# - Use validate_graphql_codeblocks for API queries
+# - Use search_docs_chunks for documentation lookup
+# - Use introspect_graphql_schema for schema exploration
+```
+
+📖 **[Complete MCP Setup Guide](./SHOPIFY-MCP-SETUP.md)** - Full integration and usage documentation
 
 ---
 
@@ -398,7 +461,7 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 
 ---
 
-## 📐 **STEP 2: CSS Scoping Methodology (CRITICAL)**
+## 📐 **STEP 2: Design System + CSS Scoping Methodology (CRITICAL)**
 
 ### **Unique ID Generation Pattern**
 
@@ -410,12 +473,39 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 {%- assign u = block.id | replace: '_', '' | downcase -%}
 ```
 
-### **CSS Class Naming Convention**
+### **Design Token Integration Pattern**
 
-**All CSS classes MUST follow this pattern:**
+**All components MUST use design tokens for consistency:**
 
 ```liquid
-<!-- Base component -->
+{% style %}
+  .component-name-{{ unique }} {
+    /* ✅ Component tokens with semantic fallbacks */
+    --component-bg: var(--surface-primary);
+    --component-text: var(--text-primary);
+    --component-spacing: var(--spacing-component-md);
+    --component-radius: var(--border-radius-lg);
+
+    /* ✅ Shopify setting integration with token fallbacks */
+    --dynamic-bg: {{ section.settings.bg_color | default: 'var(--component-bg)' }};
+    --dynamic-text: {{ section.settings.text_color | default: 'var(--component-text)' }};
+    --dynamic-accent: {{ section.settings.accent_color | default: 'var(--brand-primary-500)' }};
+
+    /* ✅ Apply tokens to properties */
+    background: var(--dynamic-bg);
+    color: var(--dynamic-text);
+    padding: var(--component-spacing);
+    border-radius: var(--component-radius);
+  }
+{% endstyle %}
+```
+
+### **CSS Class Naming Convention**
+
+**All CSS classes MUST follow this pattern with design tokens:**
+
+```liquid
+<!-- Base component with token-based styling -->
 <div class="component-name-{{ unique }}">
 
 <!-- Elements within component -->
@@ -426,31 +516,67 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 <div class="component-name--large-{{ unique }}">
 ```
 
-### **CSS Style Block Structure**
+### **Complete CSS Style Block Structure with Design Tokens**
 
 ```liquid
 {% style %}
   .component-name-{{ unique }} {
-    /* Base styles with CSS custom properties */
-    padding: var(--padding, 20px);
-    background: var(--bg-color, #ffffff);
+    /* ✅ Design token integration */
+    --component-bg: var(--surface-primary);
+    --component-text: var(--text-primary);
+    --component-spacing: var(--spacing-component-md);
+
+    /* ✅ Dynamic values from Shopify settings */
+    --dynamic-bg: {{ section.settings.bg_color | default: 'var(--component-bg)' }};
+    --dynamic-text: {{ section.settings.text_color | default: 'var(--component-text)' }};
+
+    /* ✅ Apply design tokens */
+    background: var(--dynamic-bg);
+    color: var(--dynamic-text);
+    padding: var(--component-spacing);
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--border-radius-lg);
   }
 
   .component-name__element-{{ unique }} {
-    /* Element styles */
+    /* ✅ Element styles using design tokens */
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--dynamic-text);
   }
 
+  /* ✅ Focus states using design tokens */
+  .component-name-{{ unique }}:focus-within {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* ✅ Responsive behavior using token system */
   @media (max-width: 749px) {
     .component-name-{{ unique }} {
-      /* Mobile responsive styles */
+      padding: var(--spacing-component-sm);
     }
   }
 {% endstyle %}
 ```
 
+### **Token Selection Guidelines**
+
+**Choose appropriate token tiers:**
+
+1. **Component Tokens** (Preferred): `--button-primary-bg`, `--card-padding`
+2. **Semantic Tokens** (Fallback): `--surface-primary`, `--text-primary`
+3. **Primitive Tokens** (Avoid): `--neutral-100`, `--space-4`
+
+**Token Integration Checklist:**
+- [ ] Use semantic tokens, not primitives directly
+- [ ] Provide Shopify setting fallbacks with token defaults
+- [ ] Include focus states using design token system
+- [ ] Apply responsive adjustments through tokens
+
 ---
 
-## 🏗 **STEP 3: File Structure Requirements**
+## 🏗 **STEP 3: File Structure Requirements with Design Tokens**
 
 ### **For Sections (`sections/component-name.liquid`)**
 
@@ -459,7 +585,44 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 {%- assign unique = section.id | replace: '_', '' | downcase -%}
 
 {% style %}
-  /* CSS with scoped classes using {{ unique }} */
+  .component-name-{{ unique }} {
+    /* ✅ Component tokens with semantic fallbacks */
+    --component-bg: var(--surface-primary);
+    --component-text: var(--text-primary);
+    --component-spacing: var(--spacing-component-md);
+    --component-radius: var(--border-radius-lg);
+
+    /* ✅ Shopify setting integration with token fallbacks */
+    --dynamic-bg: {{ section.settings.bg_color | default: 'var(--component-bg)' }};
+    --dynamic-text: {{ section.settings.text_color | default: 'var(--component-text)' }};
+    --dynamic-accent: {{ section.settings.accent_color | default: 'var(--brand-primary-500)' }};
+
+    /* Apply tokens to properties */
+    background: var(--dynamic-bg);
+    color: var(--dynamic-text);
+    padding: var(--component-spacing);
+    border-radius: var(--component-radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .component-name__element-{{ unique }} {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--dynamic-text);
+  }
+
+  /* Focus states using design tokens */
+  .component-name-{{ unique }}:focus-within {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Responsive using tokens */
+  @media (max-width: 749px) {
+    .component-name-{{ unique }} {
+      padding: var(--spacing-component-sm);
+    }
+  }
 {% endstyle %}
 
 <section class="component-name-{{ unique }}" role="region" aria-label="{{ section.settings.aria_label | default: section.settings.heading | default: 'Section name' | escape }}">
@@ -471,7 +634,28 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 {% schema %}{
   "name": "Section Name",
   "settings": [
-    /* Section-level settings */
+    {
+      "type": "header",
+      "content": "Design Tokens"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "info": "Uses --surface-primary token as fallback"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "info": "Uses --text-primary token as fallback"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "info": "Uses --brand-primary-500 token as fallback"
+    }
   ],
   "blocks": [
     /* Block types if applicable */
@@ -491,14 +675,42 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 {%- assign u = block.id | replace: '_', '' | downcase -%}
 
 {% style %}
-  /* Block-scoped CSS using {{ u }} */
   .block-name-{{ u }} {
-    /* Theme block styles */
+    /* ✅ Component tokens with semantic fallbacks */
+    --block-bg: var(--surface-secondary);
+    --block-text: var(--text-primary);
+    --block-spacing: var(--spacing-component-sm);
+    --block-radius: var(--border-radius-md);
+
+    /* ✅ Dynamic values from block settings */
+    --dynamic-bg: {{ block.settings.bg_color | default: 'var(--block-bg)' }};
+    --dynamic-text: {{ block.settings.text_color | default: 'var(--block-text)' }};
+
+    /* Apply design tokens */
+    background: var(--dynamic-bg);
+    color: var(--dynamic-text);
+    padding: var(--block-spacing);
+    border-radius: var(--block-radius);
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition-base);
+  }
+
+  .block-name__element-{{ u }} {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--spacing-component-xs);
+  }
+
+  /* Hover states using design tokens */
+  .block-name-{{ u }}:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
   }
 {% endstyle %}
 
 <div class="block-name-{{ u }}" {{ block.shopify_attributes }}>
-  <!-- Block content using block.settings.* -->
+  <h3 class="block-name__title-{{ u }}">{{ block.settings.title | escape }}</h3>
+  <p class="block-name__text-{{ u }}">{{ block.settings.content | escape }}</p>
 </div>
 
 {% schema %}
@@ -506,17 +718,44 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
   "name": "Block Name",
   "settings": [
     {
+      "type": "header",
+      "content": "Content"
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Title",
       "default": "Default title"
+    },
+    {
+      "type": "textarea",
+      "id": "content",
+      "label": "Content",
+      "default": "Default content"
+    },
+    {
+      "type": "header",
+      "content": "Design Tokens"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "info": "Uses --surface-secondary token as fallback"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "info": "Uses --text-primary token as fallback"
     }
   ],
   "presets": [
     {
       "name": "Block Name",
       "settings": {
-        "title": "Default title"
+        "title": "Default title",
+        "content": "Default content"
       }
     }
   ]
@@ -559,22 +798,55 @@ This document prevents "FileSaveError: Invalid schema" errors by providing:
 
 ### **For Snippets (`snippets/snippet-name.liquid`)**
 
+**Snippets support design tokens for reusable styling patterns:**
+
 ```liquid
 {% comment %}
   Snippet: snippet-name
-  Usage: {% render 'snippet-name', param1: value1, param2: value2 %}
+  Usage: {% render 'snippet-name', param1: value1, param2: value2, unique_id: 'component-123' %}
 
   Parameters:
   - param1 (required): Description
   - param2 (optional): Description with default
+  - unique_id (required): Unique ID for scoped styling
+  - bg_color (optional): Background color override
+  - text_color (optional): Text color override
+
+  Design Token Integration:
+  - Uses semantic tokens with component-specific fallbacks
+  - Supports color customization through parameters
+  - Maintains consistent spacing and typography
 {% endcomment %}
 
 {%- liquid
   assign param1 = param1 | default: 'default_value'
   assign param2 = param2 | default: 'default_value'
+  assign unique_id = unique_id | default: 'snippet-default'
+  assign bg_color = bg_color | default: 'var(--surface-primary)'
+  assign text_color = text_color | default: 'var(--text-primary)'
 -%}
 
-<!-- Snippet functionality -->
+{% style %}
+  .snippet-name-{{ unique_id }} {
+    /* ✅ Design token integration for reusable snippets */
+    --snippet-bg: {{ bg_color }};
+    --snippet-text: {{ text_color }};
+    --snippet-spacing: var(--spacing-component-sm);
+    --snippet-radius: var(--border-radius-sm);
+
+    background: var(--snippet-bg);
+    color: var(--snippet-text);
+    padding: var(--snippet-spacing);
+    border-radius: var(--snippet-radius);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+  }
+{% endstyle %}
+
+<div class="snippet-name-{{ unique_id }}">
+  <!-- Snippet functionality with design token styling -->
+  {{ param1 | escape }}
+</div>
 ```
 
 ---
@@ -866,7 +1138,7 @@ Use these **validated patterns** for consistency:
 
 ## ✅ **STEP 10: Validation & Quality Checklist**
 
-### **🚀 Automated Validation First**
+### **🚀 Automated Validation First + Shopify MCP**
 
 **Run these commands for every new file:**
 
@@ -884,6 +1156,20 @@ Use these **validated patterns** for consistency:
 ./scripts/validate-theme.sh production
 ```
 
+**Enhanced validation with Shopify MCP (when working with AI assistants):**
+- **Theme Validation**: Use `validate_theme` MCP tool for comprehensive Liquid template validation
+- **GraphQL Validation**: Use `validate_graphql_codeblocks` for API query validation
+- **Documentation Lookup**: Use `search_docs_chunks` for real-time Shopify documentation
+- **Schema Exploration**: Use `introspect_graphql_schema` for API development and exploration
+- **Complete Documentation**: Use `fetch_full_docs` for comprehensive reference material
+
+**MCP Integration Benefits:**
+- Real-time validation against live Shopify APIs
+- Direct access to official Shopify documentation
+- Schema introspection for accurate API development
+- Theme Store compliance validation
+- Automated error detection and prevention
+
 ### **Manual Quality Checks**
 
 After automated validation passes, verify:
@@ -894,6 +1180,15 @@ After automated validation passes, verify:
 - [ ] Blank value checks for optional settings
 - [ ] Responsive CSS with mobile-first approach
 - [ ] CSS custom properties for dynamic values
+
+### **Design System Compliance**
+- [ ] **Design token integration**: Uses semantic tokens, not primitives directly
+- [ ] **Token fallbacks**: Shopify settings provide token defaults (`{{ block.settings.bg_color | default: 'var(--component-bg)' }}`)
+- [ ] **Component tokens**: Uses appropriate tier (component → semantic → primitive)
+- [ ] **Focus states**: Implements design token-based focus management
+- [ ] **Responsive tokens**: Uses token system for responsive adjustments
+- [ ] **Schema integration**: Color settings reference design token fallbacks in `info` text
+- [ ] **Token consistency**: Component CSS follows unified design token patterns
 
 ### **Accessibility**
 - [ ] Semantic HTML structure
@@ -921,6 +1216,8 @@ After automated validation passes, verify:
 - [ ] Lazy loading where appropriate
 - [ ] Minimal CSS specificity
 - [ ] No hardcoded values (use settings)
+- [ ] **Design token efficiency**: Groups related token assignments for performance
+- [ ] **CSS custom property optimization**: Uses token-based CSS variables for dynamic styling
 
 ---
 
@@ -929,17 +1226,18 @@ After automated validation passes, verify:
 When I give you a prompt to create a new Shopify Liquid file:
 
 1. **🚀 START WITH VALIDATION**: Run `./scripts/validate-theme.sh development` to ensure clean environment
-2. **🔴 VALIDATE SCHEMA FIRST**: Review `schema-validation/schema-guidelines.md` before any schema work
-3. **Apply validation rules**: Check range calculations, setting types, and restrictions
-4. **Identify the type** (section, block, snippet, CSS pattern)
-5. **Choose the correct location** in `shopify-liquid-guides/code-library/`
-6. **Follow the exact file structure** from Step 3
-7. **Use our CSS scoping methodology** with unique IDs
-8. **Include validated schema configuration** with realistic defaults
-9. **Ensure accessibility compliance** with ARIA and semantic HTML
-10. **Follow performance best practices** for Theme Store approval
-11. **Match our naming conventions** and comment patterns
-12. **🎯 VALIDATE COMPLETION**: Run complete validation workflow:
+2. **🎨 DESIGN SYSTEM FIRST**: Reference design token system (`code-library/css-patterns/design-tokens.css`) and implementation guide
+3. **🔴 VALIDATE SCHEMA FIRST**: Review `schema-validation/schema-guidelines.md` before any schema work
+4. **Apply validation rules**: Check range calculations, setting types, and restrictions
+5. **Identify the type** (section, block, snippet, CSS pattern)
+6. **Choose the correct location** in `shopify-liquid-guides/code-library/`
+7. **Follow the exact file structure** from Step 3 with design token integration
+8. **Use our CSS scoping methodology** with unique IDs and semantic tokens
+9. **Include validated schema configuration** with design token fallbacks and realistic defaults
+10. **Ensure accessibility compliance** with ARIA and semantic HTML
+11. **Follow performance best practices** for Theme Store approval
+12. **Match our naming conventions** and comment patterns
+13. **🎯 VALIDATE COMPLETION**: Run complete validation workflow:
     ```bash
     ./scripts/validate-theme.sh development  # Quick check
     ./scripts/validate-theme.sh auto-fix     # Fix issues
@@ -965,6 +1263,8 @@ When I give you a prompt to create a new Shopify Liquid file:
 
 **Key principle**: Every new file should feel like a natural extension of our existing codebase, following identical patterns and maintaining the same level of quality and consistency.
 
+**Design system principle**: Every component must use the unified design token system to ensure visual consistency and maintainability across all theme components.
+
 **Schema validation principle**: Every schema must pass the comprehensive validation rules to prevent "FileSaveError: Invalid schema" errors that break the development workflow.
 
 ### **🎉 Validation-First Development Workflow**
@@ -980,8 +1280,11 @@ When I give you a prompt to create a new Shopify Liquid file:
 
 📖 **Essential References**:
 - [Complete Validation Guide](./THEME-CHECK-SETUP.md) - Ultimate validation setup
+- [Shopify MCP Server Setup](./SHOPIFY-MCP-SETUP.md) - Direct Shopify API integration
 - `shopify-liquid-guides/schema-validation/schema-guidelines.md` - Schema validation rules
+- `shopify-liquid-guides/docs/architecture/design-system-implementation.md` - Design system implementation guide
+- `shopify-liquid-guides/code-library/css-patterns/design-tokens.css` - Unified design token system (450+ tokens)
 
-**🚀 Result**: 100% Theme Store compliance guaranteed with zero development friction!
+**🚀 Result**: 100% Theme Store compliance with unified design system excellence guaranteed with zero development friction!
 
 Now you're ready to create any Shopify Liquid file that perfectly fits our established methodology with full validation automation! 🎉

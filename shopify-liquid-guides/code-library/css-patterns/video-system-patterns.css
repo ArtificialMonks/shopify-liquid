@@ -1,0 +1,790 @@
+/* Video System CSS Patterns
+ *
+ * Complete CSS methodology for the Video System block with all advanced features.
+ * Provides reusable patterns for video display, backgrounds, typography, animations,
+ * and responsive design optimized for Shopify themes.
+ *
+ * USAGE IN LIQUID:
+ * {% assign unique = block.id | replace: '_', '' | downcase %}
+ * <div class="video-system-{{ unique }}">
+ *   {% style %}
+ *     .video-system-{{ unique }} { /* styles */ }
+ *   {% endstyle %}
+ * </div>
+ */
+
+/* ========================================
+ * CORE VIDEO SYSTEM STRUCTURE
+ * ======================================== */
+
+/* Main container with background system support */
+.video-system {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  /* CSS Custom Properties for dynamic theming */
+  --video-bg: #ffffff;
+  --video-padding: 40px;
+  --video-radius: 0px;
+  --video-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --content-gap: 24px;
+  --header-color: #333333;
+  --body-color: #666666;
+  --accent-color: #007cba;
+
+  background: var(--video-bg);
+  padding: var(--video-padding);
+  border-radius: var(--video-radius);
+  box-shadow: var(--video-shadow);
+
+  /* Animation preparation */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 600ms ease;
+}
+
+.video-system.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Grid container for flexible layouts */
+.video-system__container {
+  display: grid;
+  gap: var(--content-gap);
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ========================================
+ * LAYOUT PATTERNS
+ * ======================================== */
+
+/* Stacked layout (default) */
+.video-system__container--stacked {
+  grid-template-areas:
+    "header"
+    "video"
+    "body";
+  grid-template-columns: 1fr;
+}
+
+/* Side-by-side layout */
+.video-system__container--side-by-side {
+  grid-template-areas:
+    "header header"
+    "video content"
+    ". .";
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--content-gap) * 1.5);
+}
+
+/* Custom 3x3 grid layout */
+.video-system__container--custom {
+  grid-template-areas:
+    "area1 area2 area3"
+    "area4 area5 area6"
+    "area7 area8 area9";
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ========================================
+ * VIDEO CONTAINER PATTERNS
+ * ======================================== */
+
+.video-system__video-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+
+  /* Default positioning */
+  grid-area: video;
+
+  /* Style properties */
+  border-radius: var(--video-radius);
+  box-shadow: var(--video-shadow);
+  background: #000;
+
+  /* Transition for interactions */
+  transition: all 0.3s ease;
+}
+
+/* Video container with aspect ratio */
+.video-system__video-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 default */
+  background: #000;
+  overflow: hidden;
+}
+
+/* Aspect ratio variations */
+.video-system__video-container--16-9 { padding-bottom: 56.25%; }
+.video-system__video-container--4-3 { padding-bottom: 75%; }
+.video-system__video-container--1-1 { padding-bottom: 100%; }
+.video-system__video-container--21-9 { padding-bottom: 42.86%; }
+.video-system__video-container--3-2 { padding-bottom: 66.67%; }
+.video-system__video-container--9-16 { padding-bottom: 177.78%; }
+
+/* Video and iframe styling */
+.video-system__video,
+.video-system__iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: cover;
+  object-position: center;
+  transition: all 0.5s ease;
+}
+
+/* Video fit variations */
+.video-system__video--contain { object-fit: contain; }
+.video-system__video--cover { object-fit: cover; }
+.video-system__video--fill { object-fit: fill; }
+
+/* Video position variations */
+.video-system__video--top { object-position: top center; }
+.video-system__video--bottom { object-position: bottom center; }
+.video-system__video--left { object-position: center left; }
+.video-system__video--right { object-position: center right; }
+
+/* ========================================
+ * POSTER AND PLAY BUTTON PATTERNS
+ * ======================================== */
+
+.video-system__poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.video-system__poster.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-system__play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+
+  /* Button styling */
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Shadow and transitions */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  /* Backdrop filter for modern browsers */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.video-system__play-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.video-system__play-button:focus {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 4px;
+}
+
+.video-system__play-button svg {
+  width: 32px;
+  height: 32px;
+  fill: #333;
+  margin-left: 4px; /* Optical centering */
+  transition: fill 0.3s ease;
+}
+
+/* ========================================
+ * TYPOGRAPHY PATTERNS
+ * ======================================== */
+
+.video-system__header {
+  margin: 0;
+  padding: 20px;
+
+  /* Default positioning */
+  grid-area: header;
+
+  /* Typography defaults */
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--header-color);
+  text-align: center;
+
+  /* Responsive text */
+  font-size: clamp(24px, 4vw, 48px);
+
+  transition: all 0.3s ease;
+}
+
+.video-system__body {
+  margin: 0;
+  padding: 20px;
+
+  /* Default positioning */
+  grid-area: body;
+
+  /* Typography defaults */
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--body-color);
+  text-align: center;
+
+  /* Responsive text */
+  font-size: clamp(14px, 2.5vw, 18px);
+
+  transition: all 0.3s ease;
+}
+
+/* Typography positioning variations */
+.video-system__header--left { grid-area: area4; text-align: left; }
+.video-system__header--right { grid-area: area6; text-align: right; }
+.video-system__header--above { grid-area: header; }
+.video-system__header--below { grid-area: area8; }
+
+.video-system__body--left { grid-area: area4; text-align: left; }
+.video-system__body--right { grid-area: area6; text-align: right; }
+.video-system__body--above { grid-area: header; }
+.video-system__body--below { grid-area: body; }
+
+/* Typography alignment variations */
+.video-system__header--align-left { text-align: left; }
+.video-system__header--align-center { text-align: center; }
+.video-system__header--align-right { text-align: right; }
+
+.video-system__body--align-left { text-align: left; }
+.video-system__body--align-center { text-align: center; }
+.video-system__body--align-right { text-align: right; }
+
+/* Typography transform variations */
+.video-system__header--uppercase { text-transform: uppercase; }
+.video-system__header--lowercase { text-transform: lowercase; }
+.video-system__header--capitalize { text-transform: capitalize; }
+
+.video-system__body--uppercase { text-transform: uppercase; }
+.video-system__body--lowercase { text-transform: lowercase; }
+.video-system__body--capitalize { text-transform: capitalize; }
+
+/* ========================================
+ * BACKGROUND PATTERNS
+ * ======================================== */
+
+/* Solid color background */
+.video-system--bg-color {
+  background: var(--video-bg);
+}
+
+/* Gradient backgrounds */
+.video-system--bg-gradient-linear {
+  background: linear-gradient(
+    var(--gradient-angle, 45deg),
+    var(--gradient-color1, #667eea),
+    var(--gradient-color2, #764ba2)
+  );
+}
+
+.video-system--bg-gradient-radial {
+  background: radial-gradient(
+    circle,
+    var(--gradient-color1, #667eea),
+    var(--gradient-color2, #764ba2)
+  );
+}
+
+/* Image background patterns */
+.video-system--bg-image {
+  background-image: var(--bg-image-url);
+  background-position: var(--bg-position, center center);
+  background-size: var(--bg-size, cover);
+  background-repeat: var(--bg-repeat, no-repeat);
+  background-attachment: var(--bg-attachment, scroll);
+}
+
+/* Background blend modes */
+.video-system--blend-multiply { background-blend-mode: multiply; }
+.video-system--blend-screen { background-blend-mode: screen; }
+.video-system--blend-overlay { background-blend-mode: overlay; }
+.video-system--blend-darken { background-blend-mode: darken; }
+.video-system--blend-lighten { background-blend-mode: lighten; }
+.video-system--blend-color-dodge { background-blend-mode: color-dodge; }
+.video-system--blend-color-burn { background-blend-mode: color-burn; }
+.video-system--blend-hard-light { background-blend-mode: hard-light; }
+.video-system--blend-soft-light { background-blend-mode: soft-light; }
+.video-system--blend-difference { background-blend-mode: difference; }
+.video-system--blend-exclusion { background-blend-mode: exclusion; }
+
+/* ========================================
+ * HOVER EFFECTS
+ * ======================================== */
+
+/* Scale hover effect */
+.video-system--hover-scale:hover .video-system__video-wrapper {
+  transform: scale(1.05);
+}
+
+/* Lift hover effect */
+.video-system--hover-lift:hover .video-system__video-wrapper {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Glow hover effect */
+.video-system--hover-glow:hover .video-system__video-wrapper {
+  box-shadow: 0 0 30px rgba(var(--accent-color-rgb, 0, 124, 186), 0.4);
+}
+
+/* Rotate hover effect */
+.video-system--hover-rotate:hover .video-system__video-wrapper {
+  transform: rotate(2deg) scale(1.02);
+}
+
+/* ========================================
+ * SCROLL ANIMATIONS
+ * ======================================== */
+
+/* Fade in animation */
+.video-system[data-animation="fade"] {
+  animation: videoFadeIn 600ms ease forwards;
+}
+
+@keyframes videoFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Slide up animation */
+.video-system[data-animation="slide"] {
+  animation: videoSlideUp 600ms ease forwards;
+}
+
+@keyframes videoSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Zoom in animation */
+.video-system[data-animation="zoom"] {
+  animation: videoZoomIn 600ms ease forwards;
+}
+
+@keyframes videoZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Rotate in animation */
+.video-system[data-animation="rotate"] {
+  animation: videoRotateIn 600ms ease forwards;
+}
+
+@keyframes videoRotateIn {
+  from {
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+/* ========================================
+ * PARALLAX EFFECTS
+ * ======================================== */
+
+.video-system--parallax-bg::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  right: -20%;
+  bottom: -20%;
+  background: inherit;
+  background-attachment: fixed;
+  z-index: -1;
+  will-change: transform;
+}
+
+.video-system--parallax-video .video-system__video,
+.video-system--parallax-video .video-system__iframe {
+  will-change: transform;
+}
+
+/* ========================================
+ * SHADOW VARIATIONS
+ * ======================================== */
+
+.video-system__video-wrapper--shadow-none {
+  box-shadow: none;
+}
+
+.video-system__video-wrapper--shadow-small {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.video-system__video-wrapper--shadow-medium {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.video-system__video-wrapper--shadow-large {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.video-system__video-wrapper--shadow-xl {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+}
+
+/* ========================================
+ * BORDER RADIUS VARIATIONS
+ * ======================================== */
+
+.video-system__video-wrapper--rounded-none { border-radius: 0; }
+.video-system__video-wrapper--rounded-sm { border-radius: 4px; }
+.video-system__video-wrapper--rounded-md { border-radius: 8px; }
+.video-system__video-wrapper--rounded-lg { border-radius: 12px; }
+.video-system__video-wrapper--rounded-xl { border-radius: 16px; }
+.video-system__video-wrapper--rounded-2xl { border-radius: 24px; }
+.video-system__video-wrapper--rounded-full { border-radius: 50%; }
+
+/* ========================================
+ * MOBILE RESPONSIVE PATTERNS
+ * ======================================== */
+
+@media screen and (max-width: 749px) {
+  .video-system {
+    padding: calc(var(--video-padding) * 0.75);
+  }
+
+  .video-system__container {
+    gap: calc(var(--content-gap) * 0.75);
+  }
+
+  /* Force stacked layout on mobile */
+  .video-system__container--mobile-stacked {
+    grid-template-areas:
+      "header"
+      "video"
+      "body" !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reverse stacked layout */
+  .video-system__container--mobile-reverse {
+    grid-template-areas:
+      "body"
+      "video"
+      "header" !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .video-system__header {
+    font-size: clamp(20px, 5vw, 28px);
+    padding: calc(var(--video-padding) * 0.5);
+  }
+
+  .video-system__body {
+    font-size: clamp(14px, 3vw, 16px);
+    padding: calc(var(--video-padding) * 0.5);
+  }
+
+  .video-system__play-button {
+    width: 60px;
+    height: 60px;
+  }
+
+  .video-system__play-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Mobile orientation change for vertical videos */
+  .video-system__video-container--mobile-vertical {
+    padding-bottom: 177.78% !important; /* 9:16 */
+  }
+}
+
+/* ========================================
+ * TOUCH DEVICE OPTIMIZATIONS
+ * ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  .video-system__play-button {
+    width: 88px;
+    height: 88px;
+    /* Larger touch target for accessibility */
+  }
+
+  .video-system__play-button svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .video-system--hover-scale:hover .video-system__video-wrapper,
+  .video-system--hover-lift:hover .video-system__video-wrapper,
+  .video-system--hover-glow:hover .video-system__video-wrapper,
+  .video-system--hover-rotate:hover .video-system__video-wrapper {
+    transform: none;
+    box-shadow: var(--video-shadow);
+  }
+}
+
+/* ========================================
+ * ACCESSIBILITY PATTERNS
+ * ======================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .video-system__play-button {
+    background: rgba(255, 255, 255, 1);
+    border: 2px solid #000;
+  }
+
+  .video-system__header,
+  .video-system__body {
+    text-shadow: none;
+  }
+
+  .video-system__video-wrapper {
+    outline: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .video-system *,
+  .video-system::before,
+  .video-system::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+
+  .video-system[data-animation] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .video-system--parallax-bg::before {
+    background-attachment: scroll;
+  }
+
+  /* Disable autoplay for reduced motion users */
+  .video-system__video[autoplay] {
+    animation-play-state: paused;
+  }
+}
+
+/* Screen reader only content */
+.video-system .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus management */
+.video-system:focus-within {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 4px;
+}
+
+/* ========================================
+ * PRINT STYLES
+ * ======================================== */
+
+@media print {
+  .video-system__video-wrapper {
+    display: none;
+  }
+
+  .video-system__header,
+  .video-system__body {
+    color: #000 !important;
+    text-shadow: none !important;
+    background: transparent !important;
+  }
+
+  .video-system {
+    background: white !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ========================================
+ * LOADING STATES
+ * ======================================== */
+
+.video-system--loading {
+  pointer-events: none;
+}
+
+.video-system--loading .video-system__video-container {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: videoShimmer 1.5s infinite;
+}
+
+@keyframes videoShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ========================================
+ * UTILITY CLASSES
+ * ======================================== */
+
+.video-system .hidden { display: none !important; }
+.video-system .visible { display: block !important; }
+.video-system .opacity-0 { opacity: 0; }
+.video-system .opacity-50 { opacity: 0.5; }
+.video-system .opacity-100 { opacity: 1; }
+
+/* Spacing utilities */
+.video-system .p-0 { padding: 0; }
+.video-system .p-4 { padding: 16px; }
+.video-system .p-8 { padding: 32px; }
+.video-system .m-0 { margin: 0; }
+.video-system .m-4 { margin: 16px; }
+.video-system .m-8 { margin: 32px; }
+
+/* Text utilities */
+.video-system .text-left { text-align: left; }
+.video-system .text-center { text-align: center; }
+.video-system .text-right { text-align: right; }
+
+/* ========================================
+ * PERFORMANCE OPTIMIZATIONS
+ * ======================================== */
+
+.video-system {
+  /* Containment for better performance */
+  contain: layout style;
+
+  /* GPU acceleration hints */
+  will-change: auto;
+}
+
+.video-system__video-wrapper {
+  /* Create stacking context */
+  isolation: isolate;
+
+  /* Hardware acceleration for smooth animations */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.video-system__video,
+.video-system__iframe {
+  /* Better image rendering */
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ========================================
+ * BEST PRACTICES SUMMARY
+ * ======================================== */
+
+/*
+VIDEO SYSTEM CSS METHODOLOGY - PRODUCTION IMPLEMENTATION:
+
+1. UNIQUE ID GENERATION:
+   {% assign unique = block.id | replace: '_', '' | downcase %}
+
+2. LIQUID CSS INTEGRATION:
+   {% style %}
+     .video-system-{{ unique }} {
+       --video-bg: {{ block.settings.bg_color | default: '#ffffff' }};
+       --header-color: {{ block.settings.header_color | default: '#333333' }};
+     }
+   {% endstyle %}
+
+3. BEM WITH SCOPING:
+   .video-system-{{ unique }}                    // Block
+   .video-system-{{ unique }}__video-wrapper     // Element
+   .video-system-{{ unique }}--hover-scale       // Modifier
+
+4. RESPONSIVE BREAKPOINTS:
+   - Mobile: max-width: 749px
+   - Tablet: 750px - 989px
+   - Desktop: min-width: 990px
+
+5. PERFORMANCE OPTIMIZATIONS:
+   - CSS containment for better rendering
+   - Hardware acceleration for smooth animations
+   - Intersection Observer for lazy loading
+   - Will-change properties for animated elements
+
+6. ACCESSIBILITY FEATURES:
+   - ARIA labels and roles
+   - Keyboard navigation support
+   - High contrast mode compatibility
+   - Reduced motion support
+   - Screen reader friendly content
+
+7. MODERN CSS FEATURES:
+   - CSS Custom Properties for dynamic theming
+   - CSS Grid for flexible layouts
+   - Backdrop filters for modern effects
+   - CSS containment for performance
+
+8. THEME STORE COMPLIANCE:
+   - No global style overwrites
+   - Self-contained component styles
+   - Graceful degradation for older browsers
+   - Performance-optimized animations
+   - Mobile-first responsive design
+*/
