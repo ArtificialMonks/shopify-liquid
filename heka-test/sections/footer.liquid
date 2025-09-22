@@ -11,12 +11,13 @@
   Replaces the broken footer.liquid with alert() dialogs
 {%- endcomment -%}
 
-{%- liquid
+{% liquid
   assign newsletter_heading = section.settings.newsletter_heading
   assign newsletter_text = section.settings.newsletter_text
   assign show_social = section.settings.show_social
   assign copyright_text = section.settings.copyright_text
--%}
+
+%}
 
 <style>
   .footer-{{ section.id }} {

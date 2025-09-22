@@ -41,7 +41,8 @@
       if srcset_array != ''
         assign srcset_array = srcset_array | append: ', '
       endif
-      assign srcset_array = srcset_array | append: image_object | image_url: width: width_int | append: ' ' | append: width | append: 'w'
+      assign url = image_object | image_url: width: width_int
+      assign srcset_array = srcset_array | append: url | append: ' ' | append: width | append: 'w'
     endif
   endfor
 
@@ -51,7 +52,8 @@
     assign default_width = max_width
   endif
 
-  assign image_height = image_object.aspect_ratio | default: 1.5 | times: default_width | round
+  assign ratio = image_object.aspect_ratio | default: 1.5
+  assign image_height = default_width | divided_by: ratio | round
 -%}
 
 {%- if image_object != blank -%}
@@ -59,18 +61,18 @@
     class="{{ css_class }}"
     src="{{ image_object | image_url: width: default_width }}"
     {%- if srcset_array != '' %}
-    srcset="{{ srcset_array }}"
+      srcset="{{ srcset_array }}"
     {%- endif %}
     sizes="{{ sizes_attr }}"
     alt="{{ alt_text }}"
     loading="{{ loading_strategy }}"
     {%- if fetch_priority != 'auto' %}
-    fetchpriority="{{ fetch_priority }}"
+      fetchpriority="{{ fetch_priority }}"
     {%- endif %}
     width="{{ default_width }}"
     height="{{ image_height }}"
     {%- if image_object.aspect_ratio %}
-    style="aspect-ratio: {{ image_object.aspect_ratio }}"
+      style="aspect-ratio: {{ image_object.aspect_ratio }}"
     {%- endif %}
   >
 {%- else -%}
@@ -86,4 +88,3 @@
     </svg>
   </div>
 {%- endif -%}
-

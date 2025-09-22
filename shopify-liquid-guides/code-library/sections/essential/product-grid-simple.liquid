@@ -107,7 +107,7 @@
   {% if collection.products.size > 0 %}
     <div class="product-grid-{{ section.id }}__grid">
       {% for product in collection.products limit: product_limit %}
-        <a href="{{ product.url }}" class="product-grid-{{ section.id }}__card">
+        <a href="{{ product.url | escape }}" class="product-grid-{{ section.id }}__card">
 
           {% if product.featured_image %}
             <img src="{{ product.featured_image | image_url: width: 400 }}"

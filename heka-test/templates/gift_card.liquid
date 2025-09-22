@@ -12,14 +12,14 @@
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
 
-    {% style %}
+    <style>
       main {
         text-align: center;
       }
       main img {
         display: unset;
       }
-    {% endstyle %}
+    </style>
 
     {{ content_for_header }}
   </head>
@@ -42,7 +42,7 @@
 
         <p>
           {% if settings.logo %}
-            {{ settings.logo | image_url: width: 300 | image_tag: alt: shop.name }}
+            <img src="{{ settings.logo | image_url: width: 300 }}" alt="{{ shop.name | escape }}" width="300">
           {% else %}
             <img
               src="{{ 'gift-card/card.svg' | shopify_asset_url }}"
@@ -55,7 +55,15 @@
 
         <h2>{{ shop.name }}</h2>
         <p>{{ 'gift_card.use_at_checkout' | t }}</p>
-        <p>{{ gift_card.code | format_code }}</p>
+        <p>{{ gift_card.code }}</p>
+
+        {% comment %} QR Code for easy gift card redemption {% endcomment %}
+        {% if gift_card.qr_code %}
+          <div class="gift-card-qr">
+            <p>{{ 'gift_card.qr_image_alt' | t }}</p>
+            <img src="{{ gift_card.qr_code }}" alt="{{ 'gift_card.qr_image_alt' | t }}" width="120" height="120">
+          </div>
+        {% endif %}
 
         {% if gift_card.pass_url %}
           <a href="{{ gift_card.pass_url }}">

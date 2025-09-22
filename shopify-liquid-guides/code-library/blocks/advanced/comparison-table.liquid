@@ -38,7 +38,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .comparison-table-{{ unique }} {
     width: 100%;
     margin: 20px 0;
@@ -240,7 +240,7 @@
       display: table;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="comparison-table-{{ unique }}" {{ block.shopify_attributes }}>

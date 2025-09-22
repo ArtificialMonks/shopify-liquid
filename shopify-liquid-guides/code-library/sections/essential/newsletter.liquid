@@ -187,7 +187,7 @@
         </div>
       {% elsif form.errors %}
         <div class="newsletter-{{ section.id }}__error" style="display: block;">
-          {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+          {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] | escape }}
         </div>
       {% endif %}
 

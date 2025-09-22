@@ -11,7 +11,7 @@
   - Quote formatting
 {%- endcomment -%}
 
-{%- liquid
+{% liquid
   assign testimonial_quote = block.settings.testimonial_quote
   assign testimonial_author = block.settings.testimonial_author
   assign testimonial_role = block.settings.testimonial_role
@@ -19,7 +19,8 @@
   assign testimonial_avatar = block.settings.testimonial_avatar
 
   assign testimonial_id = 'testimonial-' | append: unique | append: '-' | append: block.id
--%}
+
+%}
 
 {%- if testimonial_quote != blank -%}
   <div

@@ -299,8 +299,8 @@ Before saving ANY `.liquid` file with schema, verify:
   "presets": [...],                 // ✅ Optional: Preset configurations
   "default": {...},                 // ✅ Optional: Default for static sections
   "locales": {...},                 // ✅ Optional: Translations
-  "enabled_on": {...},              // ❌ NEVER use in sections (app blocks only)
-  "disabled_on": {...}              // ❌ NEVER use in sections (app blocks only)
+  "enabled_on": {...},              // ❌ Do not use in sections (app blocks only)
+  "disabled_on": {...}              // ✅ Allowed in sections to restrict placement (e.g., hide from header/footer)
 }
 ```
 
@@ -1082,6 +1082,83 @@ Before any schema implementation, verify:
 4. Missing required schema fields
 5. Invalid JSON syntax
 6. Wrong schema structure for file type (section vs theme block)
+
+### 🚨 **Recently Discovered Critical Issues** *(September 2025)*
+
+#### 7. **Invalid Liquid Tag Usage**
+**❌ WRONG:** Using non-existent Liquid tags
+```liquid
+{% doc %}
+  Documentation content
+{% enddoc %}
+```
+
+**✅ CORRECT:** Use standard comment tags
+```liquid
+{% comment %}
+  Documentation content
+{% endcomment %}
+```
+
+#### 8. **Unknown Shopify Filters**
+**❌ WRONG:** Using non-existent filters
+```liquid
+{{ product.featured_image | image_tag }}           <!-- image_tag doesn't exist -->
+{{ form | payment_button_tag }}                   <!-- payment_button_tag doesn't exist -->
+{{ content | structured_data }}                   <!-- structured_data doesn't exist -->
+{{ collection.products | default_pagination }}   <!-- default_pagination doesn't exist -->
+```
+
+**✅ CORRECT:** Use valid Shopify filters
+```liquid
+{{ product.featured_image | image_url }}          <!-- Use image_url -->
+{{ form | payment_button }}                       <!-- Use payment_button -->
+{{ content | json }}                              <!-- Use json -->
+{{ paginate | default_pagination }}               <!-- Correct pagination usage -->
+```
+
+#### 9. **Liquid Block Syntax Errors**
+**❌ WRONG:** Incorrect liquid block endings
+```liquid
+{%- liquid
+  assign variable = 'value'
+  # More liquid code
+-%}  <!-- Wrong: liquid blocks can't end with -%} -->
+```
+
+**✅ CORRECT:** Proper liquid block syntax
+```liquid
+{% liquid
+  assign variable = 'value'
+  # More liquid code
+%}  <!-- Correct: ends with %} -->
+```
+
+#### 10. **Performance-Breaking Collection Loops**
+**❌ WRONG:** Unlimited collection loops
+```liquid
+{% for collection in collections %}
+  <!-- This can break themes with many collections -->
+{% endfor %}
+```
+
+**✅ CORRECT:** Limited collection loops
+```liquid
+{% for collection in collections limit: 50 %}
+  <!-- Always limit collection loops -->
+{% endfor %}
+```
+
+#### 11. **Undefined Object References**
+**❌ WRONG:** Referencing undefined objects
+```liquid
+{{ form.errors | default: errors }}  <!-- 'errors' object doesn't exist -->
+```
+
+**✅ CORRECT:** Use proper fallbacks
+```liquid
+{{ form.errors | default: '' }}      <!-- Use empty string or other valid fallback -->
+```
 
 ### Implementation Standards
 When creating or modifying Shopify schemas:

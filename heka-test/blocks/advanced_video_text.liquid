@@ -508,14 +508,50 @@ This theme block wraps the main implementation in snippets/block-video-text.liqu
     },
     {
       "type": "header",
-      "content": "Interactive Effects"
+      "content": "🎨 Effect Presets (New)"
+    },
+    {
+      "type": "paragraph",
+      "content": "⚡ **NEW**: Choose from carefully crafted effect combinations that stack multiple animations for enhanced visual impact. These presets override individual effect settings below when selected."
+    },
+    {
+      "type": "select",
+      "id": "effect_preset",
+      "label": "Effect Preset",
+      "options": [
+        {"value": "none", "label": "None - Use Individual Settings"},
+        {"value": "subtle", "label": "Subtle - Professional & Gentle"},
+        {"value": "dynamic", "label": "Dynamic - Balanced & Engaging"},
+        {"value": "dramatic", "label": "Dramatic - Bold & Attention-Grabbing"}
+      ],
+      "default": "none",
+      "info": "🎯 PRESET EFFECTS: Subtle = gentle zoom + highlight, Dynamic = zoom + lift + underline + color shift, Dramatic = lift + glow + brightness + text scale + text glow"
+    },
+    {
+      "type": "range",
+      "id": "preset_intensity",
+      "label": "Preset Effect Intensity",
+      "min": 50,
+      "max": 150,
+      "step": 10,
+      "unit": "%",
+      "default": 100,
+      "info": "Adjust the strength of the preset effect combination (only applies when preset is selected)"
+    },
+    {
+      "type": "header",
+      "content": "Interactive Effects (Individual)"
+    },
+    {
+      "type": "paragraph",
+      "content": "🔧 **Individual Controls**: These settings are used when 'Effect Preset' is set to 'None'. Choose individual effects for precise control."
     },
     {
       "type": "checkbox",
       "id": "enable_hover_effects",
-      "label": "Enable Hover Effects",
+      "label": "Enable Individual Hover Effects",
       "default": true,
-      "info": "Add subtle interactive effects when users hover over elements"
+      "info": "Add subtle interactive effects when users hover over elements (only applies when no preset is selected)"
     },
     {
       "type": "select",

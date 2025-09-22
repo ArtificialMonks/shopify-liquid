@@ -20,7 +20,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .heading-block-{{ unique }} {
     text-align: {{ alignment }};
     margin: 0;
@@ -73,7 +73,7 @@
     h5.heading-block-{{ unique }}__text { font-size: 16px; }
     h6.heading-block-{{ unique }}__text { font-size: 14px; }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="heading-block-{{ unique }}" {{ block.shopify_attributes }}>

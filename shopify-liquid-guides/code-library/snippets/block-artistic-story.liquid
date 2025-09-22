@@ -21,7 +21,7 @@
   assign block_id = block.id | replace: '_', '' | downcase
 -%}
 
-{% style %}
+<style>
   .artistic-story-{{ block_id }} {
     /* ✅ Design token integration for storytelling content */
     --story-bg: var(--surface-primary);
@@ -178,7 +178,7 @@
       height: 24px;
     }
   }
-{% endstyle %}
+</style>
 
 <div class="artistic-story-{{ block_id }} artistic-story-{{ block_id }}--{{ text_alignment }}" {{ block.shopify_attributes }}>
   {% if story_title != blank %}

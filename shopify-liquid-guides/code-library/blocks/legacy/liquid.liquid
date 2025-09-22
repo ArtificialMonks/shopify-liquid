@@ -18,12 +18,12 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .liquid-block-{{ unique }} {
     position: relative;
     width: 100%;
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="liquid-block-{{ unique }}{% if wrapper_class != blank %} {{ wrapper_class | escape }}{% endif %}" {{ block.shopify_attributes }}>

@@ -27,7 +27,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .spacer-block-{{ unique }} {
     height: {{ desktop_height }}px;
     background-color: {{ background_color }};
@@ -96,7 +96,7 @@
       display: none;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="spacer-block-{{ unique }}" {{ block.shopify_attributes }} role="presentation" aria-hidden="true">

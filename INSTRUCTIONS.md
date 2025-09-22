@@ -39,6 +39,49 @@
 
 **If this fails, stop and fix the validation setup first.**
 
+### **🚨 Critical: Common Issues to Avoid**
+
+**Based on recent validation fixes, always check for these issues:**
+
+#### **Liquid Syntax Issues**
+```liquid
+❌ WRONG: {% doc %} content {% enddoc %}           <!-- Invalid tags -->
+✅ CORRECT: {% comment %} content {% endcomment %} <!-- Use comment tags -->
+
+❌ WRONG: {%- liquid ... -%}                       <!-- Invalid liquid block ending -->
+✅ CORRECT: {% liquid ... %}                       <!-- Proper liquid block syntax -->
+```
+
+#### **Unknown Shopify Filters**
+```liquid
+❌ WRONG: {{ image | image_tag }}                  <!-- image_tag doesn't exist -->
+✅ CORRECT: {{ image | image_url }}                <!-- Use image_url -->
+
+❌ WRONG: {{ form | payment_button_tag }}          <!-- payment_button_tag doesn't exist -->
+✅ CORRECT: {{ form | payment_button }}            <!-- Use payment_button -->
+```
+
+#### **Performance Issues**
+```liquid
+❌ WRONG: {% for collection in collections %}      <!-- Can break themes -->
+✅ CORRECT: {% for collection in collections limit: 50 %} <!-- Always limit -->
+```
+
+#### **Translation Keys**
+Always add required translation keys to `locales/en.default.json`:
+```json
+{
+  "general": {
+    "search": {
+      "placeholder": "Search",
+      "submit": "Search"
+    }
+  }
+}
+```
+
+**💡 TIP: Run `./scripts/fix-liquid-syntax.py` to automatically fix common issues.**
+
 ### **Step 1: Understand File Type Detection**
 
 Our system automatically detects what type of file you're creating based on:

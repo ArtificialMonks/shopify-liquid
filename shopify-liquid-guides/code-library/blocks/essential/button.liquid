@@ -47,7 +47,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .button-block-{{ unique }} {
     text-align: {{ alignment }};
     margin: 0;
@@ -261,7 +261,7 @@
       display: none;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="button-block-{{ unique }}" {{ block.shopify_attributes }}>

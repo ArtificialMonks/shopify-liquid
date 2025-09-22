@@ -63,6 +63,87 @@ run_auto_correct() {
     fi
 }
 
+# Internal: run a command with timeout (works without GNU timeout)
+run_with_timeout() {
+    local seconds="$1"; shift
+    # Start the command in a new process group so we can kill the whole tree
+    setsid "$@" &
+    local pid=$!
+    local start=$(date +%s)
+    while kill -0 "$pid" 2>/dev/null; do
+        local now=$(date +%s)
+        if (( now - start > seconds )); then
+            echo -e "${YELLOW}⏰ Timeout after ${seconds}s; killing PID ${pid} (process group)${NC}"
+            # Kill the entire process group
+            kill -TERM -"$pid" 2>/dev/null || true
+            pkill -TERM -P "$pid" 2>/dev/null || true
+            sleep 1
+            kill -KILL -"$pid" 2>/dev/null || true
+            pkill -KILL -P "$pid" 2>/dev/null || true
+            wait "$pid" 2>/dev/null
+            return 124
+        fi
+        sleep 1
+    done
+    wait "$pid"
+    return $?
+}
+
+# Per-file Theme Check with timeout and logging
+run_theme_check_per_file() {
+    local config="$1"
+    local target_dir="${VALIDATION_TARGET_DIR:-shopify-liquid-guides/code-library}"
+    local timeout_secs="${PER_FILE_TIMEOUT_SECS:-60}"
+
+    echo ""
+    echo -e "${BLUE}🧪 Per-file Validation (timeout ${timeout_secs}s)${NC}"
+    local -a files
+    mapfile -t files < <(find "$target_dir" -type f -name "*.liquid" | sort)
+    local total="${#files[@]}"
+
+    # Counters
+    local c_theme_pass=0 c_theme_fail=0 c_theme_timeout=0
+    local c_syntax_ok=0 c_syntax_fail=0 c_skipped=0
+
+    local i=0
+    for f in "${files[@]}"; do
+        i=$((i+1))
+        echo -e "${BLUE}[${i}/${total}]${NC} Checking: ${f}"
+
+        # Determine strategy by path
+        if [[ "$f" == *"/sections/"* || "$f" == *"/templates/"* ]]; then
+            # Theme Check supported targets
+            if run_with_timeout "$timeout_secs" shopify theme check --config "$config" "$f" --fail-level error; then
+                echo -e "${GREEN}✔ ThemeCheck Pass: ${f}${NC}"; c_theme_pass=$((c_theme_pass+1))
+            else
+                status=$?
+                if [ $status -eq 124 ]; then
+                    echo -e "${RED}❌ ThemeCheck Timeout: ${f}${NC}"; echo "file_timeout: ${f}" >> theme-check-timeouts.log; c_theme_timeout=$((c_theme_timeout+1))
+                else
+                    echo -e "${YELLOW}⚠ ThemeCheck Fail (${status}): ${f}${NC}"; c_theme_fail=$((c_theme_fail+1))
+                fi
+            fi
+        else
+            # Blocks/snippets/assets: use Python validator (fast/standard)
+            if run_with_timeout "$timeout_secs" python3 "${SCRIPT_DIR}/liquid-syntax-validator.py" --level standard "$f"; then
+                echo -e "${GREEN}✔ Syntax OK: ${f}${NC}"; c_syntax_ok=$((c_syntax_ok+1))
+            else
+                status=$?
+                if [ $status -eq 124 ]; then
+                    echo -e "${RED}❌ Syntax Timeout: ${f}${NC}"; echo "syntax_timeout: ${f}" >> liquid-syntax-timeouts.log; c_theme_timeout=$((c_theme_timeout+1))
+                else
+                    echo -e "${RED}❌ Syntax Fail (${status}): ${f}${NC}"; c_syntax_fail=$((c_syntax_fail+1))
+                fi
+            fi
+        fi
+    done
+
+    echo ""
+    echo -e "${BLUE}📊 Per-file Validation Summary${NC}"
+    echo "ThemeCheck: pass=$c_theme_pass fail=$c_theme_fail timeout=$c_theme_timeout"
+    echo "Syntax:     ok=$c_syntax_ok fail=$c_syntax_fail"
+}
+
 # Function to run ultimate liquid validation
 run_ultimate_validation() {
     echo ""
@@ -75,12 +156,15 @@ run_ultimate_validation() {
     echo "- Schema integrity validation"
     echo "----------------------------------------"
 
-    if python3 "${SCRIPT_DIR}/ultimate-validator.py" --all >/dev/null 2>&1; then
+    # Use current directory for ultimate validation unless explicitly targeting all
+    local ultimate_target="${VALIDATION_TARGET_DIR:-$(pwd)}"
+
+    # Run the validator and show progress (with a global timeout per file in the Python script not guaranteed)
+    if python3 "${SCRIPT_DIR}/ultimate-validator.py" "$ultimate_target"; then
         echo -e "${GREEN}✅ Ultimate validation passed!${NC}"
         return 0
     else
         echo -e "${RED}❌ Ultimate validation failed!${NC}"
-        python3 "${SCRIPT_DIR}/ultimate-validator.py" --all
         return 1
     fi
 }
@@ -92,29 +176,66 @@ run_schema_integrity_scan() {
     echo "Deep validation of schema consistency and preset integrity..."
     echo "----------------------------------------"
 
-    if python3 "${SCRIPT_DIR}/scan-schema-integrity.py" --all >/dev/null 2>&1; then
-        echo -e "${GREEN}✅ Schema integrity scan passed!${NC}"
-        return 0
+    # Use target directory if specified, otherwise use --all flag
+    local integrity_target="${VALIDATION_TARGET_DIR:-}"
+
+    if [[ -n "$integrity_target" ]]; then
+        # Target specific directory
+        if python3 "${SCRIPT_DIR}/scan-schema-integrity.py" "$integrity_target"; then
+            echo -e "${GREEN}✅ Schema integrity scan passed!${NC}"
+            return 0
+        else
+            echo -e "${RED}❌ Schema integrity scan failed!${NC}"
+            return 1
+        fi
     else
-        echo -e "${RED}❌ Schema integrity scan failed!${NC}"
-        python3 "${SCRIPT_DIR}/scan-schema-integrity.py" --all
-        return 1
+        # Use --all flag for full scan
+        if python3 "${SCRIPT_DIR}/scan-schema-integrity.py" --all; then
+            echo -e "${GREEN}✅ Schema integrity scan passed!${NC}"
+            return 0
+        else
+            echo -e "${RED}❌ Schema integrity scan failed!${NC}"
+            return 1
+        fi
     fi
 }
 
-# Function to run comprehensive Liquid syntax validation
+# Function to run comprehensive Liquid syntax validation (per-file with timeout)
 run_liquid_syntax_validation() {
     echo ""
     echo -e "${YELLOW}🔤 Running Comprehensive Liquid Syntax Validation${NC}"
-    echo "Advanced parser-based syntax checking for all Liquid files..."
+    echo "Advanced parser-based syntax checking for all Liquid files (per-file timeout)..."
     echo "----------------------------------------"
 
-    if python3 "${SCRIPT_DIR}/liquid-syntax-validator.py" shopify-liquid-guides/code-library/**/*.liquid --level comprehensive >/dev/null 2>&1; then
+    local target_dir="${VALIDATION_TARGET_DIR:-$(pwd)}"
+    local timeout_secs="${PER_FILE_TIMEOUT_SECS:-60}"
+
+    mapfile -t files < <(find "${target_dir}" -type f -name "*.liquid" | sort)
+    local total="${#files[@]}"
+    local i=0
+    local any_fail=0
+    for f in "${files[@]}"; do
+        i=$((i+1))
+        echo -e "${BLUE}[${i}/${total}]${NC} Syntax check: ${f}"
+        if run_with_timeout "$timeout_secs" python3 "${SCRIPT_DIR}/liquid-syntax-validator.py" --level comprehensive "$f"; then
+            echo -e "${GREEN}✔ Syntax OK: ${f}${NC}"
+        else
+            status=$?
+            any_fail=1
+            if [ $status -eq 124 ]; then
+                echo -e "${RED}✖ Syntax Timeout: ${f}${NC}"
+                echo "syntax_timeout: ${f}" >> liquid-syntax-timeouts.log
+            else
+                echo -e "${YELLOW}⚠ Syntax Fail (${status}): ${f}${NC}"
+            fi
+        fi
+    done
+
+    if [ $any_fail -eq 0 ]; then
         echo -e "${GREEN}✅ Liquid syntax validation passed!${NC}"
         return 0
     else
-        echo -e "${RED}❌ Liquid syntax validation failed!${NC}"
-        python3 "${SCRIPT_DIR}/liquid-syntax-validator.py" shopify-liquid-guides/code-library/**/*.liquid --level comprehensive
+        echo -e "${RED}❌ Liquid syntax validation had failures/timeouts.${NC}"
         return 1
     fi
 }
@@ -150,15 +271,45 @@ test_presets() {
 
 # Main validation logic
 main() {
-    case "${1:-all}" in
+    # Parse arguments for directory support
+    local validation_type="${1:-all}"
+    local target_directory=""
+
+    # Check if second argument is a directory path
+    if [[ -n "$2" && -d "$2" ]]; then
+        target_directory="$2"
+        # Convert to absolute path if needed
+        if [[ ! "$target_directory" = /* ]]; then
+            target_directory="$(pwd)/$target_directory"
+        fi
+        export VALIDATION_TARGET_DIR="$target_directory"
+        echo -e "${BLUE}🎯 Target Directory: $target_directory${NC}"
+        # Don't change directory, just use the absolute path
+    elif [[ -n "$2" ]]; then
+        echo -e "${RED}❌ Invalid directory: $2${NC}"
+        echo "Please provide a valid directory path as the second argument."
+        exit 1
+    fi
+
+    case "$validation_type" in
         "development")
-            echo "Running development validation with ultimate checks..."
+            echo "Running development validation per LIQUID-VALIDATION-CHECKLIST.md..."
+            echo "📋 Level: Development (Fast feedback with critical error detection)"
 
-            # 1. Ultimate liquid validation (includes schema integrity)
-            run_ultimate_validation
-            ultimate_result=$?
+            # 1. Ultimate liquid validation with development level
+            echo -e "${BLUE}🔍 Running development-level validation...${NC}"
+            if python3 "${SCRIPT_DIR}/ultimate-validator.py" --level development "$ultimate_target"; then
+                echo -e "${GREEN}✅ Development validation passed!${NC}"
+                ultimate_result=0
+            else
+                echo -e "${RED}❌ Development validation failed!${NC}"
+                ultimate_result=1
+            fi
 
-            # 2. Basic development validation
+            # 2. Per-file Theme Check with timeout to avoid hangs
+            run_theme_check_per_file ".theme-check-development.yml"
+
+            # 3. Basic development validation
             run_validation "Development" ".theme-check-development.yml" "Fast development validation"
             dev_result=$?
 
@@ -188,7 +339,50 @@ main() {
             fi
             ;;
         "production")
-            run_validation "Production" ".theme-check-production.yml" "Comprehensive Theme Store submission validation"
+            echo "Running production validation per LIQUID-VALIDATION-CHECKLIST.md..."
+            echo "📋 Level: Production (Theme Store compliance validation)"
+
+            # 1. Ultimate liquid validation with production level
+            echo -e "${BLUE}🔍 Running production-level validation...${NC}"
+            if python3 "${SCRIPT_DIR}/ultimate-validator.py" --level production "$ultimate_target"; then
+                echo -e "${GREEN}✅ Production validation passed!${NC}"
+                prod_result=0
+            else
+                echo -e "${RED}❌ Production validation failed!${NC}"
+                prod_result=1
+            fi
+
+            # 2. Per-file Theme Check first to avoid hangs
+            run_theme_check_per_file ".theme-check-production.yml"
+
+            # 3. Standard Theme Check validation
+            run_validation "Production" ".theme-check-production.yml" "Theme Store submission validation"
+            theme_check_result=$?
+
+            # Summary for production mode
+            echo ""
+            echo -e "${BLUE}📋 Production Validation Summary${NC}"
+            echo "================================"
+
+            if [ $prod_result -eq 0 ]; then
+                echo -e "${GREEN}✅ Checklist compliance: PASSED${NC}"
+            else
+                echo -e "${RED}❌ Checklist compliance: FAILED${NC}"
+            fi
+
+            if [ $theme_check_result -eq 0 ]; then
+                echo -e "${GREEN}✅ Theme Check: PASSED${NC}"
+            else
+                echo -e "${RED}❌ Theme Check: FAILED${NC}"
+            fi
+
+            if [ $prod_result -eq 0 ] && [ $theme_check_result -eq 0 ]; then
+                echo -e "${GREEN}🎉 Production validation passed - Theme Store ready!${NC}"
+                exit 0
+            else
+                echo -e "${RED}🚨 Production validation failed!${NC}"
+                exit 1
+            fi
             ;;
         "comprehensive")
             run_validation "Comprehensive" ".theme-check.yml" "Complete validation with all available checks"
@@ -197,7 +391,20 @@ main() {
             run_auto_correct
             ;;
         "ultimate")
-            run_ultimate_validation
+            echo "Running ultimate validation per LIQUID-VALIDATION-CHECKLIST.md..."
+            echo "📋 Level: Ultimate (Zero tolerance comprehensive validation)"
+
+            # Ultimate liquid validation with ultimate level
+            echo -e "${BLUE}🔍 Running ultimate-level validation...${NC}"
+            if python3 "${SCRIPT_DIR}/ultimate-validator.py" --level ultimate "$ultimate_target"; then
+                echo -e "${GREEN}✅ Ultimate validation passed!${NC}"
+                echo -e "${GREEN}🎉 Code is production-ready with zero tolerance compliance!${NC}"
+                exit 0
+            else
+                echo -e "${RED}❌ Ultimate validation failed!${NC}"
+                echo -e "${RED}🛑 Fix ALL issues before deployment - zero tolerance policy${NC}"
+                exit 1
+            fi
             ;;
         "integrity")
             run_schema_integrity_scan
@@ -285,15 +492,21 @@ main() {
             run_liquid_syntax_validation
             liquid_result=$?
 
-            # 5. Development validation
+            # 5. Per-file Theme Check (development) with timeout
+            run_theme_check_per_file ".theme-check-development.yml"
+
+            # 6. Development validation
             run_validation "Development" ".theme-check-development.yml" "Fast development validation"
             dev_result=$?
 
-            # 6. Comprehensive validation
+            # 7. Comprehensive validation
             run_validation "Comprehensive" ".theme-check.yml" "Complete validation suite"
             comp_result=$?
 
-            # 7. Production validation
+            # 8. Per-file Theme Check (production) with timeout
+            run_theme_check_per_file ".theme-check-production.yml"
+
+            # 9. Production validation
             run_validation "Production" ".theme-check-production.yml" "Theme Store submission ready"
             prod_result=$?
 
@@ -347,13 +560,17 @@ main() {
             fi
             ;;
         *)
-            echo "Usage: $0 [validation_type]"
+            echo "Usage: $0 [validation_type] [target_directory]"
             echo ""
-            echo "Available validation types:"
-            echo "  development    - Fast development with ultimate validation"
-            echo "  comprehensive  - Complete validation suite"
-            echo "  production     - Theme Store ready validation"
-            echo "  ultimate       - Ultimate liquid validation (zero tolerance)"
+            echo "Arguments:"
+            echo "  validation_type    - Type of validation to run (default: all)"
+            echo "  target_directory   - Directory to validate (default: current directory)"
+            echo ""
+            echo "Available validation types (per LIQUID-VALIDATION-CHECKLIST.md):"
+            echo "  development    - Fast feedback with critical error detection"
+            echo "  production     - Theme Store compliance validation"
+            echo "  ultimate       - Zero tolerance comprehensive validation"
+            echo "  comprehensive  - Complete Theme Check validation suite"
             echo "  integrity      - Deep schema integrity scan"
             echo "  syntax         - Comprehensive Liquid syntax validation"
             echo "  deep          - Ultimate + integrity + syntax + comprehensive validation"
@@ -362,11 +579,16 @@ main() {
             echo "  presets        - Test different validation presets"
             echo "  all           - Complete validation workflow (default)"
             echo ""
-            echo "🛡️ RECOMMENDED WORKFLOWS:"
-            echo "  $0 development  # Quick dev check with ultimate validation"
-            echo "  $0 deep         # Deep validation for pre-deployment"
-            echo "  $0 all          # Complete validation for Theme Store"
-            echo "  $0 ultimate     # Zero tolerance liquid validation only"
+            echo "🛡️ RECOMMENDED WORKFLOWS (LIQUID-VALIDATION-CHECKLIST.md):"
+            echo "  $0 development                    # Fast feedback (critical errors only)"
+            echo "  $0 production /path/to/theme     # Theme Store ready validation"
+            echo "  $0 ultimate                      # Zero tolerance (all issues)"
+            echo "  $0 deep /path/to/theme           # Comprehensive validation suite"
+            echo ""
+            echo "Examples:"
+            echo "  $0 all                           # Validate current directory"
+            echo "  $0 development ./my-theme        # Validate ./my-theme directory"
+            echo "  $0 ultimate ../other-theme       # Ultimate validation on ../other-theme"
             exit 1
             ;;
     esac

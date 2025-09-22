@@ -2,19 +2,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-{%- liquid
+{% liquid
   assign og_title = page_title | default: shop.name
   assign og_url = canonical_url | default: request.origin
   assign og_type = 'website'
   assign og_description = page_description | default: shop.description | default: shop.name
 
   if request.page_type == 'product'
-    assign og_type = 'product'
+  assign og_type = 'product'
   elsif request.page_type == 'article'
-    assign og_type = 'article'
+  assign og_type = 'article'
   elsif request.page_type == 'password'
-    assign og_url = request.origin
+  assign og_url = request.origin
   endif
+
 %}
 
 <meta
@@ -59,7 +60,7 @@
 
 {%- if request.page_type == 'product' -%}
   <script type="application/ld+json">
-    {{ product | structured_data }}
+    {{ product | json }}
   </script>
 
   <meta

@@ -11,7 +11,7 @@
   - Stock status and availability
 {%- endcomment -%}
 
-{%- liquid
+{% liquid
   assign product = block.settings.featured_product
   assign show_price = block.settings.show_product_price | default: true
   assign show_description = block.settings.show_product_description | default: true
@@ -29,17 +29,18 @@
   assign savings_amount = 0
   assign savings_percentage = 0
   if current_variant.compare_at_price > current_variant.price
-    assign savings_amount = current_variant.compare_at_price | minus: current_variant.price
-    assign savings_percentage = savings_amount | times: 100 | divided_by: current_variant.compare_at_price
+  assign savings_amount = current_variant.compare_at_price | minus: current_variant.price
+  assign savings_percentage = savings_amount | times: 100 | divided_by: current_variant.compare_at_price
   endif
--%}
+
+%}
 
 {%- if product != blank -%}
   <div
     class="artist-showcase__product"
     id="{{ product_id }}"
-    data-product-id="{{ product.id }}"
-    data-product-handle="{{ product.handle }}"
+    data-product-id="{{ product.id | escape }}"
+    data-product-handle="{{ product.handle | escape }}"
   >
 
     {%- comment -%} Product Badge {%- endcomment -%}
@@ -60,7 +61,7 @@
     {%- comment -%} Product Header {%- endcomment -%}
     <div class="artist-showcase__product-header">
       <h3 class="artist-showcase__product-title">
-        <a href="{{ product.url }}" class="artist-showcase__product-title-link">
+        <a href="{{ product.url | escape }}" class="artist-showcase__product-title-link">
           {{ product.title | escape }}
         </a>
       </h3>
@@ -181,7 +182,7 @@
           </button>
 
           <a
-            href="{{ product.url }}"
+            href="{{ product.url | escape }}"
             class="artist-showcase__product-view-details button button--secondary"
           >
             View Details
@@ -191,7 +192,7 @@
     {%- else -%}
       <div class="artist-showcase__product-actions">
         <a
-          href="{{ product.url }}"
+          href="{{ product.url | escape }}"
           class="artist-showcase__product-view-product button button--primary"
         >
           View Product

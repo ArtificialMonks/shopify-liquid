@@ -248,16 +248,12 @@
 .flex-column-UNIQUEID { flex-direction: column; }
 .flex-row-UNIQUEID { flex-direction: row; }
 
-.hidden-mobile-UNIQUEID {
-  @media (max-width: 749px) {
-    display: none;
-  }
+@media (max-width: 749px) {
+  .hidden-mobile-UNIQUEID { display: none; }
 }
 
-.hidden-desktop-UNIQUEID {
-  @media (min-width: 750px) {
-    display: none;
-  }
+@media (min-width: 750px) {
+  .hidden-desktop-UNIQUEID { display: none; }
 }
 
 /* ========================================

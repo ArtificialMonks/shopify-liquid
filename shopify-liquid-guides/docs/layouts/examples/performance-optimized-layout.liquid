@@ -31,13 +31,13 @@
   <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
 
   {%- comment -%} Preload critical resources {%- endcomment -%}
-  {{ 'theme.js' | asset_url | preload_tag: as: 'script' }}
+  <link rel="preload" href="{{ 'theme.js' | asset_url }}" as="script">
 
   {%- if template.name == 'index' -%}
     {%- comment -%} Preload hero image on homepage {%- endcomment -%}
     {%- assign hero_section = sections['hero-banner'] -%}
     {%- if hero_section.settings.image -%}
-      {{ hero_section.settings.image | image_url: width: 1200 | preload_tag: as: 'image' }}
+      <link rel="preload" href="{{ hero_section.settings.image | image_url: width: 1200 }}" as="image">
     {%- endif -%}
   {%- endif -%}
 
@@ -47,13 +47,13 @@
     *, *::before, *::after { box-sizing: border-box; }
     html { font-size: 62.5%; scroll-behavior: smooth; }
     body {
-      font-family: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+      font-family: {{ settings.font_body.family | escape }}, {{ settings.font_body.fallback_families | escape }};
       font-size: 1.6rem;
       line-height: 1.6;
       margin: 0;
       padding: 0;
-      color: {{ settings.color_text }};
-      background-color: {{ settings.color_background }};
+      color: {{ settings.color_text | escape }};
+      background-color: {{ settings.color_background | escape }};
     }
 
     /* Accessibility */
@@ -144,18 +144,18 @@
   {%- comment -%} Dynamic CSS from theme settings {%- endcomment -%}
   <style>
     :root {
-      --font-heading-family: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
-      --font-heading-style: {{ settings.font_heading.style }};
-      --font-heading-weight: {{ settings.font_heading.weight }};
-      --font-body-family: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
-      --font-body-style: {{ settings.font_body.style }};
-      --font-body-weight: {{ settings.font_body.weight }};
+      --font-heading-family: {{ settings.font_heading.family | escape }}, {{ settings.font_heading.fallback_families | escape }};
+      --font-heading-style: {{ settings.font_heading.style | escape }};
+      --font-heading-weight: {{ settings.font_heading.weight | escape }};
+      --font-body-family: {{ settings.font_body.family | escape }}, {{ settings.font_body.fallback_families | escape }};
+      --font-body-style: {{ settings.font_body.style | escape }};
+      --font-body-weight: {{ settings.font_body.weight | escape }};
 
-      --color-primary: {{ settings.color_primary }};
-      --color-secondary: {{ settings.color_secondary }};
-      --color-accent: {{ settings.color_accent }};
-      --color-text: {{ settings.color_text }};
-      --color-background: {{ settings.color_background }};
+      --color-primary: {{ settings.color_primary | escape }};
+      --color-secondary: {{ settings.color_secondary | escape }};
+      --color-accent: {{ settings.color_accent | escape }};
+      --color-text: {{ settings.color_text | escape }};
+      --color-background: {{ settings.color_background | escape }};
 
       --spacing-small: {{ settings.spacing_small | default: 8 }}px;
       --spacing-medium: {{ settings.spacing_medium | default: 16 }}px;
@@ -250,7 +250,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js');
+        navigator.serviceWorker.register('{{ "sw.js" | asset_url }}');
       });
     }
   </script>

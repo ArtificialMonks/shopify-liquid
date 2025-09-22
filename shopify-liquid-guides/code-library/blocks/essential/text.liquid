@@ -44,7 +44,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .text-block-{{ unique }} {
     padding-top: {{ padding_top }}px;
     padding-bottom: {{ padding_bottom }}px;
@@ -262,7 +262,7 @@
       transform: none !important;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="text-block-{{ unique }}" {{ block.shopify_attributes }}>

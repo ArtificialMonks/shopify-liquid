@@ -93,7 +93,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
 {%- endif -%}
 
 {%- comment -%} Instance-scoped CSS with complete feature set {%- endcomment -%}
-{% style %}
+<style>
   .video-text-{{ uid }} {
     /* Layout & Spacing */
     position: relative;
@@ -371,7 +371,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
     outline: 2px solid {{ block.settings.text_color | default: '#005fcc' }};
     outline-offset: 2px;
   }
-{% endstyle %}
+</style>
 
 <div class="video-text-{{ uid }}" role="group" {{ block.shopify_attributes }}>
   {%- comment -%} Background video (highest priority) {%- endcomment -%}

@@ -63,9 +63,9 @@
                   {%- for field in form.errors -%}
                     <li class="error-item">
                       {%- if field == 'form' -%}
-                        {{ form.errors.messages[field] }}
+                        {{ form.errors.messages[field] | escape }}
                       {%- else -%}
-                        {{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}.
+                        {{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] | escape }}.
                       {%- endif -%}
                     </li>
                   {%- endfor -%}
@@ -84,7 +84,7 @@
                   id="contact-name-{{ unique }}"
                   name="contact[name]"
                   class="field-input"
-                  value="{% if form.name %}{{ form.name }}{% endif %}"
+                  value="{% if form.name %}{{ form.name | escape }}{% endif %}"
                   {% if required_fields contains 'name' %}required{% endif %}
                   autocomplete="name"
                   aria-describedby="contact-name-error-{{ unique }}"
@@ -102,7 +102,7 @@
                   id="contact-email-{{ unique }}"
                   name="contact[email]"
                   class="field-input"
-                  value="{% if form.email %}{{ form.email }}{% endif %}"
+                  value="{% if form.email %}{{ form.email | escape }}{% endif %}"
                   required
                   autocomplete="email"
                   aria-describedby="contact-email-error-{{ unique }}"
@@ -121,7 +121,7 @@
                     id="contact-phone-{{ unique }}"
                     name="contact[phone]"
                     class="field-input"
-                    value="{% if form.phone %}{{ form.phone }}{% endif %}"
+                    value="{% if form.phone %}{{ form.phone | escape }}{% endif %}"
                     {% if required_fields contains 'phone' %}required{% endif %}
                     autocomplete="tel"
                     aria-describedby="contact-phone-error-{{ unique }}"
@@ -141,7 +141,7 @@
                     id="contact-subject-{{ unique }}"
                     name="contact[subject]"
                     class="field-input"
-                    value="{% if form.subject %}{{ form.subject }}{% endif %}"
+                    value="{% if form.subject %}{{ form.subject | escape }}{% endif %}"
                     {% if required_fields contains 'subject' %}required{% endif %}
                     aria-describedby="contact-subject-error-{{ unique }}"
                   >
@@ -162,7 +162,7 @@
                   required
                   aria-describedby="contact-message-error-{{ unique }}"
                   placeholder="{{ section.settings.message_placeholder | default: 'Tell us how we can help you...' | escape }}"
-                >{% if form.body %}{{ form.body }}{% endif %}</textarea>
+                >{% if form.body %}{{ form.body | escape }}{% endif %}</textarea>
                 <div id="contact-message-error-{{ unique }}" class="field-error" role="alert"></div>
               </div>
 
@@ -849,12 +849,6 @@
   "name": "Contact form",
   "tag": "section",
   "class": "section-contact-form",
-  "disabled_on": {
-    "groups": [
-      "header",
-      "footer"
-    ]
-  },
   "settings": [
     {
       "type": "header",

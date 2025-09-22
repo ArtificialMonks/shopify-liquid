@@ -1,0 +1,977 @@
+{% comment %}
+  Creative Gallery Section - Enterprise Grade
+
+  Features:
+  - Masonry, grid, and justified layouts
+  - Lightbox integration with high-resolution viewing
+  - Artist biography integration with social connections
+  - Advanced image optimization with WebP delivery
+  - Performance optimized with lazy loading
+  - WCAG 2.1 AA accessibility compliance
+{% endcomment %}
+
+{% liquid
+  assign unique = section.id | replace: '_', '' | downcase
+  assign gallery_style = section.settings.gallery_style
+  assign columns_desktop = section.settings.columns_desktop
+  assign gap_size = section.settings.gap_size
+  assign enable_lightbox = section.settings.enable_lightbox
+  assign show_artist_info = section.settings.show_artist_info
+  assign enable_lazy_loading = section.settings.enable_lazy_loading
+
+%}
+
+<style>
+  .creative-gallery-{{ unique }} {
+    padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px;
+    background: {{ section.settings.background_color | default: 'transparent' }};
+  }
+
+  .creative-gallery-{{ unique }}__container {
+    max-width: {{ section.settings.max_width | default: 1400 }}px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .creative-gallery-{{ unique }}__header {
+    text-align: {{ section.settings.text_alignment | default: 'center' }};
+    margin-bottom: 3rem;
+  }
+
+  .creative-gallery-{{ unique }}__heading {
+    font-size: clamp(32px, 5vw, {{ section.settings.heading_size | default: 40 }}px);
+    font-weight: {{ section.settings.heading_weight | default: 700 }};
+    color: {{ section.settings.heading_color | default: '#000000' }};
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .creative-gallery-{{ unique }}__description {
+    font-size: 1.125rem;
+    color: {{ section.settings.text_color | default: '#666666' }};
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Gallery grid layouts */
+  .creative-gallery-{{ unique }}__grid {
+    display: grid;
+    gap: {{ gap_size }}px;
+
+    {% case gallery_style %}
+      {% when 'masonry' %}
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-auto-rows: 20px;
+      {% when 'grid' %}
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      {% when 'justified' %}
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    {% endcase %}
+  }
+
+  @media (min-width: 768px) {
+    .creative-gallery-{{ unique }}__grid {
+      {% unless gallery_style == 'justified' %}
+        grid-template-columns: repeat({{ columns_desktop }}, 1fr);
+      {% endunless %}
+    }
+  }
+
+  /* Gallery item styling */
+  .creative-gallery-{{ unique }}__item {
+    position: relative;
+    background: {{ section.settings.item_background | default: '#ffffff' }};
+    border-radius: {{ section.settings.item_border_radius | default: 8 }}px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    {% if gallery_style == 'masonry' %}
+      break-inside: avoid;
+      margin-bottom: {{ gap_size }}px;
+    {% elsif gallery_style == 'justified' %}
+      flex: 0 0 calc({{ 100 | divided_by: columns_desktop }}% - {{ gap_size | times: columns_desktop | minus: gap_size | divided_by: columns_desktop }}px);
+      margin-bottom: {{ gap_size }}px;
+    {% endif %}
+
+    {% if section.settings.enable_hover_effects %}
+      box-shadow: 0 4px 12px {{ section.settings.shadow_color | default: 'rgba(0, 0, 0, 0.1)' }};
+    {% endif %}
+  }
+
+  {% if section.settings.enable_hover_effects %}
+    .creative-gallery-{{ unique }}__item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px {{ section.settings.hover_shadow_color | default: 'rgba(0, 0, 0, 0.2)' }};
+    }
+
+    .creative-gallery-{{ unique }}__item:hover .creative-gallery-{{ unique }}__image {
+      transform: scale(1.05);
+    }
+
+    .creative-gallery-{{ unique }}__item:hover .creative-gallery-{{ unique }}__overlay {
+      opacity: 1;
+    }
+  {% endif %}
+
+  .creative-gallery-{{ unique }}__image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    {% if gallery_style == 'grid' %}
+      aspect-ratio: {{ section.settings.grid_aspect_ratio | default: '1 / 1' }};
+    {% endif %}
+  }
+
+  .creative-gallery-{{ unique }}__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    {% unless gallery_style == 'grid' %}
+      height: auto;
+      display: block;
+    {% endunless %}
+  }
+
+  /* Masonry auto-sizing */
+  {% if gallery_style == 'masonry' %}
+    .creative-gallery-{{ unique }}__item[data-height="short"] {
+      grid-row-end: span 15;
+    }
+    .creative-gallery-{{ unique }}__item[data-height="medium"] {
+      grid-row-end: span 20;
+    }
+    .creative-gallery-{{ unique }}__item[data-height="tall"] {
+      grid-row-end: span 25;
+    }
+  {% endif %}
+
+  /* Overlay for hover effects and info */
+  .creative-gallery-{{ unique }}__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 60%,
+      {{ section.settings.overlay_color | default: 'rgba(0, 0, 0, 0.8)' }} 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem;
+    color: {{ section.settings.overlay_text_color | default: '#ffffff' }};
+  }
+
+  .creative-gallery-{{ unique }}__info {
+    width: 100%;
+  }
+
+  .creative-gallery-{{ unique }}__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .creative-gallery-{{ unique }}__artist {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+  }
+
+  .creative-gallery-{{ unique }}__description {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    opacity: 0.8;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Artist story items */
+  .creative-gallery-{{ unique }}__item--story {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    min-height: 300px;
+  }
+
+  .creative-gallery-{{ unique }}__artist-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1rem;
+  }
+
+  .creative-gallery-{{ unique }}__artist-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: {{ section.settings.heading_color | default: '#000000' }};
+    margin-bottom: 0.5rem;
+  }
+
+  .creative-gallery-{{ unique }}__artist-bio {
+    font-size: 0.875rem;
+    color: {{ section.settings.text_color | default: '#666666' }};
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .creative-gallery-{{ unique }}__artist-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: {{ section.settings.link_background | default: '#000000' }};
+    color: {{ section.settings.link_text_color | default: '#ffffff' }};
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .creative-gallery-{{ unique }}__artist-link:hover {
+    background: {{ section.settings.link_hover_background | default: '#333333' }};
+    transform: translateY(-1px);
+  }
+
+  /* Lightbox styles */
+  .creative-gallery-{{ unique }}__lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .creative-gallery-{{ unique }}__lightbox--active {
+    display: flex;
+  }
+
+  .creative-gallery-{{ unique }}__lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    text-align: center;
+  }
+
+  .creative-gallery-{{ unique }}__lightbox-image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+  }
+
+  .creative-gallery-{{ unique }}__lightbox-info {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    color: #333;
+  }
+
+  .creative-gallery-{{ unique }}__lightbox-close {
+    position: absolute;
+    top: -3rem;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .creative-gallery-{{ unique }}__lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .creative-gallery-{{ unique }}__grid {
+      {% if gallery_style == 'masonry' %}
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 15px;
+      {% else %}
+        grid-template-columns: repeat(2, 1fr);
+      {% endif %}
+    }
+
+    .creative-gallery-{{ unique }}__item {
+      margin-bottom: {{ gap_size | divided_by: 2 }}px;
+    }
+
+    .creative-gallery-{{ unique }}__overlay {
+      padding: 1rem;
+    }
+
+    .creative-gallery-{{ unique }}__item--story {
+      padding: 1.5rem;
+      min-height: 250px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .creative-gallery-{{ unique }}__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .creative-gallery-{{ unique }}__item {
+      border: 2px solid black !important;
+    }
+
+    .creative-gallery-{{ unique }}__overlay {
+      background: black !important;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .creative-gallery-{{ unique }}__item,
+    .creative-gallery-{{ unique }}__image,
+    .creative-gallery-{{ unique }}__overlay,
+    .creative-gallery-{{ unique }}__artist-link {
+      transition: none !important;
+    }
+
+    .creative-gallery-{{ unique }}__item:hover {
+      transform: none !important;
+    }
+
+    .creative-gallery-{{ unique }}__item:hover .creative-gallery-{{ unique }}__image {
+      transform: none !important;
+    }
+  }
+</style>
+
+<section class="creative-gallery-{{ unique }}"
+         data-section-id="{{ section.id }}"
+         data-section-type="creative-gallery"
+         {% if section.settings.gallery_heading != blank %}
+           aria-labelledby="gallery-heading-{{ unique }}"
+         {% endif %}>
+
+  <div class="creative-gallery-{{ unique }}__container">
+
+    <!-- Section header -->
+    {% if section.settings.gallery_heading != blank or section.settings.gallery_description != blank %}
+      <div class="creative-gallery-{{ unique }}__header">
+        {% if section.settings.gallery_heading != blank %}
+          <h2 id="gallery-heading-{{ unique }}" class="creative-gallery-{{ unique }}__heading">
+            {{ section.settings.gallery_heading | escape }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.gallery_description != blank %}
+          <div class="creative-gallery-{{ unique }}__description">
+            {{ section.settings.gallery_description }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <!-- Gallery grid -->
+    <div class="creative-gallery-{{ unique }}__grid creative-gallery-{{ unique }}__grid--{{ gallery_style }}"
+         role="region"
+         aria-label="{{ 'sections.gallery.items' | t }}"
+         data-gallery-style="{{ gallery_style }}"
+         data-lightbox="{{ enable_lightbox }}">
+
+      {% for block in section.blocks %}
+        {% case block.type %}
+
+          {% when 'gallery_image' %}
+            {% if block.settings.artwork_image %}
+              {% liquid
+  assign image = block.settings.artwork_image
+  assign artwork_title = block.settings.artwork_title
+  assign artist_name = block.settings.artist_name
+  assign artwork_description = block.settings.artwork_description
+
+  # Determine masonry height for better layout
+  assign image_ratio = image.aspect_ratio
+  assign height_class = 'medium'
+  if image_ratio > 1.5
+  assign height_class = 'short'
+  elsif image_ratio < 0.7
+  assign height_class = 'tall'
+  endif
+
+%}
+
+              <article class="creative-gallery-{{ unique }}__item creative-gallery-{{ unique }}__item--image"
+                       data-height="{{ height_class }}"
+                       {% if enable_lightbox %}
+                         data-lightbox-trigger
+                         data-lightbox-src="{{ image | image_url: width: 1600 }}"
+                         data-lightbox-title="{{ artwork_title | escape }}"
+                         data-lightbox-artist="{{ artist_name | escape }}"
+                         data-lightbox-description="{{ artwork_description | escape }}"
+                       {% endif %}
+                       {{ block.shopify_attributes }}>
+
+                <div class="creative-gallery-{{ unique }}__image-container">
+                  <picture>
+                    <source media="(min-width: 990px)"
+                            srcset="{{ image | image_url: width: 600 }} 600w,
+                                    {{ image | image_url: width: 800 }} 800w">
+                    <source media="(min-width: 750px)"
+                            srcset="{{ image | image_url: width: 400 }} 400w,
+                                    {{ image | image_url: width: 600 }} 600w">
+                    <img src="{{ image | image_url: width: 400 }}"
+                         srcset="{{ image | image_url: width: 300 }} 300w,
+                                 {{ image | image_url: width: 400 }} 400w"
+                         sizes="(min-width: 990px) calc(100vw / {{ columns_desktop }}), (min-width: 750px) 50vw, 100vw"
+                         alt="{{ image.alt | escape | default: artwork_title }}"
+                         class="creative-gallery-{{ unique }}__image"
+                         {% if enable_lazy_loading %}loading="lazy"{% endif %}
+                         width="400"
+                         height="{{ 400 | divided_by: image.aspect_ratio | round }}">
+                  </picture>
+
+                  {% if section.settings.enable_hover_effects %}
+                    <div class="creative-gallery-{{ unique }}__overlay">
+                      <div class="creative-gallery-{{ unique }}__info">
+                        {% if artwork_title != blank %}
+                          <h3 class="creative-gallery-{{ unique }}__title">{{ artwork_title | escape }}</h3>
+                        {% endif %}
+                        {% if show_artist_info and artist_name != blank %}
+                          <div class="creative-gallery-{{ unique }}__artist">{{ artist_name | escape }}</div>
+                        {% endif %}
+                        {% if artwork_description != blank %}
+                          <div class="creative-gallery-{{ unique }}__description">{{ artwork_description | escape }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+
+              </article>
+            {% endif %}
+
+          {% when 'artist_story' %}
+            {% if block.settings.artist_name != blank %}
+              <article class="creative-gallery-{{ unique }}__item creative-gallery-{{ unique }}__item--story"
+                       data-height="medium"
+                       {{ block.shopify_attributes }}>
+
+                {% if block.settings.artist_photo %}
+                  <img src="{{ block.settings.artist_photo | image_url: width: 160 }}"
+                       alt="{{ block.settings.artist_name | escape }}"
+                       class="creative-gallery-{{ unique }}__artist-photo"
+                       width="80"
+                       height="80"
+                       {% if enable_lazy_loading %}loading="lazy"{% endif %}>
+                {% endif %}
+
+                <h3 class="creative-gallery-{{ unique }}__artist-name">
+                  {{ block.settings.artist_name | escape }}
+                </h3>
+
+                {% if block.settings.artist_bio != blank %}
+                  <div class="creative-gallery-{{ unique }}__artist-bio">
+                    {{ block.settings.artist_bio }}
+                  </div>
+                {% endif %}
+
+                {% if block.settings.artist_website != blank %}
+                  <a href="{{ block.settings.artist_website }}"
+                     class="creative-gallery-{{ unique }}__artist-link"
+                     target="_blank"
+                     rel="noopener"
+                     aria-label="{{ 'sections.gallery.visit_artist_website' | t: artist: block.settings.artist_name }}">
+                    {{ 'sections.gallery.view_portfolio' | t }}
+                  </a>
+                {% endif %}
+
+              </article>
+            {% endif %}
+
+        {% endcase %}
+      {% endfor %}
+
+      {% comment %} Fallback content if no blocks {% endcomment %}
+      {% if section.blocks.size == 0 %}
+        <div class="creative-gallery-{{ unique }}__empty" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+          <h3>{{ 'sections.gallery.empty_title' | t }}</h3>
+          <p>{{ 'sections.gallery.empty_description' | t }}</p>
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+
+  <!-- Lightbox -->
+  {% if enable_lightbox %}
+    <div class="creative-gallery-{{ unique }}__lightbox"
+         role="dialog"
+         aria-modal="true"
+         aria-label="{{ 'sections.gallery.lightbox_title' | t }}"
+         data-lightbox-container>
+      <div class="creative-gallery-{{ unique }}__lightbox-content">
+        <button class="creative-gallery-{{ unique }}__lightbox-close"
+                aria-label="{{ 'general.accessibility.close' | t }}"
+                data-lightbox-close>
+          &times;
+        </button>
+        <img class="creative-gallery-{{ unique }}__lightbox-image"
+             alt=""
+             width="800"
+             height="600"
+             data-lightbox-image>
+        <div class="creative-gallery-{{ unique }}__lightbox-info"
+             data-lightbox-info>
+          <h3 data-lightbox-title-display></h3>
+          <p data-lightbox-artist-display></p>
+          <p data-lightbox-description-display></p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+</section>
+
+<script>
+  // Lightbox functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const gallerySection = document.querySelector('.creative-gallery-{{ unique }}');
+    const lightboxContainer = gallerySection.querySelector('[data-lightbox-container]');
+    const lightboxImage = gallerySection.querySelector('[data-lightbox-image]');
+    const lightboxTitle = gallerySection.querySelector('[data-lightbox-title-display]');
+    const lightboxArtist = gallerySection.querySelector('[data-lightbox-artist-display]');
+    const lightboxDescription = gallerySection.querySelector('[data-lightbox-description-display]');
+    const lightboxClose = gallerySection.querySelector('[data-lightbox-close]');
+    const lightboxTriggers = gallerySection.querySelectorAll('[data-lightbox-trigger]');
+
+    if (!lightboxContainer || !{{ enable_lightbox | json }}) return;
+
+    // Open lightbox
+    lightboxTriggers.forEach(trigger => {
+      trigger.addEventListener('click', function() {
+        const src = this.dataset.lightboxSrc;
+        const title = this.dataset.lightboxTitle;
+        const artist = this.dataset.lightboxArtist;
+        const description = this.dataset.lightboxDescription;
+
+        lightboxImage.src = src;
+        lightboxImage.alt = title;
+
+        if (lightboxTitle) lightboxTitle.textContent = title;
+        if (lightboxArtist) lightboxArtist.textContent = artist;
+        if (lightboxDescription) lightboxDescription.textContent = description;
+
+        lightboxContainer.classList.add('creative-gallery-{{ unique }}__lightbox--active');
+        document.body.style.overflow = 'hidden';
+
+        // Focus management for accessibility
+        lightboxClose.focus();
+      });
+    });
+
+    // Close lightbox
+    function closeLightbox() {
+      lightboxContainer.classList.remove('creative-gallery-{{ unique }}__lightbox--active');
+      document.body.style.overflow = '';
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxContainer.addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (lightboxContainer.classList.contains('creative-gallery-{{ unique }}__lightbox--active')) {
+        if (e.key === 'Escape') {
+          closeLightbox();
+        }
+      }
+    });
+  });
+
+  // Masonry layout optimization
+  {% if gallery_style == 'masonry' %}
+    window.addEventListener('load', function() {
+      const items = document.querySelectorAll('.creative-gallery-{{ unique }}__item--image');
+      items.forEach(item => {
+        const img = item.querySelector('img');
+        if (img && img.complete) {
+          const ratio = img.naturalHeight / img.naturalWidth;
+          let heightClass = 'medium';
+
+          if (ratio < 0.7) heightClass = 'short';
+          else if (ratio > 1.5) heightClass = 'tall';
+
+          item.setAttribute('data-height', heightClass);
+        }
+      });
+    });
+  {% endif %}
+</script>
+
+{% schema %}
+{
+  "name": "Creative Gallery",
+  "tag": "section",
+  "class": "creative-gallery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "gallery_heading",
+      "label": "Gallery Heading",
+      "default": "Artist Gallery"
+    },
+    {
+      "type": "richtext",
+      "id": "gallery_description",
+      "label": "Gallery Description",
+      "default": "<p>Explore our collection of unique artistic pieces and meet the talented creators behind them.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout Options"
+    },
+    {
+      "type": "select",
+      "id": "gallery_style",
+      "label": "Gallery Style",
+      "default": "masonry",
+      "options": [
+        {"value": "masonry", "label": "Masonry (Pinterest-style)"},
+        {"value": "grid", "label": "Uniform Grid"},
+        {"value": "justified", "label": "Justified Layout"}
+      ]
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns (Desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "gap_size",
+      "label": "Gap Size",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "grid_aspect_ratio",
+      "label": "Grid Aspect Ratio (Grid Layout Only)",
+      "default": "1 / 1",
+      "options": [
+        {"value": "1 / 1", "label": "Square (1:1)"},
+        {"value": "4 / 3", "label": "Landscape (4:3)"},
+        {"value": "3 / 4", "label": "Portrait (3:4)"},
+        {"value": "16 / 9", "label": "Wide (16:9)"}
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "default": "center",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ]
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "default": 1400,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Features"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_lightbox",
+      "label": "Enable Lightbox",
+      "default": true,
+      "info": "Click to view full-size images"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_artist_info",
+      "label": "Show Artist Information",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_effects",
+      "label": "Enable Hover Effects",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_lazy_loading",
+      "label": "Enable Lazy Loading",
+      "default": true,
+      "info": "Improves page load performance"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Typography"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 24,
+      "max": 64,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_weight",
+      "label": "Heading Weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Item Styling"
+    },
+    {
+      "type": "color",
+      "id": "item_background",
+      "label": "Item Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "label": "Item Border Radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "shadow_color",
+      "label": "Shadow Color",
+      "default": "rgba(0, 0, 0, 0.1)"
+    },
+    {
+      "type": "color",
+      "id": "hover_shadow_color",
+      "label": "Hover Shadow Color",
+      "default": "rgba(0, 0, 0, 0.2)"
+    },
+    {
+      "type": "header",
+      "content": "Overlay Styling"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "rgba(0, 0, 0, 0.8)"
+    },
+    {
+      "type": "color",
+      "id": "overlay_text_color",
+      "label": "Overlay Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Artist Story Styling"
+    },
+    {
+      "type": "color",
+      "id": "link_background",
+      "label": "Link Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "link_text_color",
+      "label": "Link Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_background",
+      "label": "Link Hover Background",
+      "default": "#333333"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "gallery_image",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "artwork_image",
+          "label": "Artwork Image"
+        },
+        {
+          "type": "text",
+          "id": "artwork_title",
+          "label": "Artwork Title"
+        },
+        {
+          "type": "text",
+          "id": "artist_name",
+          "label": "Artist Name"
+        },
+        {
+          "type": "textarea",
+          "id": "artwork_description",
+          "label": "Artwork Description"
+        },
+        {
+          "type": "url",
+          "id": "artist_portfolio",
+          "label": "Artist Portfolio URL"
+        }
+      ]
+    },
+    {
+      "type": "artist_story",
+      "name": "Artist Story",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "artist_photo",
+          "label": "Artist Photo"
+        },
+        {
+          "type": "text",
+          "id": "artist_name",
+          "label": "Artist Name"
+        },
+        {
+          "type": "richtext",
+          "id": "artist_bio",
+          "label": "Artist Biography"
+        },
+        {
+          "type": "url",
+          "id": "artist_website",
+          "label": "Artist Website"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 30,
+  "presets": [
+    {
+      "name": "Creative Gallery",
+      "category": "Gallery",
+      "settings": {
+        "gallery_heading": "Featured Artworks",
+        "gallery_style": "masonry",
+        "columns_desktop": 4,
+        "gap_size": 16,
+        "enable_lightbox": true,
+        "show_artist_info": true,
+        "enable_hover_effects": true
+      },
+      "blocks": [
+        {"type": "gallery_image"},
+        {"type": "gallery_image"},
+        {"type": "artist_story"},
+        {"type": "gallery_image"},
+        {"type": "gallery_image"}
+      ]
+    }
+  ]
+}
+{% endschema %}

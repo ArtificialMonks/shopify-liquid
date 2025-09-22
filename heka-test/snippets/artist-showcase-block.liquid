@@ -11,7 +11,7 @@
   - enable_animations: Whether animations are enabled
 {%- endcomment -%}
 
-{%- liquid
+{% liquid
   assign item_type = block.settings.item_type | default: 'artist'
   assign card_style = block.settings.card_style | default: 'card'
   assign image_aspect_ratio = block.settings.image_aspect_ratio | default: 'portrait'
@@ -76,7 +76,7 @@
     assign scale_decimal = transform_scale | divided_by: 100.0
     assign transform_styles = transform_styles | append: 'scale(' | append: scale_decimal | append: ') '
   endif
--%}
+%}
 
 <div
   class="artist-showcase__block artist-showcase__block--{{ item_type }} artist-showcase__block--{{ card_style }} artist-showcase__block--{{ layout_type }}{% if enable_hover_effects %} artist-showcase__block--hover{% endif %}{{ visibility_classes }}"

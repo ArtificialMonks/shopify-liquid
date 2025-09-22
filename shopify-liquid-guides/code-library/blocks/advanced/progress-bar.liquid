@@ -34,7 +34,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .progress-bar-{{ unique }} {
     width: 100%;
     margin: 20px 0;
@@ -195,7 +195,7 @@
       animation: none;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} JavaScript for animation {%- endcomment -%}
 {% if animated %}

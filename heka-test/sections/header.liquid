@@ -5,8 +5,8 @@
   Essential foundation section required by all Shopify themes.
 {%- endcomment -%}
 
-{%- liquid
-  # Generate unique ID for CSS scoping
+{% liquid
+# Generate unique ID for CSS scoping
   assign unique = section.id | replace: '_', '' | downcase
 
   # Header settings
@@ -25,10 +25,10 @@
 
   # Cart count
   assign cart_count = cart.item_count
--%}
+%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .header-{{ unique }} {
     background: {{ section.settings.background_color | default: '#ffffff' }};
     border-bottom: {{ section.settings.border_width | default: 1 }}px solid {{ section.settings.border_color | default: '#e5e5e5' }};
@@ -523,7 +523,7 @@
       transform: none;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} JavaScript for Header Functionality {%- endcomment -%}
 <script>

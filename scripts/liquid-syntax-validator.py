@@ -76,7 +76,8 @@ class ShopifyLiquidSyntaxValidator:
             'raw_tag': re.compile(r'{%[\s]*raw[\s]*%}(.*?){%[\s]*endraw[\s]*%}', re.DOTALL),
             'comment_tag': re.compile(r'{%[\s]*comment[\s]*%}(.*?){%[\s]*endcomment[\s]*%}', re.DOTALL),
             'schema_tag': re.compile(r'{%[\s]*schema[\s]*%}(.*?){%[\s]*endschema[\s]*%}', re.DOTALL),
-            'liquid_tag': re.compile(r'{%[\s]*liquid[\s]*%}(.*?){%[\s]*endliquid[\s]*%}', re.DOTALL),
+            # In Shopify, the `liquid` tag is a single tag closed by `%}` (no `{% endliquid %}`)
+            'liquid_tag': re.compile(r'{%[-\s]*liquid\b(.*?)[-\s]*%}', re.DOTALL),
         }
 
         # Tag pairing validation
@@ -89,12 +90,9 @@ class ShopifyLiquidSyntaxValidator:
             'tablerow': 'endtablerow',
             'paginate': 'endpaginate',
             'form': 'endform',
-            'javascript': 'endjavascript',
-            'stylesheet': 'endstylesheet',
             'style': 'endstyle',
             'comment': 'endcomment',
             'schema': 'endschema',
-            'liquid': 'endliquid',
             'raw': 'endraw'
         }
 
@@ -238,6 +236,9 @@ class ShopifyLiquidSyntaxValidator:
         # Remove javascript blocks (JS content)
         js_pattern = re.compile(r'{%[\s]*javascript[\s]*%}(.*?){%[\s]*endjavascript[\s]*%}', re.DOTALL)
         content_cleaned = js_pattern.sub('', content_cleaned)
+
+        # Remove single `liquid` blocks to prevent false positives
+        content_cleaned = self.LIQUID_TAG_PATTERNS['liquid_tag'].sub('', content_cleaned)
 
         # Check basic syntax error patterns on cleaned content
         for pattern, error_msg in self.SYNTAX_ERROR_PATTERNS:

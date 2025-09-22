@@ -1,4 +1,4 @@
-{% doc %}
+{%- comment -%}
   @prompt
     Create an advanced video carousel section displaying 4 videos side-by-side with:
     - Individual video upload for each slot
@@ -22,12 +22,12 @@
     - Play/pause controls
     - Proper ARIA labels
     - Reduced motion support
-{% enddoc %}
+{%- endcomment -%}
 
 {% comment %} Generate unique ID for scoped CSS {% endcomment %}
 {% assign carousel_id = block.id | replace: '_', '' | downcase %}
 
-{% style %}
+<style>
   /* Base container styles */
   .video-carousel-{{ carousel_id }} {
     padding: {{ block.settings.section_padding }}px 0;
@@ -368,7 +368,7 @@
     outline: 3px solid {{ block.settings.title_color }};
     outline-offset: 4px;
   }
-{% endstyle %}
+</style>
 
 <div class="video-carousel-{{ carousel_id }}" {{ block.shopify_attributes }}>
   <div class="video-carousel__container-{{ carousel_id }}">
@@ -650,7 +650,7 @@
         
         item.addEventListener('mouseenter', function() {
           video.play().catch(function(e) {
-            console.log('Video play failed:', e);
+            // Video play failed
           });
         });
         
@@ -676,7 +676,7 @@
       
       video.addEventListener('error', function() {
         item.classList.remove('loading');
-        console.error('Video failed to load');
+        // Video failed to load
       });
     });
     

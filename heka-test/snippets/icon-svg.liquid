@@ -19,8 +19,8 @@
      aria_label: 'Shopping cart' %}
 {%- endcomment -%}
 
-{%- liquid
-  # Parameter validation and defaults
+{% liquid
+# Parameter validation and defaults
   assign icon_name = name
   assign icon_size = size | default: 24
   assign css_class = class | default: 'icon'
@@ -32,7 +32,7 @@
     assign has_error = true
     assign error_message = 'Icon name is required'
   endunless
--%}
+%}
 
 {%- if has_error -%}
   <div class="icon-error" style="background: #ffe6e6; border: 1px solid #ff9999; padding: 4px 8px; border-radius: 4px; color: #cc0000; font-size: 12px;">

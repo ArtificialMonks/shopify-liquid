@@ -1,6 +1,8 @@
 # Enhanced Shopify Liquid Validation Suite
 
-**Comprehensive validation system with advanced Liquid syntax validation for production-ready Shopify themes.**
+**Comprehensive validation system implementing LIQUID-VALIDATION-CHECKLIST.md standards for production-ready Shopify themes.**
+
+> 📋 **Validation Standards**: All validation follows the comprehensive standards defined in [`/LIQUID-VALIDATION-CHECKLIST.md`](../LIQUID-VALIDATION-CHECKLIST.md)
 
 ## 🛡️ What This Does
 
@@ -38,30 +40,33 @@ This integrated validation suite combines the best validation tools into a singl
 python scripts/liquid-syntax-validator.py shopify-liquid-guides/code-library/
 ```
 
-## 📋 Validation Workflows
+## 📋 Validation Workflows (Per LIQUID-VALIDATION-CHECKLIST.md)
 
-### Liquid Syntax Validation (`syntax`) 🆕
-**Comprehensive Liquid syntax validation only**
-- ✅ Python-liquid parser integration
-- ✅ Official Shopify filter validation (60+ filters)
-- ✅ Tag pairing validation
-- ✅ Schema block validation
-- ✅ Performance pattern detection
-- ⏱️ **~5-8 seconds**
-
-### Development Workflow (`development`)
-**Fast validation for daily development work**
-- ✅ 🆕 Liquid syntax validation (comprehensive)
-- ✅ Ultimate liquid validation (zero tolerance)
-- ✅ Development theme-check (essential errors only)
+### Development Level (`development`)
+**Fast feedback with critical error detection** (Checklist Level 1)
+- ✅ Critical Liquid syntax errors only
+- ✅ Performance killer detection
+- ✅ Hallucinated filter detection
+- ✅ Security validation (error level)
 - ⏱️ **~10-15 seconds**
 
-### Ultimate Validation (`ultimate`) 🆕
-**Comprehensive liquid syntax + theme validation**
-- ✅ 🆕 Advanced Liquid syntax validation
-- ✅ Ultimate liquid validation (zero tolerance)
-- ✅ Multi-level validation (fast/standard/comprehensive)
-- ⏱️ **~15-20 seconds**
+### Production Level (`production`)
+**Theme Store compliance validation** (Checklist Level 2)
+- ✅ All development checks
+- ✅ Theme Store compliance patterns
+- ✅ Security requirements
+- ✅ Accessibility validation
+- ✅ Performance thresholds
+- ⏱️ **~20-30 seconds**
+
+### Ultimate Level (`ultimate`)
+**Zero tolerance comprehensive validation** (Checklist Level 3)
+- ✅ All production checks
+- ✅ Code complexity analysis
+- ✅ Cross-domain integration
+- ✅ Complete accessibility compliance
+- ✅ Advanced security patterns
+- ⏱️ **~30-45 seconds**
 
 ### Deep Validation (`deep`) 🆕
 **Pre-deployment validation**
@@ -173,31 +178,47 @@ python scripts/liquid-syntax-validator.py shopify-liquid-guides/code-library/
 ### Python API Usage
 
 ```python
-# 🆕 Liquid syntax validator
-from liquid_syntax_validator import ShopifyLiquidSyntaxValidator
-validator = ShopifyLiquidSyntaxValidator()
-success = validator.validate_directory(Path("theme_directory"))
+# Method 1: Using the validator_module wrapper (RECOMMENDED)
+from scripts.validator_module import UltimateShopifyValidator, import_hyphenated_module
+from pathlib import Path
 
-# Ultimate validator with liquid syntax integration
-from ultimate_validator import ShopifyLiquidValidator
-validator = ShopifyLiquidValidator()
+# Ultimate validator (easy import)
+validator = UltimateShopifyValidator(validation_level="production")
 success = validator.scan_directory(Path("theme_directory"))
 
-# Schema integrity
-from scan_schema_integrity import scan_directory
-success = scan_directory(Path("theme_directory"))
+# Other hyphenated modules using helper function
+liquid_validator = import_hyphenated_module("liquid-syntax-validator.py")
+validator = liquid_validator.ShopifyLiquidSyntaxValidator()
+success = validator.validate_directory(Path("theme_directory"))
+
+schema_integrity = import_hyphenated_module("scan-schema-integrity.py")
+success = schema_integrity.scan_directory(Path("theme_directory"))
 ```
 
-## 📊 Validation Levels
+```python
+# Method 2: Manual importlib (for reference)
+import importlib.util
+from pathlib import Path
 
-| Level | Description | Use Case | Speed |
-|-------|-------------|----------|-------|
-| `syntax` | 🆕 Liquid syntax only | Syntax checking | Very Fast |
-| `ultimate` | 🆕 Liquid syntax + zero tolerance | Code review | Fast |
-| `development` | 🆕 Syntax + essential + ultimate | Daily dev | Fast |
-| `integrity` | Schema deep scan | Pre-commit | Medium |
-| `deep` | 🆕 Ultimate + integrity + comprehensive | Pre-deployment | Medium |
-| `all` | Complete validation with syntax | Theme Store | Slow |
+# Ultimate validator with validation level support
+spec = importlib.util.spec_from_file_location("ultimate_validator", "scripts/ultimate-validator.py")
+ultimate_validator = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(ultimate_validator)
+validator = ultimate_validator.ShopifyLiquidValidator(validation_level="development")
+success = validator.scan_directory(Path("theme_directory"))
+```
+
+## 📊 Validation Levels (LIQUID-VALIDATION-CHECKLIST.md Compliance)
+
+| Level | Checklist Level | Description | Severity Filter | Use Case | Speed |
+|-------|----------------|-------------|-----------------|----------|-------|
+| `development` | Level 1 | Fast feedback | Critical + Error only | Daily dev | Fast |
+| `production` | Level 2 | Theme Store ready | Critical + Error + Warning | Pre-deployment | Medium |
+| `ultimate` | Level 3 | Zero tolerance | All issues | Code review | Medium |
+| `syntax` | - | Liquid syntax only | All syntax issues | Syntax checking | Very Fast |
+| `integrity` | - | Schema deep scan | Schema issues | Pre-commit | Medium |
+| `deep` | - | All validations | All issues | Comprehensive | Slow |
+| `all` | - | Complete workflow | All issues | Theme Store | Slowest |
 
 ## 🚨 Error Categories
 
@@ -286,30 +307,77 @@ fi
 - Shell and Python versions of same functionality
 - Inconsistent execution environments
 
-## 🎯 Best Practices
+## 🎯 Best Practices (Following LIQUID-VALIDATION-CHECKLIST.md)
 
-### Daily Development
+### Daily Development (Level 1 - Development)
 ```bash
-# Before committing changes
+# Fast feedback with critical error detection
 ./scripts/validate-theme.sh development
 ```
 
-### Before Deployment
+### Pre-Deployment (Level 2 - Production)
 ```bash
-# Deep validation
-./scripts/validate-theme.sh deep
+# Theme Store compliance validation
+./scripts/validate-theme.sh production
+```
+
+### Code Review (Level 3 - Ultimate)
+```bash
+# Zero tolerance comprehensive validation
+./scripts/validate-theme.sh ultimate
 ```
 
 ### Theme Store Submission
 ```bash
-# Complete validation
+# Complete validation workflow
 ./scripts/validate-theme.sh all
 ```
 
-### Code Review
+### Checklist Compliance Testing
 ```bash
-# Focus on liquid quality
-./scripts/validate-theme.sh ultimate
+# Test that validation implements checklist standards
+python scripts/test-checklist-compliance.py
+```
+
+## 📋 LIQUID-VALIDATION-CHECKLIST.md Integration
+
+This validation suite implements all standards defined in [`/LIQUID-VALIDATION-CHECKLIST.md`](../LIQUID-VALIDATION-CHECKLIST.md):
+
+### Progressive Validation Levels
+- **Development**: Fast feedback - critical errors only
+- **Production**: Theme Store compliance - errors + warnings
+- **Ultimate**: Zero tolerance - all issues
+
+### Implemented Checklist Sections
+- ✅ **Section 1**: Liquid Syntax & Structure validation
+- ✅ **Section 2**: Filter validation (60+ official Shopify filters)
+- ✅ **Section 3**: Performance anti-patterns (CRITICAL)
+- ✅ **Section 4**: Security validation (ERROR LEVEL)
+- ✅ **Section 5**: Schema configuration (Context-aware)
+
+### Automated Validation Criteria
+- Performance killer detection (`collections.all.products`)
+- Hallucinated filter detection (`color_extract`, `rgb`, etc.)
+- Security pattern validation (unescaped content)
+- Schema integrity checks (range steps, valid types)
+- Accessibility compliance (WCAG 2.1 AA)
+
+### Manual Review Integration
+- Clear error messages with checklist references
+- Severity filtering based on validation level
+- Actionable suggestions for issue resolution
+- Cross-domain validation intersections
+
+### Compliance Testing
+```bash
+# Verify checklist implementation
+python scripts/test-checklist-compliance.py
+
+# Pre-commit with checklist standards
+./scripts/pre-commit-schema-check.sh development
+
+# Production readiness with checklist
+./scripts/validate-theme.sh production
 ```
 
 ## 📚 Enhanced Validation Rules

@@ -38,7 +38,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .icon-list-{{ unique }} {
     display: flex;
     {% if layout == 'horizontal' %}
@@ -196,7 +196,7 @@
     outline: 2px solid {{ icon_color }};
     outline-offset: 2px;
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="icon-list-{{ unique }}" {{ block.shopify_attributes }}>

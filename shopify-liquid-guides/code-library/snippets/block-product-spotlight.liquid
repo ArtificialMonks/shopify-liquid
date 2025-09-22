@@ -21,7 +21,7 @@
   assign block_id = block.id | replace: '_', '' | downcase
 -%}
 
-{% style %}
+<style>
   .product-spotlight-{{ block_id }} {
     /* ✅ Design token integration for product spotlights */
     --product-bg: var(--surface-primary);
@@ -180,7 +180,7 @@
       font-size: var(--font-size-lg);
     }
   }
-{% endstyle %}
+</style>
 
 <div class="product-spotlight-{{ block_id }} product-spotlight-{{ block_id }}--{{ layout_style }}" {{ block.shopify_attributes }}>
   {% if featured_product %}
@@ -237,7 +237,7 @@
       {% endif %}
 
       <a
-        href="{{ product.url }}"
+        href="{{ product.url | escape }}"
         class="product-spotlight-{{ block_id }}__button"
         aria-label="{{ button_text | escape }} - {{ product.title | escape }}"
       >

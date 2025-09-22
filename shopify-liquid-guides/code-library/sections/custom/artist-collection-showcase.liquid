@@ -1,7 +1,7 @@
 {% comment %} sections/artist-collection-showcase.liquid {% endcomment %}
 {%- assign unique = section.id | replace: '_', '' | downcase -%}
 
-{% style %}
+<style>
   .artist-showcase-{{ unique }} {
     /* ✅ Design token integration for fashion aesthetic */
     --showcase-bg: var(--surface-primary);
@@ -82,7 +82,7 @@
       --dynamic-columns: 2;
     }
   }
-{% endstyle %}
+</style>
 
 <section
   class="artist-showcase-{{ unique }}"

@@ -40,13 +40,13 @@
   object-fit: cover;
 
   /* Optimize loading */
-  loading: eager; /* For above-fold images */
-  fetchpriority: high;
+  /* For above-the-fold images, set loading and fetchpriority attributes on <img> */
+  /* fetchpriority="high" should be set as an HTML attribute */
 }
 
 .lazy-image {
   /* Below-fold images */
-  loading: lazy;
+  /* Use loading="lazy" as an HTML attribute on <img> */
   content-visibility: auto;
   contain-intrinsic-size: 300px 200px;
 
@@ -243,7 +243,7 @@
 /* Font display optimization */
 .optimized-text {
   /* Prevent invisible text during font load */
-  font-display: swap;
+  /* Use font-display: swap in @font-face, not here */
 
   /* Fallback font similar metrics */
   font-family: var(--primary-font, 'Arial', sans-serif);
@@ -257,10 +257,10 @@
 /* Custom font with fallback */
 .custom-font {
   font-family: var(--custom-font, 'Helvetica Neue', Arial, sans-serif);
-  font-display: swap;
+  /* font-display: swap should be defined in @font-face */
 
   /* Size adjust for metric matching */
-  size-adjust: var(--size-adjust, 100%);
+  /* size-adjust should be configured in @font-face */
 }
 
 /* ========================================

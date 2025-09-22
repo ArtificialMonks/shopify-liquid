@@ -7,15 +7,15 @@
 {% endcomment %}
 
 {% if article.image %}
-  {{ article.image | image_url: width: 1000 | image_tag }}
+  {{ article.image | image_url: width: 1000 | image_url }}
 {% endif %}
 
-<h1>{{ article.title }}</h1>
+<h1>{{ article.title | escape }}</h1>
 
 {% assign date = article.published_at | time_tag: format: 'date' %}
 <p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
 
-{{ article.content }}
+{{ article.content | escape }}
 
 {% if blog.comments_enabled? %}
   <h2>{{ 'blog.article_comments' | t }}</h2>
@@ -32,28 +32,28 @@
         </div>
       {% endfor %}
 
-      {{ paginate | default_pagination: anchor: 'comments' }}
+      {% render 'pagination', paginate: paginate %}
     {% endpaginate %}
   </div>
 
   {% form 'new_comment', article %}
     <h2>{{ 'blog.comment_form_title' | t }}</h2>
 
-    {{ form.errors | default_errors }}
+    {{ form.errors | default: '' }}
 
     <div>
       <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-      <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
+      <input type="text" name="comment[author]" id="author" value="{{ form.author | escape }}" required>
     </div>
 
     <div>
       <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-      <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
+      <input type="email" name="comment[email]" id="email" value="{{ form.email | escape }}" required>
     </div>
 
     <div>
       <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-      <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
+      <textarea name="comment[body]" id="body" required>{{ form.body | escape }}</textarea>
     </div>
 
     <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">

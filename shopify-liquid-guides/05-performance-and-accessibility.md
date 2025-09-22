@@ -492,7 +492,7 @@ Master optimization techniques and accessibility standards for production-ready 
 {% endstyle %}
 
 {% comment %} Minimal JavaScript for interaction {% endcomment %}
-{% javascript %}
+<script>
 document.addEventListener('DOMContentLoaded', function() {
   const toggles = document.querySelectorAll('.accordion-toggle-{{ unique }}');
 
@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
-{% endjavascript %}
+</script>
 ```
 
 ### Progressive Enhancement
@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </details>
 
 {% comment %} Enhance with JavaScript {% endcomment %}
-{% javascript %}
+<script>
 // Convert details/summary to custom accordion for better control
 document.addEventListener('DOMContentLoaded', function() {
   const details = document.querySelectorAll('.accordion-item-{{ unique }}');
@@ -564,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
-{% endjavascript %}
+</script>
 ```
 
 ## Performance Monitoring
@@ -572,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ### Core Web Vitals Tracking
 ```liquid
 {% comment %} Monitor performance in production {% endcomment %}
-{% javascript %}
+<script>
 // Track Core Web Vitals
 function trackWebVitals() {
   if ('PerformanceObserver' in window) {
@@ -603,7 +603,7 @@ function trackWebVitals() {
 
 // Initialize tracking after page load
 window.addEventListener('load', trackWebVitals);
-{% endjavascript %}
+</script>
 ```
 
 ## Testing and Validation

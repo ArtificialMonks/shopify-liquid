@@ -31,7 +31,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .tabs-block-{{ unique }} {
     width: 100%;
     background: {{ background_color }};
@@ -260,7 +260,7 @@
       animation: none;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} JavaScript for tab functionality {%- endcomment -%}
 <script>

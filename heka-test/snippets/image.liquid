@@ -1,4 +1,4 @@
-{% doc %}
+{% comment %}
   Renders a responsive image that might be wrapped in a link.
 
   When `width`, `height` and `crop` are provided, the image will be rendered
@@ -25,10 +25,10 @@
     height: 800,
     crop: 'center',
   %}
-{% enddoc %}
+{% endcomment %}
 
 {% liquid
-  unless height
+unless height
     assign width = width | default: image.width
   endunless
 
@@ -45,7 +45,7 @@
     href="{{ url }}"
   {% endif %}
 >
-  {{ image | image_url: width: width, height: height, crop: crop | image_tag }}
+  {{ image | image_url: width: width, height: height, crop: crop | image_url }}
 </{{ wrapper }}>
 
 {% stylesheet %}

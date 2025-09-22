@@ -11,7 +11,7 @@
   - Animated effects
 {%- endcomment -%}
 
-{%- liquid
+{% liquid
   assign bg_type = section.settings.background_type | default: 'none'
   assign bg_color = section.settings.background_color
   assign bg_image = section.settings.background_image
@@ -26,7 +26,8 @@
   assign bg_animation = section.settings.background_animation | default: 'none'
   assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0
   assign bg_overlay_color = section.settings.background_overlay_color
--%}
+
+%}
 
 {%- comment -%} Background Container {%- endcomment -%}
 <div class="artist-showcase__background artist-showcase__background--{{ bg_type }}{% if bg_parallax %} artist-showcase__background--parallax{% endif %}{% if bg_animation != 'none' %} artist-showcase__background--{{ bg_animation }}{% endif %}"
@@ -41,8 +42,8 @@
            style="background-color: {{ bg_color }}; mix-blend-mode: {{ bg_blend_mode }};"></div>
 
     {%- when 'gradient' -%}
-      {%- liquid
-        case bg_gradient_type
+      {% liquid
+case bg_gradient_type
           when 'linear'
             assign gradient_direction = bg_gradient_angle | append: 'deg'
           when 'radial'
@@ -67,7 +68,7 @@
           when 'conic'
             assign gradient_css = 'conic-gradient(' | append: gradient_direction | append: ', ' | append: gradient_colors | append: ')'
         endcase
-      -%}
+%}
       <div class="artist-showcase__background-layer artist-showcase__background-layer--gradient"
            style="background: {{ gradient_css }}; mix-blend-mode: {{ bg_blend_mode }};"></div>
 

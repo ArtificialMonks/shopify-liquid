@@ -32,7 +32,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .accordion-block-{{ unique }} {
     border: 1px {{ border_style }} {{ border_color }};
     border-radius: 8px;
@@ -189,7 +189,7 @@
       transition: none;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} JavaScript for accordion functionality {%- endcomment -%}
 <script>
@@ -211,13 +211,13 @@
         // Close other accordions in the same parent if allow_multiple is false
         const parent = accordion{{ unique | remove: '-' }}.closest('[data-section-id]');
         if (parent) {
-          parent.querySelectorAll('.accordion-block__header--active').forEach(function(openHeader) {
+          parent.querySelectorAll('.accordion-block-{{ unique }}__header--active').forEach(function(openHeader) {
             if (openHeader !== header{{ unique | remove: '-' }}) {
-              openHeader.classList.remove('accordion-block__header--active');
+              openHeader.classList.remove('accordion-block-{{ unique }}__header--active');
               openHeader.setAttribute('aria-expanded', 'false');
               const openContent = openHeader.nextElementSibling;
               if (openContent) {
-                openContent.classList.remove('accordion-block__content--open');
+                openContent.classList.remove('accordion-block-{{ unique }}__content--open');
               }
             }
           });
@@ -239,6 +239,49 @@
     });
   });
 </script>
+<script>
+  // Re-initialize when Theme Editor loads or reorders sections
+  document.addEventListener('shopify:section:load', function(event) {
+    const root = event.target;
+    const accordion = root.querySelector('.accordion-block-{{ unique }}');
+    if (!accordion) return;
+
+    const header = accordion.querySelector('.accordion-block-{{ unique }}__header');
+    const content = accordion.querySelector('.accordion-block-{{ unique }}__content');
+    if (!header || !content) return;
+
+    header.addEventListener('click', function() {
+      const isOpen = this.classList.contains('accordion-block-{{ unique }}__header--active');
+
+      {% unless allow_multiple %}
+      const parent = accordion.closest('[data-section-id]');
+      if (parent) {
+        parent.querySelectorAll('.accordion-block-{{ unique }}__header--active').forEach(function(openHeader) {
+          if (openHeader !== header) {
+            openHeader.classList.remove('accordion-block-{{ unique }}__header--active');
+            openHeader.setAttribute('aria-expanded', 'false');
+            const openContent = openHeader.nextElementSibling;
+            if (openContent) {
+              openContent.classList.remove('accordion-block-{{ unique }}__content--open');
+            }
+          }
+        });
+      }
+      {% endunless %}
+
+      this.classList.toggle('accordion-block-{{ unique }}__header--active');
+      content.classList.toggle('accordion-block-{{ unique }}__content--open');
+      this.setAttribute('aria-expanded', !isOpen);
+    });
+
+    header.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+  });
+</script>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="accordion-block-{{ unique }}" {{ block.shopify_attributes }}>
@@ -246,8 +289,8 @@
     class="accordion-block-{{ unique }}__header{% if default_open %} accordion-block-{{ unique }}__header--active{% endif %}"
     type="button"
     aria-expanded="{% if default_open %}true{% else %}false{% endif %}"
-    aria-controls="accordion-content-{{ unique }}">
-
+    aria-controls="accordion-content-{{ unique }}"
+  >
     {%- if icon_position == 'left' -%}
       <span class="accordion-block-{{ unique }}__icon" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -269,7 +312,8 @@
 
   <div
     id="accordion-content-{{ unique }}"
-    class="accordion-block-{{ unique }}__content{% if default_open %} accordion-block-{{ unique }}__content--open{% endif %}">
+    class="accordion-block-{{ unique }}__content{% if default_open %} accordion-block-{{ unique }}__content--open{% endif %}"
+  >
     <div class="accordion-block-{{ unique }}__content-inner">
       {{ content }}
     </div>
@@ -320,8 +364,8 @@
       "id": "icon_position",
       "label": "Icon position",
       "options": [
-        {"value": "left", "label": "Left"},
-        {"value": "right", "label": "Right"}
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
       ],
       "default": "right"
     },
@@ -334,10 +378,10 @@
       "id": "border_style",
       "label": "Border style",
       "options": [
-        {"value": "solid", "label": "Solid"},
-        {"value": "dashed", "label": "Dashed"},
-        {"value": "dotted", "label": "Dotted"},
-        {"value": "none", "label": "None"}
+        { "value": "solid", "label": "Solid" },
+        { "value": "dashed", "label": "Dashed" },
+        { "value": "dotted", "label": "Dotted" },
+        { "value": "none", "label": "None" }
       ],
       "default": "solid"
     },

@@ -1,0 +1,52 @@
+{% comment %}
+Test section to validate responsive-image snippet outputs valid srcset/sizes and prevents CLS.
+Copy to a theme's sections/ directory or use in this code library for Theme Check.
+{% endcomment %}
+
+{%- liquid -%}
+  assign alt_text = section.settings.alt | escape
+  assign sizes = section.settings.sizes | default: "(min-width: 1200px) 800px, (min-width: 750px) 600px, 100vw"
+{%- endliquid -%}
+
+<div class="responsive-image-test" style="max-width: 800px;">
+  {%- if section.settings.image != blank -%}
+    {%- render 'responsive-image',
+      image: section.settings.image,
+      alt: alt_text,
+      sizes: sizes,
+      max_width: 1200,
+      lazy: true,
+      fetchpriority: 'low' -%}
+  {%- else -%}
+    <p>No image selected.</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Test: Responsive Image",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "alt",
+      "label": "Alt text",
+      "default": "Sample image"
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes attribute",
+      "default": "(min-width: 1200px) 800px, (min-width: 750px) 600px, 100vw"
+    }
+  ],
+  "presets": [
+    { "name": "Test: Responsive Image" }
+  ]
+}
+{% endschema %}
+

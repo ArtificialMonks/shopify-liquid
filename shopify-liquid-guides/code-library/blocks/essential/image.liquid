@@ -67,7 +67,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .image-block-{{ unique }} {
     max-width: {{ max_width }}%;
     margin-left: auto;
@@ -248,7 +248,7 @@
       transform: none;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} Preload critical images using optimized image_tag filter {%- endcomment -%}
 {%- comment -%} Preload is now handled by the image_tag filter's preload parameter below {%- endcomment -%}

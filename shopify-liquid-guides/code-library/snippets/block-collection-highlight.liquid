@@ -21,7 +21,7 @@
   assign block_id = block.id | replace: '_', '' | downcase
 -%}
 
-{% style %}
+<style>
   .collection-highlight-{{ block_id }} {
     /* ✅ Design token integration for collection highlights */
     --collection-bg: var(--surface-primary);
@@ -151,7 +151,7 @@
       padding: var(--spacing-component-sm);
     }
   }
-{% endstyle %}
+</style>
 
 <div
   class="collection-highlight-{{ block_id }}{% if overlay_opacity > 30 %} collection-highlight-{{ block_id }}--has-overlay{% endif %}"

@@ -73,7 +73,7 @@
   </div>
 </section>
 
-{% style %}
+<style>
 /* Instance-scoped styles */
 .advanced-video-text.{{ root }} {
   /* container */
@@ -196,7 +196,7 @@
 .advanced-video-text.{{ root }} [data-anim]{ opacity:0; transform: translateY(10px); transition: all {{ section.settings.anim_duration | default: 600 }}ms {{ section.settings.anim_ease | default: 'ease' }}; }
 .advanced-video-text.{{ root }} [data-anim].in{ opacity:1; transform:none; }
 {%- endif -%}
-{% endstyle %}
+</style>
 
 <script>
 (function(){
@@ -268,7 +268,7 @@
     { "type": "checkbox", "id": "bg_gradient", "label": "Enable gradient", "default": false },
     { "type": "color", "id": "bg_grad_c1", "label": "Gradient color 1", "default": "#ffffff" },
     { "type": "color", "id": "bg_grad_c2", "label": "Gradient color 2", "default": "#ffffff" },
-    { "type": "range", "id": "bg_grad_angle", "min":0, "max":360, "step":1, "unit":"deg", "label": "Gradient angle", "default": 90 },
+    { "type": "range", "id": "bg_grad_angle", "min":0, "max":360, "step":5, "unit":"deg", "label": "Gradient angle", "default": 90 },
     { "type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff" },
     { "type": "image_picker", "id": "bg_image", "label": "Background image" },
     { "type": "select", "id": "bg_size", "label": "Background size", "default": "cover", "options": [
@@ -311,7 +311,7 @@
     { "type": "select", "id": "aspect_ratio", "label": "Aspect ratio", "default": "16/9", "options": [
       {"value":"16/9","label":"16:9"}, {"value":"9/16","label":"9:16"}, {"value":"4/3","label":"4:3"}, {"value":"3/2","label":"3:2"}, {"value":"1/1","label":"1:1"}
     ]},
-    { "type": "range", "id": "video_width", "min": 10, "max": 200, "step": 1, "unit":"%", "label": "Video width", "default": 100 },
+    { "type": "range", "id": "video_width", "min": 10, "max": 200, "step": 2, "unit":"%", "label": "Video width", "default": 100 },
     { "type": "range", "id": "video_height", "min": 0, "max": 1200, "step": 10, "unit":"px", "label": "Video height (0=auto)", "default": 0 },
     { "type": "select", "id": "video_align", "label": "Video align", "default": "center", "options": [
       {"value":"flex-start","label":"Start"},{"value":"center","label":"Center"},{"value":"flex-end","label":"End"},{"value":"stretch","label":"Stretch"}

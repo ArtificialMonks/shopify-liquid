@@ -1,16 +1,18 @@
 # Complete Shopify Theme Development Resource
 
-The most comprehensive documentation and code library for professional Shopify theme development. Covering all 7 Shopify file types with **unified design system architecture**, production-ready examples, modern development patterns, and cutting-edge features.
+The most comprehensive documentation and code library for professional Shopify theme development. Covering all 7 Shopify file types with **unified design system architecture**, production-ready examples, modern development patterns, and **LIQUID-VALIDATION-CHECKLIST.md compliance**.
+
+> 📋 **NEW**: All validation follows comprehensive standards defined in [`LIQUID-VALIDATION-CHECKLIST.md`](./LIQUID-VALIDATION-CHECKLIST.md)
 
 ## 🚀 What's Inside
 
 This repository provides everything needed for world-class Shopify theme development:
 
 - **🎨 Unified Design System**: 450+ design tokens with three-tier architecture (primitive → semantic → component)
-- **🎯 100% Theme Store Compliance**: Ultimate validation setup with automated workflows
-- **⚡ Enhanced Automation**: Multi-language validation (Shell + Python) with design system validation
-- **🔧 Multi-Level Validation**: Development, syntax, ultimate, deep, comprehensive, production validation levels
-- **📊 50+ Validation Rules**: All critical checks for schema, content, performance, security, design consistency, and comprehensive Liquid syntax
+- **🎯 100% Theme Store Compliance**: Ultimate validation setup following LIQUID-VALIDATION-CHECKLIST.md
+- **⚡ Enhanced Automation**: Progressive validation levels (Development/Production/Ultimate)
+- **🔧 Multi-Level Validation**: Checklist-compliant validation with automated and manual review criteria
+- **📊 50+ Validation Rules**: Comprehensive checklist implementation covering syntax, performance, security, accessibility
 - **🚀 Modern Shopify Features**: 2024-2025 features including Shop Pay, PWA, AI blocks, metaobjects
 - **Complete Architecture Coverage**: All 7 Shopify file types with design system integration
 - **Production-Ready Code**: Copy-paste sections, blocks, templates with unified styling
@@ -19,27 +21,28 @@ This repository provides everything needed for world-class Shopify theme develop
 - **Comprehensive Documentation**: From basics to advanced implementation with design system guidance
 - **VS Code Integration**: Full development environment with intelligent tooling and validation
 
-### 🎉 **Enhanced Validation Suite - Comprehensive Liquid Syntax + Design System + Theme Store Excellence!**
+### 🎉 **LIQUID-VALIDATION-CHECKLIST.md Compliant Validation Suite**
 
 ```bash
-# 🆕 Liquid syntax validation only (zero tolerance)
-./scripts/validate-theme.sh syntax
+# Progressive validation levels per checklist:
 
-# 🆕 Ultimate validation (comprehensive liquid syntax + theme validation)
+# Level 1: Development (Fast feedback - critical errors only)
+./scripts/validate-theme.sh development
+
+# Level 2: Production (Theme Store compliance)
+./scripts/validate-theme.sh production
+
+# Level 3: Ultimate (Zero tolerance - all issues)
 ./scripts/validate-theme.sh ultimate
 
-# 🆕 Deep validation (ultimate + integrity + comprehensive)
-./scripts/validate-theme.sh deep
+# Checklist compliance testing:
+python scripts/test-checklist-compliance.py
 
-# Complete validation workflow - covers all aspects:
-./scripts/validate-theme.sh all
-
-# Advanced Python-based validation:
-python scripts/liquid-syntax-validator.py shopify-liquid-guides/code-library/
-python scripts/ultimate-validator.py --liquid-syntax --design-system
+# Pre-commit with checklist standards:
+./scripts/pre-commit-schema-check.sh development
 ```
 
-**Result**: Ultimate validation with **comprehensive Liquid syntax validation**, design token consistency, hallucinated filter detection, over-engineering prevention, performance optimization, CSP compliance, and 100% Theme Store excellence!
+**Result**: **LIQUID-VALIDATION-CHECKLIST.md compliant validation** with progressive levels, automated criteria, manual review integration, and 100% Theme Store excellence!
 
 ## 🎯 Quick Start
 

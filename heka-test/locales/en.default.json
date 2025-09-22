@@ -28,7 +28,13 @@
     }
   },
   "collections": {
-    "title": "Collections"
+    "title": "Collections",
+    "general": {
+      "item": "item",
+      "items": "items",
+      "price_range": "Price range",
+      "featured_products": "Featured products"
+    }
   },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
@@ -48,5 +54,41 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "general": {
+    "accessibility": {
+      "close": "Close"
+    },
+    "search": {
+      "placeholder": "Search",
+      "submit": "Search"
+    }
+  },
+  "products": {
+    "product": {
+      "no_image": "No image available",
+      "view_product": "View product",
+      "sale": "Sale",
+      "sold_out": "Sold out",
+      "price_from": "From",
+      "add_to_cart": "Add to cart",
+      "choose_options": "Choose options"
+    }
+  },
+  "sections": {
+    "gallery": {
+      "view_portfolio": "View portfolio",
+      "visit_artist_website": "Visit artist website",
+      "empty_title": "Gallery is empty",
+      "empty_description": "Add some artwork to showcase in this gallery",
+      "items": "items",
+      "lightbox_title": "Artwork details"
+    },
+    "product_grid": {
+      "empty_title": "No products found",
+      "empty_description": "Add products to display in this showcase",
+      "products": "products",
+      "view_all": "View all"
+    }
   }
 }

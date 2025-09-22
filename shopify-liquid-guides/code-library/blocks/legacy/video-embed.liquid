@@ -51,7 +51,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .video-embed-block-{{ unique }} {
     position: relative;
     width: 100%;
@@ -79,7 +79,7 @@
     color: #fff;
     padding: 20px;
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="video-embed-block-{{ unique }}" {{ block.shopify_attributes }}>

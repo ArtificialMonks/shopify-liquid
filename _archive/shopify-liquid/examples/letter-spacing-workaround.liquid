@@ -65,7 +65,7 @@
 }
 {% endschema %}
 
-{% style %}
+<style>
   /* Convert integer values to decimal em units */
   h1, h2, h3, h4, h5, h6 {
     letter-spacing: {{ settings.heading_letter_spacing | times: 0.01 }}em;
@@ -83,7 +83,7 @@
   .precise-spacing {
     letter-spacing: {{ settings.heading_letter_spacing | divided_by: 100.0 }}em;
   }
-{% endstyle %}
+</style>
 
 {% comment %} 
   Alternative Approach: Use a select dropdown for precise control

@@ -10,24 +10,26 @@
   - Story: Content-focused with narrative elements
 {%- endcomment -%}
 
-{%- liquid
+{% liquid
   assign card_class = 'artist-showcase__card'
   assign image_class = 'artist-showcase__image'
   assign content_class = 'artist-showcase__content'
 
   # Generate unique IDs
   assign card_id = 'card-' | append: unique | append: '-' | append: block_id
--%}
+
+%}
 
 <div class="{{ card_class }} {{ card_class }}--{{ card_style }}" id="{{ card_id }}">
 
   {%- comment -%} Rich Media Section {%- endcomment -%}
-  {%- liquid
-    assign has_media = false
-    if image != blank or block.settings.enable_gallery or block.settings.enable_video
-      assign has_media = true
-    endif
-  -%}
+  {% liquid
+  assign has_media = false
+  if image != blank or block.settings.enable_gallery or block.settings.enable_video
+  assign has_media = true
+  endif
+
+%}
 
   {%- if has_media -%}
     <div class="{{ image_class }} {{ image_class }}--{{ image_aspect_ratio }} artist-showcase__media">
@@ -51,8 +53,8 @@
           <a href="{{ link }}" class="{{ image_class }}-link" aria-labelledby="{{ card_id }}-title">
         {%- endif -%}
 
-        {%- liquid
-          case image_aspect_ratio
+        {% liquid
+case image_aspect_ratio
             when 'square'
               assign aspect_ratio = '1/1'
             when 'portrait'
@@ -64,7 +66,7 @@
             else
               assign aspect_ratio = '3/4'
           endcase
-        -%}
+%}
 
         <img
           src="{{ image | image_url: width: 800 }}"
@@ -85,12 +87,13 @@
   {%- endif -%}
 
   {%- comment -%} Content Section {%- endcomment -%}
-  {%- liquid
-    assign show_content = false
-    if has_content or block.settings.enable_testimonial or block.settings.enable_product
-      assign show_content = true
-    endif
-  -%}
+  {% liquid
+  assign show_content = false
+  if has_content or block.settings.enable_testimonial or block.settings.enable_product
+  assign show_content = true
+  endif
+
+%}
 
   {%- if show_content -%}
     <div class="{{ content_class }} {{ content_class }}--{{ item_type }}">

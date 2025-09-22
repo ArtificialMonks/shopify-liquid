@@ -60,7 +60,7 @@
     assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
   %}
 
-  {% style %}
+  <style>
     {{ settings.type_body_font | font_face: font_display: 'swap' }}
     {{ body_font_bold | font_face: font_display: 'swap' }}
     {{ body_font_italic | font_face: font_display: 'swap' }}
@@ -68,24 +68,24 @@
     {{ settings.type_header_font | font_face: font_display: 'swap' }}
 
     :root {
-      --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
-      --font-body-style: {{ settings.type_body_font.style }};
-      --font-body-weight: {{ settings.type_body_font.weight }};
+      --font-body-family: {{ settings.type_body_font.family | escape }}, {{ settings.type_body_font.fallback_families | escape }};
+      --font-body-style: {{ settings.type_body_font.style | escape }};
+      --font-body-weight: {{ settings.type_body_font.weight | escape }};
       --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 1000 }};
 
-      --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
-      --font-heading-style: {{ settings.type_header_font.style }};
-      --font-heading-weight: {{ settings.type_header_font.weight }};
+      --font-heading-family: {{ settings.type_header_font.family | escape }}, {{ settings.type_header_font.fallback_families | escape }};
+      --font-heading-style: {{ settings.type_header_font.style | escape }};
+      --font-heading-weight: {{ settings.type_header_font.weight | escape }};
 
-      --color-base-text: {{ settings.colors_text.red }}, {{ settings.colors_text.green }}, {{ settings.colors_text.blue }};
-      --color-base-background-1: {{ settings.colors_background_1.red }}, {{ settings.colors_background_1.green }}, {{ settings.colors_background_1.blue }};
-      --color-base-background-2: {{ settings.colors_background_2.red }}, {{ settings.colors_background_2.green }}, {{ settings.colors_background_2.blue }};
-      --color-base-accent-1: {{ settings.colors_accent_1.red }}, {{ settings.colors_accent_1.green }}, {{ settings.colors_accent_1.blue }};
-      --color-base-accent-2: {{ settings.colors_accent_2.red }}, {{ settings.colors_accent_2.green }}, {{ settings.colors_accent_2.blue }};
+      --color-base-text: {{ settings.colors_text.red | escape }}, {{ settings.colors_text.green | escape }}, {{ settings.colors_text.blue | escape }};
+      --color-base-background-1: {{ settings.colors_background_1.red | escape }}, {{ settings.colors_background_1.green | escape }}, {{ settings.colors_background_1.blue | escape }};
+      --color-base-background-2: {{ settings.colors_background_2.red | escape }}, {{ settings.colors_background_2.green | escape }}, {{ settings.colors_background_2.blue | escape }};
+      --color-base-accent-1: {{ settings.colors_accent_1.red | escape }}, {{ settings.colors_accent_1.green | escape }}, {{ settings.colors_accent_1.blue | escape }};
+      --color-base-accent-2: {{ settings.colors_accent_2.red | escape }}, {{ settings.colors_accent_2.green | escape }}, {{ settings.colors_accent_2.blue | escape }};
 
       --page-width: {{ settings.page_width | divided_by: 10 }}rem;
-      --spacing-sections-desktop: {{ settings.spacing_sections }}px;
-      --spacing-sections-mobile: {% if settings.spacing_sections < 24 %}{{ settings.spacing_sections }}{% else %}{{ settings.spacing_sections | times: 0.7 | round | at_least: 20 }}{% endif %}px;
+      --spacing-sections-desktop: {{ settings.spacing_sections | escape }}px;
+      --spacing-sections-mobile: {% if settings.spacing_sections < 24 %}{{ settings.spacing_sections | escape }}{% else %}{{ settings.spacing_sections | times: 0.7 | round | at_least: 20 }}{% endif %}px;
     }
 
     *,
@@ -119,7 +119,7 @@
         font-size: 1.6rem;
       }
     }
-  {% endstyle %}
+  </style>
 
   {{ 'base.css' | asset_url | stylesheet_tag }}
 

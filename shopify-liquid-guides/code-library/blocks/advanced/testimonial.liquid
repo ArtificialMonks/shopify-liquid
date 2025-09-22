@@ -32,7 +32,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .testimonial-{{ unique }} {
     width: 100%;
     {% if layout == 'card' %}
@@ -189,7 +189,7 @@
       font-size: 13px;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="testimonial-{{ unique }}" {{ block.shopify_attributes }}>

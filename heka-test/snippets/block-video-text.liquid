@@ -12,6 +12,7 @@ Version: 1.0.0 | Compatible: All Shopify themes | Last Updated: January 2025
 • Typography Control: Font selection, sizing, weights, alignment, max-width
 • Background Priority System: Background video > Background image > Background color
 • CSS-Only Effects: Hover effects (raise, zoom, shadow) + scroll-triggered animations
+• 🆕 EFFECT PRESETS: Curated multi-effect combinations (Subtle, Dynamic, Dramatic)
 • Accessibility: Semantic headings, ARIA labels, reduced motion support, focus states
 • Responsive Design: Mobile-first with desktop overrides at 750px breakpoint
 • Instance Scoping: Unique CSS classes per block.id to prevent style collisions
@@ -57,6 +58,14 @@ All classes suffixed with unique block.id to prevent collisions between block in
 {%- comment -%} Generate unique CSS class suffix from block ID {%- endcomment -%}
 {%- assign uid = block.id | replace: '_', '' | downcase -%}
 
+{%- comment -%} Effect System: Preset vs Individual Logic {%- endcomment -%}
+{%- assign use_preset = false -%}
+{%- assign preset_intensity_multiplier = 1.0 -%}
+{%- if block.settings.effect_preset != blank and block.settings.effect_preset != 'none' -%}
+  {%- assign use_preset = true -%}
+  {%- assign preset_intensity_multiplier = block.settings.preset_intensity | default: 100 | divided_by: 100.0 -%}
+{%- endif -%}
+
 {%- comment -%} Calculate aspect ratio values {%- endcomment -%}
 {%- assign aspect_w = 16 -%}
 {%- assign aspect_h = 9 -%}
@@ -85,7 +94,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
 {%- endif -%}
 
 {%- comment -%} Instance-scoped CSS with complete feature set {%- endcomment -%}
-{% style %}
+<style>
   {%- comment -%} Load selected fonts {%- endcomment -%}
   {%- if block.settings.heading_font -%}
     {{ block.settings.heading_font | font_face }}
@@ -561,8 +570,74 @@ All classes suffixed with unique block.id to prevent collisions between block in
         z-index: 2;
     {% endcase %}
 
-    /* Enhanced Text Hover Effects */
-    {% if block.settings.enable_hover_effects %}
+    /* 🎨 PRESET EFFECT COMBINATIONS */
+    {% if use_preset %}
+      transition: all {{ block.settings.animation_duration | default: 600 }}ms ease;
+      cursor: pointer;
+
+      {% case block.settings.effect_preset %}
+        {% when 'subtle' %}
+          /* Subtle Preset: Gentle zoom + highlight */
+          &:hover {
+            {%- assign scale_value = 1.02 | times: preset_intensity_multiplier -%}
+            transform: scale({{ scale_value }});
+          }
+          /* Highlight background effect */
+          position: relative;
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, {{ 0.08 | times: preset_intensity_multiplier }});
+            opacity: 0;
+            transition: opacity {{ block.settings.animation_duration | default: 600 }}ms ease;
+            border-radius: 8px;
+            z-index: -1;
+          }
+          &:hover::before {
+            opacity: 1;
+          }
+
+        {% when 'dynamic' %}
+          /* Dynamic Preset: Scale + lift + underline + color shift */
+          &:hover {
+            {%- assign scale_value = 1.03 | times: preset_intensity_multiplier -%}
+            {%- assign lift_value = -6 | times: preset_intensity_multiplier -%}
+            transform: scale({{ scale_value }}) translateY({{ lift_value }}px);
+            color: #{{ settings.accent_color | default: '007acc' }};
+          }
+          /* Animated underline */
+          position: relative;
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: {{ 2 | times: preset_intensity_multiplier }}px;
+            background: currentColor;
+            transition: width {{ block.settings.animation_duration | default: 600 }}ms ease;
+          }
+          &:hover::after {
+            width: 100%;
+          }
+
+        {% when 'dramatic' %}
+          /* Dramatic Preset: Scale + glow + brightness */
+          &:hover {
+            {%- assign scale_value = 1.05 | times: preset_intensity_multiplier -%}
+            transform: scale({{ scale_value }});
+            text-shadow: 0 0 {{ 10 | times: preset_intensity_multiplier }}px currentColor;
+            filter: brightness({{ 110 | times: preset_intensity_multiplier }}%);
+          }
+      {% endcase %}
+    {% endif %}
+
+    /* Enhanced Text Hover Effects (Individual) */
+    {% if block.settings.enable_hover_effects and use_preset == false %}
       transition: all {{ block.settings.animation_duration | default: 600 }}ms ease;
       cursor: pointer;
 
@@ -635,8 +710,46 @@ All classes suffixed with unique block.id to prevent collisions between block in
         justify-content: flex-end;
     {% endcase %}
 
-    /* Enhanced Video Hover Effects */
-    {% if block.settings.enable_hover_effects %}
+    /* 🎨 VIDEO PRESET EFFECT COMBINATIONS */
+    {% if use_preset %}
+      transition: all {{ block.settings.animation_duration | default: 600 }}ms ease;
+      overflow: hidden;
+      border-radius: {{ block.settings.video_rounding | default: 'none' }};
+
+      {% case block.settings.effect_preset %}
+        {% when 'subtle' %}
+          /* Subtle Preset: Gentle scale only */
+          &:hover {
+            {%- assign scale_value = 1.02 | times: preset_intensity_multiplier -%}
+            transform: scale({{ scale_value }});
+          }
+
+        {% when 'dynamic' %}
+          /* Dynamic Preset: Scale + lift */
+          &:hover {
+            {%- assign scale_value = 1.03 | times: preset_intensity_multiplier -%}
+            {%- assign lift_value = -8 | times: preset_intensity_multiplier -%}
+            transform: scale({{ scale_value }}) translateY({{ lift_value }}px);
+            box-shadow: 0 {{ 12 | times: preset_intensity_multiplier }}px {{ 40 | times: preset_intensity_multiplier }}px rgba(0,0,0,0.2);
+          }
+
+        {% when 'dramatic' %}
+          /* Dramatic Preset: Lift + glow + brightness */
+          &:hover {
+            {%- assign lift_value = -10 | times: preset_intensity_multiplier -%}
+            {%- assign glow_size = 30 | times: preset_intensity_multiplier -%}
+            {%- assign brightness_value = 110 | times: preset_intensity_multiplier -%}
+            transform: translateY({{ lift_value }}px);
+            box-shadow:
+              0 {{ 12 | times: preset_intensity_multiplier }}px {{ 40 | times: preset_intensity_multiplier }}px rgba(0,0,0,0.2),
+              0 0 {{ glow_size }}px rgba(255,255,255,0.3);
+            filter: brightness({{ brightness_value }}%);
+          }
+      {% endcase %}
+    {% endif %}
+
+    /* Enhanced Video Hover Effects (Individual) */
+    {% if block.settings.enable_hover_effects and use_preset == false %}
       transition: all {{ block.settings.animation_duration | default: 600 }}ms ease;
       overflow: hidden;
       border-radius: {{ block.settings.video_rounding | default: 'none' }};
@@ -870,15 +983,34 @@ All classes suffixed with unique block.id to prevent collisions between block in
   @media (prefers-reduced-motion: reduce) {
     .video-text-{{ uid }},
     .video-text__text-{{ uid }},
-    .video-text__media-{{ uid }} {
+    .video-text__media-{{ uid }},
+    .video-text__video-{{ uid }} {
       animation: none !important;
       transition: none !important;
       transform: none !important;
+      filter: none !important;
+      box-shadow: none !important;
     }
-    
+
     .video-text-{{ uid }} {
       opacity: 1;
     }
+
+    /* Disable preset effects in reduced motion */
+    {% if use_preset %}
+      .video-text__text-{{ uid }}:hover,
+      .video-text__video-{{ uid }}:hover {
+        transform: none !important;
+        filter: none !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+
+      .video-text__text-{{ uid }}::before,
+      .video-text__text-{{ uid }}::after {
+        display: none !important;
+      }
+    {% endif %}
   }
   
   /* Focus states for accessibility */
@@ -979,7 +1111,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
       }
     }
   {% endif %}
-{% endstyle %}
+</style>
 
 <div class="video-text-{{ uid }}" role="group" {{ block.shopify_attributes }}>
   {%- comment -%} Background video (highest priority) {%- endcomment -%}

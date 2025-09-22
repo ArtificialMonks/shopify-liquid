@@ -1,12 +1,12 @@
 {%- comment -%} Paste inside a section's block loop {%- endcomment -%}
 {%- assign u = block.id | replace: '_', '' | downcase -%}
 
-{% style %}
+<style>
   .feature-{{ u }}{text-align:center;padding:{{ block.settings.pad }}px;background:{{ block.settings.bg }}}
   .feature__icon-{{ u }} img{width:{{ block.settings.icon_size }}px;height:{{ block.settings.icon_size }}px}
   .feature__title-{{ u }}{margin:8px 0;color:{{ block.settings.title_color }}}
   .feature__text-{{ u }}{color:{{ block.settings.text_color }}}
-{% endstyle %}
+</style>
 
 <div class="feature-{{ u }}" {{ block.shopify_attributes }}>
   <div class="feature__icon-{{ u }}">{% if block.settings.icon %}<img src="{{ block.settings.icon | image_url: width: 200 }}" alt="">{% endif %}</div>

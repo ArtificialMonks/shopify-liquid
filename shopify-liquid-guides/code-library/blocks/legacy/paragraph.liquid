@@ -20,7 +20,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .paragraph-block-{{ unique }} {
     text-align: {{ alignment }};
     padding: 10px 0;
@@ -40,7 +40,7 @@
       font-size: {{ font_size | minus: 2 }}px;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="paragraph-block-{{ unique }}" {{ block.shopify_attributes }}>

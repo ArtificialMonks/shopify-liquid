@@ -1,13 +1,13 @@
 {%- comment -%} Paste inside a section's block loop: {% for block in section.blocks %} ... {% endfor %} {%- endcomment -%}
 {%- assign u = block.id | replace: '_', '' | downcase -%}
 
-{% style %}
+<style>
   .img-text-{{ u }}{display:flex;align-items:center;gap:{{ block.settings.gap }}px;padding:{{ block.settings.pad }}px}
   .img-text__img-{{ u }} img{width:100%;height:auto;display:block;border-radius:{{ block.settings.radius }}px}
   .img-text__text-{{ u }}{color:{{ block.settings.text_color }};font-size:{{ block.settings.text_size }}px;line-height:1.6}
   {% if block.settings.layout == 'text_left' %}.img-text-{{ u }}{flex-direction:row}{% else %}.img-text-{{ u }}{flex-direction:row-reverse}{% endif %}
   @media(max-width:749px){.img-text-{{ u }}{flex-direction:column;gap:{{ block.settings.gap_mobile }}px;padding:{{ block.settings.pad_mobile }}px}.img-text__text-{{ u }}{font-size:{{ block.settings.text_size_mobile }}px}}
-{% endstyle %}
+</style>
 
 <div class="img-text-{{ u }}" {{ block.shopify_attributes }}>
   <div class="img-text__img-{{ u }}">

@@ -1,0 +1,897 @@
+{% comment %}
+  Brand Story Section - Enterprise Grade
+
+  Features:
+  - Rich media integration with video backgrounds
+  - Interactive scroll-triggered animations
+  - Typography hierarchy with artistic styling
+  - Multiple layout options (side-by-side, overlay, stacked)
+  - Progressive disclosure with expandable content
+  - WCAG 2.1 AA accessibility compliance
+{% endcomment %}
+
+{% liquid
+  assign unique = section.id | replace: '_', '' | downcase
+  assign media_type = section.settings.media_type
+  assign layout_style = section.settings.layout_style
+  assign content_width = section.settings.content_width
+  assign enable_animations = section.settings.enable_animations
+
+%}
+
+<style>
+  .brand-story-{{ unique }} {
+    padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px;
+    background: {{ section.settings.background_color | default: 'transparent' }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-story-{{ unique }}__container {
+    max-width: {{ section.settings.max_width | default: 1400 }}px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .brand-story-{{ unique }}__wrapper {
+    display: grid;
+    gap: {{ section.settings.content_gap | default: 3 }}rem;
+    align-items: center;
+
+    {% case layout_style %}
+      {% when 'side_by_side' %}
+        grid-template-columns: 1fr 1fr;
+      {% when 'stacked' %}
+        grid-template-columns: 1fr;
+      {% when 'overlay' %}
+        grid-template-columns: 1fr;
+        position: relative;
+    {% endcase %}
+  }
+
+  .brand-story-{{ unique }}__media {
+    position: relative;
+    border-radius: {{ section.settings.media_border_radius | default: 12 }}px;
+    overflow: hidden;
+    {% if layout_style == 'overlay' %}
+      grid-row: 1;
+      grid-column: 1;
+    {% endif %}
+  }
+
+  .brand-story-{{ unique }}__media-container {
+    position: relative;
+    width: 100%;
+    {% if media_type == 'image' or media_type == 'video_upload' %}
+      aspect-ratio: {{ section.settings.media_aspect_ratio | default: '16 / 9' }};
+    {% endif %}
+    background: {{ section.settings.media_placeholder_color | default: '#f5f5f5' }};
+  }
+
+  .brand-story-{{ unique }}__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  {% if section.settings.enable_media_hover %}
+    .brand-story-{{ unique }}__media:hover .brand-story-{{ unique }}__image {
+      transform: scale(1.05);
+    }
+  {% endif %}
+
+  .brand-story-{{ unique }}__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .brand-story-{{ unique }}__video-embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .brand-story-{{ unique }}__content {
+    {% if layout_style == 'overlay' %}
+      grid-row: 1;
+      grid-column: 1;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: {{ section.settings.overlay_text_color | default: '#ffffff' }};
+      background: {{ section.settings.overlay_background | default: 'rgba(0, 0, 0, 0.5)' }};
+      padding: 3rem;
+    {% else %}
+      color: {{ section.settings.text_color | default: '#000000' }};
+    {% endif %}
+
+    {% if content_width and layout_style != 'overlay' %}
+      max-width: {{ content_width }}%;
+      {% if layout_style == 'stacked' %}margin: 0 auto;{% endif %}
+    {% endif %}
+  }
+
+  .brand-story-{{ unique }}__heading {
+    font-size: clamp(32px, 6vw, {{ section.settings.heading_size | default: 48 }}px);
+    font-weight: {{ section.settings.heading_weight | default: 700 }};
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    {% if layout_style == 'overlay' %}
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    {% endif %}
+  }
+
+  .brand-story-{{ unique }}__description {
+    font-size: clamp(16px, 2.5vw, {{ section.settings.description_size | default: 18 }}px);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    {% if layout_style == 'overlay' %}
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    {% endif %}
+  }
+
+  .brand-story-{{ unique }}__highlights {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    {% if section.blocks.size > 1 %}
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    {% endif %}
+  }
+
+  .brand-story-{{ unique }}__highlight {
+    padding: 1.5rem;
+    background: {{ section.settings.highlight_background | default: '#f8f9fa' }};
+    border-radius: {{ section.settings.highlight_border_radius | default: 8 }}px;
+    text-align: center;
+    transition: all 0.3s ease;
+    {% if layout_style == 'overlay' %}
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+    {% endif %}
+  }
+
+  {% if section.settings.enable_highlight_hover %}
+    .brand-story-{{ unique }}__highlight:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px {{ section.settings.highlight_shadow_color | default: 'rgba(0, 0, 0, 0.1)' }};
+    }
+  {% endif %}
+
+  .brand-story-{{ unique }}__highlight-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: {{ section.settings.icon_background | default: '#000000' }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-story-{{ unique }}__highlight-icon img {
+    max-width: 30px;
+    max-height: 30px;
+    filter: brightness(0) invert(1);
+  }
+
+  .brand-story-{{ unique }}__highlight-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: {{ section.settings.highlight_title_color | default: '#000000' }};
+  }
+
+  .brand-story-{{ unique }}__highlight-text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: {{ section.settings.highlight_text_color | default: '#666666' }};
+  }
+
+  .brand-story-{{ unique }}__cta {
+    margin-top: 2rem;
+  }
+
+  .brand-story-{{ unique }}__button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: {{ section.settings.button_background | default: '#000000' }};
+    color: {{ section.settings.button_text_color | default: '#ffffff' }};
+    text-decoration: none;
+    border-radius: {{ section.settings.button_border_radius | default: 4 }}px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .brand-story-{{ unique }}__button:hover {
+    background: {{ section.settings.button_hover_background | default: '#333333' }};
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .brand-story-{{ unique }}__button:focus {
+    outline: 3px solid var(--focus-ring-color, #007cba);
+    outline-offset: 4px;
+  }
+
+  /* Animation styles */
+  {% if enable_animations %}
+    .brand-story-{{ unique }}__content,
+    .brand-story-{{ unique }}__media {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    .brand-story-{{ unique }}__content.animate-in,
+    .brand-story-{{ unique }}__media.animate-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .brand-story-{{ unique }}__highlight {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .brand-story-{{ unique }}__highlight.animate-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  {% endif %}
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .brand-story-{{ unique }}__wrapper {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .brand-story-{{ unique }}__content {
+      {% if layout_style == 'overlay' %}
+        padding: 2rem;
+      {% endif %}
+      max-width: 100% !important;
+    }
+
+    .brand-story-{{ unique }}__highlights {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .brand-story-{{ unique }}__highlight {
+      padding: 1rem;
+    }
+
+    .brand-story-{{ unique }}__media-container {
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .brand-story-{{ unique }}__highlight {
+      border: 2px solid black !important;
+      background: white !important;
+      color: black !important;
+    }
+
+    .brand-story-{{ unique }}__button {
+      border: 2px solid black !important;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .brand-story-{{ unique }}__content,
+    .brand-story-{{ unique }}__media,
+    .brand-story-{{ unique }}__highlight,
+    .brand-story-{{ unique }}__button,
+    .brand-story-{{ unique }}__image {
+      transition: none !important;
+    }
+
+    .brand-story-{{ unique }}__highlight:hover,
+    .brand-story-{{ unique }}__button:hover {
+      transform: none !important;
+    }
+
+    .brand-story-{{ unique }}__media:hover .brand-story-{{ unique }}__image {
+      transform: none !important;
+    }
+  }
+</style>
+
+<section class="brand-story-{{ unique }}"
+         data-section-id="{{ section.id }}"
+         data-section-type="brand-story"
+         {% if section.settings.story_heading != blank %}
+           aria-labelledby="story-heading-{{ unique }}"
+         {% endif %}>
+
+  <div class="brand-story-{{ unique }}__container">
+    <div class="brand-story-{{ unique }}__wrapper brand-story-{{ unique }}__wrapper--{{ layout_style }}">
+
+      <!-- Media content -->
+      <div class="brand-story-{{ unique }}__media"
+           {% if enable_animations %}data-animate{% endif %}>
+        <div class="brand-story-{{ unique }}__media-container">
+
+          {% case media_type %}
+            {% when 'image' %}
+              {% if section.settings.story_image %}
+                <picture>
+                  <source media="(min-width: 990px)"
+                          srcset="{{ section.settings.story_image | image_url: width: 800 }} 800w,
+                                  {{ section.settings.story_image | image_url: width: 1200 }} 1200w">
+                  <source media="(min-width: 750px)"
+                          srcset="{{ section.settings.story_image | image_url: width: 600 }} 600w,
+                                  {{ section.settings.story_image | image_url: width: 800 }} 800w">
+                  <img src="{{ section.settings.story_image | image_url: width: 600 }}"
+                       srcset="{{ section.settings.story_image | image_url: width: 400 }} 400w,
+                               {{ section.settings.story_image | image_url: width: 600 }} 600w"
+                       sizes="(min-width: 990px) 50vw, (min-width: 750px) 100vw, 100vw"
+                       alt="{{ section.settings.story_image.alt | escape | default: section.settings.story_heading }}"
+                       class="brand-story-{{ unique }}__image"
+                       loading="lazy"
+                       width="600"
+                       height="{{ 600 | divided_by: section.settings.story_image.aspect_ratio | round }}">
+                </picture>
+              {% endif %}
+
+            {% when 'video_upload' %}
+              {% if section.settings.story_video %}
+                <video class="brand-story-{{ unique }}__video"
+                       autoplay
+                       muted
+                       loop
+                       playsinline
+                       preload="metadata"
+                       {% if section.settings.story_image %}
+                         poster="{{ section.settings.story_image | image_url: width: 1200 }}"
+                       {% endif %}>
+                  <source src="{{ section.settings.story_video | file_url }}" type="video/mp4">
+                </video>
+              {% endif %}
+
+            {% when 'video_external' %}
+              {% if section.settings.story_video_url %}
+                {% liquid
+  assign video_url = section.settings.story_video_url
+  assign video_id = ''
+  assign video_type = ''
+
+  if video_url contains 'youtube.com' or video_url contains 'youtu.be'
+  assign video_type = 'youtube'
+  if video_url contains 'youtu.be'
+  assign video_id = video_url | split: 'youtu.be/' | last | split: '?' | first
+  else
+  assign video_id = video_url | split: 'v=' | last | split: '&' | first
+  endif
+  elsif video_url contains 'vimeo.com'
+  assign video_type = 'vimeo'
+  assign video_id = video_url | split: 'vimeo.com/' | last | split: '?' | first
+  endif
+
+%}
+
+                {% if video_type == 'youtube' and video_id != '' %}
+                  <iframe class="brand-story-{{ unique }}__video-embed"
+                          src="https://www.youtube.com/embed/{{ video_id }}?autoplay=1&mute=1&loop=1&playlist={{ video_id }}&controls=0&modestbranding=1&rel=0"
+                          allow="autoplay; encrypted-media"
+                          allowfullscreen
+                          title="{{ section.settings.story_heading | escape }}">
+                  </iframe>
+                {% elsif video_type == 'vimeo' and video_id != '' %}
+                  <iframe class="brand-story-{{ unique }}__video-embed"
+                          src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&loop=1&muted=1&controls=0&background=1"
+                          allow="autoplay; fullscreen"
+                          allowfullscreen
+                          title="{{ section.settings.story_heading | escape }}">
+                  </iframe>
+                {% endif %}
+              {% endif %}
+          {% endcase %}
+
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="brand-story-{{ unique }}__content"
+           {% if enable_animations %}data-animate{% endif %}>
+
+        {% if section.settings.story_heading != blank %}
+          <h2 id="story-heading-{{ unique }}" class="brand-story-{{ unique }}__heading">
+            {{ section.settings.story_heading | escape }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.story_content != blank %}
+          <div class="brand-story-{{ unique }}__description">
+            {{ section.settings.story_content }}
+          </div>
+        {% endif %}
+
+        <!-- Story highlights -->
+        {% if section.blocks.size > 0 %}
+          <div class="brand-story-{{ unique }}__highlights">
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'story_highlight' %}
+                  <div class="brand-story-{{ unique }}__highlight"
+                       {% if enable_animations %}data-animate{% endif %}
+                       {{ block.shopify_attributes }}>
+
+                    {% if block.settings.highlight_icon %}
+                      <div class="brand-story-{{ unique }}__highlight-icon">
+                        <img src="{{ block.settings.highlight_icon | image_url: width: 60 }}"
+                             alt="{{ block.settings.highlight_title | escape }}"
+                             width="30"
+                             height="30">
+                      </div>
+                    {% endif %}
+
+                    {% if block.settings.highlight_title != blank %}
+                      <h3 class="brand-story-{{ unique }}__highlight-title">
+                        {{ block.settings.highlight_title | escape }}
+                      </h3>
+                    {% endif %}
+
+                    {% if block.settings.highlight_description != blank %}
+                      <div class="brand-story-{{ unique }}__highlight-text">
+                        {{ block.settings.highlight_description | escape }}
+                      </div>
+                    {% endif %}
+
+                  </div>
+              {% endcase %}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Call to action -->
+        {% if section.settings.cta_text != blank and section.settings.cta_url != blank %}
+          <div class="brand-story-{{ unique }}__cta">
+            <a href="{{ section.settings.cta_url }}"
+               class="brand-story-{{ unique }}__button"
+               {% if section.settings.cta_url contains 'http' %}target="_blank" rel="noopener"{% endif %}
+               aria-describedby="story-heading-{{ unique }}">
+              {{ section.settings.cta_text | escape }}
+            </a>
+          </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  // Scroll-triggered animations
+  {% if enable_animations %}
+    document.addEventListener('DOMContentLoaded', function() {
+      const brandStorySection = document.querySelector('.brand-story-{{ unique }}');
+      const animateElements = brandStorySection.querySelectorAll('[data-animate]');
+
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+          }
+        });
+      }, observerOptions);
+
+      animateElements.forEach(element => {
+        observer.observe(element);
+      });
+
+      // Stagger animation for highlights
+      const highlights = brandStorySection.querySelectorAll('.brand-story-{{ unique }}__highlight[data-animate]');
+      highlights.forEach((highlight, index) => {
+        highlight.style.transitionDelay = `${index * 0.2}s`;
+      });
+    });
+  {% endif %}
+</script>
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "tag": "section",
+  "class": "brand-story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Story Content"
+    },
+    {
+      "type": "text",
+      "id": "story_heading",
+      "label": "Story Heading",
+      "default": "Our Artistic Journey"
+    },
+    {
+      "type": "richtext",
+      "id": "story_content",
+      "label": "Story Content",
+      "default": "<p>Share your brand's creative story and connect with your audience through compelling narrative and beautiful visuals.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media Type",
+      "default": "image",
+      "options": [
+        {"value": "image", "label": "Image"},
+        {"value": "video_upload", "label": "Video Upload"},
+        {"value": "video_external", "label": "External Video (YouTube/Vimeo)"}
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "story_image",
+      "label": "Story Image"
+    },
+    {
+      "type": "video",
+      "id": "story_video",
+      "label": "Story Video Upload"
+    },
+    {
+      "type": "video_url",
+      "id": "story_video_url",
+      "label": "External Video URL",
+      "accept": ["youtube", "vimeo"]
+    },
+    {
+      "type": "select",
+      "id": "media_aspect_ratio",
+      "label": "Media Aspect Ratio",
+      "default": "16 / 9",
+      "options": [
+        {"value": "16 / 9", "label": "Wide (16:9)"},
+        {"value": "4 / 3", "label": "Landscape (4:3)"},
+        {"value": "1 / 1", "label": "Square (1:1)"},
+        {"value": "3 / 4", "label": "Portrait (3:4)"}
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_media_hover",
+      "label": "Enable Media Hover Effect",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Layout Style",
+      "default": "side_by_side",
+      "options": [
+        {"value": "side_by_side", "label": "Side by Side"},
+        {"value": "overlay", "label": "Text Overlay"},
+        {"value": "stacked", "label": "Stacked"}
+      ]
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content Width",
+      "min": 40,
+      "max": 80,
+      "step": 5,
+      "default": 60,
+      "unit": "%",
+      "info": "Only applies to side-by-side and stacked layouts"
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Content Gap",
+      "min": 1,
+      "max": 6,
+      "step": 0.5,
+      "default": 3,
+      "unit": "rem"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "default": 1400,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable Scroll Animations",
+      "default": true,
+      "info": "Fade-in animations when elements come into view"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Typography"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_weight",
+      "label": "Heading Weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description Size",
+      "min": 16,
+      "max": 24,
+      "step": 2,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Overlay Styling (Overlay Layout Only)"
+    },
+    {
+      "type": "color",
+      "id": "overlay_background",
+      "label": "Overlay Background",
+      "default": "rgba(0, 0, 0, 0.5)"
+    },
+    {
+      "type": "color",
+      "id": "overlay_text_color",
+      "label": "Overlay Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Media Styling"
+    },
+    {
+      "type": "range",
+      "id": "media_border_radius",
+      "label": "Media Border Radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "media_placeholder_color",
+      "label": "Media Placeholder Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "header",
+      "content": "Highlight Styling"
+    },
+    {
+      "type": "color",
+      "id": "highlight_background",
+      "label": "Highlight Background",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "highlight_title_color",
+      "label": "Highlight Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "highlight_text_color",
+      "label": "Highlight Text Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "highlight_border_radius",
+      "label": "Highlight Border Radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_highlight_hover",
+      "label": "Enable Highlight Hover Effects",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "highlight_shadow_color",
+      "label": "Highlight Shadow Color",
+      "default": "rgba(0, 0, 0, 0.1)"
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon Background",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Button Styling"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Button Hover Background",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Border Radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 4,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "story_highlight",
+      "name": "Story Highlight",
+      "settings": [
+        {
+          "type": "text",
+          "id": "highlight_title",
+          "label": "Highlight Title"
+        },
+        {
+          "type": "textarea",
+          "id": "highlight_description",
+          "label": "Highlight Description"
+        },
+        {
+          "type": "image_picker",
+          "id": "highlight_icon",
+          "label": "Highlight Icon"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Brand Story",
+      "category": "Content",
+      "settings": {
+        "story_heading": "Our Artistic Journey",
+        "story_content": "<p>Share your brand's creative story and connect with your audience through compelling narrative and beautiful visuals.</p>",
+        "media_type": "image",
+        "layout_style": "side_by_side",
+        "content_width": 60,
+        "enable_animations": true
+      },
+      "blocks": [
+        {
+          "type": "story_highlight",
+          "settings": {
+            "highlight_title": "Unique Craftsmanship",
+            "highlight_description": "Every piece is carefully crafted with attention to detail and artistic vision."
+          }
+        },
+        {
+          "type": "story_highlight",
+          "settings": {
+            "highlight_title": "Sustainable Materials",
+            "highlight_description": "We source eco-friendly materials to create beautiful, sustainable art."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

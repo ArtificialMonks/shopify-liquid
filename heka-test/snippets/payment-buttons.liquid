@@ -1,0 +1,58 @@
+{% comment %}
+  Payment buttons snippet
+  Renders dynamic payment buttons for the product form
+{% endcomment %}
+
+<div class="payment-buttons">
+  {% if form %}
+    <div class="dynamic-payment-buttons">
+      <!-- Dynamic payment buttons would be inserted here by Shopify -->
+      <div class="payment-button apple-pay" style="display: none;">
+        <button type="button" class="apple-pay-button">Pay with Apple Pay</button>
+      </div>
+
+      <div class="payment-button google-pay" style="display: none;">
+        <button type="button" class="google-pay-button">Pay with Google Pay</button>
+      </div>
+
+      <div class="payment-button paypal" style="display: none;">
+        <button type="button" class="paypal-button">PayPal</button>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .payment-buttons {
+    margin-top: 1rem;
+  }
+
+  .payment-button {
+    margin-bottom: 0.5rem;
+  }
+
+  .payment-button button {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .apple-pay-button {
+    background: #000;
+    color: white;
+  }
+
+  .google-pay-button {
+    background: #4285f4;
+    color: white;
+  }
+
+  .paypal-button {
+    background: #ffc439;
+    color: #003087;
+  }
+</style>

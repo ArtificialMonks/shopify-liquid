@@ -37,7 +37,7 @@
 -%}
 
 {%- comment -%} CSS Scoping and Styles {%- endcomment -%}
-{% style %}
+<style>
   .divider-block-{{ unique }} {
     margin-top: {{ margin_top }}px;
     margin-bottom: {{ margin_bottom }}px;
@@ -268,7 +268,7 @@
       opacity: 0.5;
     }
   }
-{% endstyle %}
+</style>
 
 {%- comment -%} HTML Structure {%- endcomment -%}
 <div class="divider-block-{{ unique }} divider-block-{{ unique }}--{{ divider_type }}{% if divider_type == 'line' or divider_type == 'pattern' %} divider-block--{{ divider_style }}{% endif %}" {{ block.shopify_attributes }} role="separator" aria-orientation="horizontal">

@@ -1,4 +1,4 @@
-{% doc %}
+{%- comment -%}
   @prompt
     Create an advanced video and text section with:
     - Video on one side, text on the other (switchable)
@@ -18,12 +18,12 @@
     - Keyboard navigation
     - Video controls
     - Reduced motion support
-{% enddoc %}
+{%- endcomment -%}
 
 {% comment %} Generate unique ID for scoped CSS {% endcomment %}
 {% assign section_id = section.id | replace: '_', '' | downcase %}
 
-{% style %}
+<style>
   /* Base container styles */
   .video-text-{{ section_id }} {
     padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px 0;
@@ -182,7 +182,7 @@
     transform: translate(-50%, -50%);
     color: #999;
   }
-{% endstyle %}
+</style>
 
 <div class="video-text-{{ section_id }}" {{ section.shopify_attributes }}>
   <div class="video-text__container-{{ section_id }}">

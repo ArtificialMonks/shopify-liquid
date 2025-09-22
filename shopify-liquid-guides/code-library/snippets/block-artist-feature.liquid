@@ -22,7 +22,7 @@
   assign block_id = block.id | replace: '_', '' | downcase
 -%}
 
-{% style %}
+<style>
   .artist-feature-{{ block_id }} {
     /* ✅ Design token integration for artist feature blocks */
     --feature-bg: {{ feature_bg_color }};
@@ -123,7 +123,7 @@
       font-size: var(--font-size-lg);
     }
   }
-{% endstyle %}
+</style>
 
 <div class="artist-feature-{{ block_id }}" {{ block.shopify_attributes }}>
   {% if artist_image %}

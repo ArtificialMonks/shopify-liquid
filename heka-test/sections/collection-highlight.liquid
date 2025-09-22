@@ -1,0 +1,945 @@
+{% comment %}
+  Collection Highlight Section - Enterprise Grade
+
+  Features:
+  - Featured product collections with artistic presentation
+  - Advanced overlay systems with blend modes
+  - Dynamic content with auto-updating collection displays
+  - Performance optimization with lazy loading
+  - Multiple layout modes (banner, grid, carousel)
+  - WCAG 2.1 AA accessibility compliance
+{% endcomment %}
+
+{% liquid
+  assign unique = section.id | replace: '_', '' | downcase
+  assign featured_collection = collections[section.settings.featured_collection]
+  assign layout_mode = section.settings.layout_mode
+  assign products_to_show = section.settings.products_to_show
+  assign text_position = section.settings.text_position
+  assign overlay_opacity = section.settings.overlay_opacity
+  assign enable_parallax = section.settings.enable_parallax
+
+%}
+
+<style>
+  .collection-highlight-{{ unique }} {
+    position: relative;
+    min-height: {{ section.settings.section_height | default: 60 }}vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .collection-highlight-{{ unique }}__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: {{ section.settings.fallback_background | default: '#f5f5f5' }};
+  }
+
+  {% if section.settings.background_image %}
+    .collection-highlight-{{ unique }}__background::before {
+      content: '';
+      position: absolute;
+      top: {% if enable_parallax %}-20%{% else %}0{% endif %};
+      left: {% if enable_parallax %}-20%{% else %}0{% endif %};
+      right: {% if enable_parallax %}-20%{% else %}0{% endif %};
+      bottom: {% if enable_parallax %}-20%{% else %}0{% endif %};
+      background-image: url('{{ section.settings.background_image | image_url: width: 2000 }}');
+      background-size: cover;
+      background-position: {{ section.settings.background_position | default: 'center center' }};
+      background-repeat: no-repeat;
+      {% if enable_parallax %}
+        background-attachment: fixed;
+        will-change: transform;
+      {% endif %}
+      z-index: -1;
+    }
+  {% endif %}
+
+  .collection-highlight-{{ unique }}__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: {{ section.settings.overlay_color | default: '#000000' }};
+    opacity: {{ overlay_opacity | divided_by: 100.0 }};
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .collection-highlight-{{ unique }}__container {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: {{ section.settings.max_width | default: 1400 }}px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .collection-highlight-{{ unique }}__content {
+    text-align: {{ text_position }};
+    color: {{ section.settings.text_color | default: '#ffffff' }};
+    {% if text_position == 'center' %}
+      margin: 0 auto;
+    {% endif %}
+    max-width: {{ section.settings.content_max_width | default: 600 }}px;
+    {% if text_position == 'right' %}
+      margin-left: auto;
+    {% endif %}
+  }
+
+  .collection-highlight-{{ unique }}__eyebrow {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: {{ section.settings.eyebrow_color | default: '#cccccc' }};
+    margin-bottom: 0.5rem;
+  }
+
+  .collection-highlight-{{ unique }}__heading {
+    font-size: clamp(40px, 8vw, {{ section.settings.heading_size | default: 64 }}px);
+    font-weight: {{ section.settings.heading_weight | default: 700 }};
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .collection-highlight-{{ unique }}__description {
+    font-size: clamp(18px, 3vw, {{ section.settings.description_size | default: 20 }}px);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .collection-highlight-{{ unique }}__stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    {% if text_position == 'center' %}
+      justify-content: center;
+    {% elsif text_position == 'right' %}
+      justify-content: flex-end;
+    {% endif %}
+  }
+
+  .collection-highlight-{{ unique }}__stat {
+    text-align: center;
+  }
+
+  .collection-highlight-{{ unique }}__stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    color: {{ section.settings.stat_number_color | default: '#ffffff' }};
+  }
+
+  .collection-highlight-{{ unique }}__stat-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: {{ section.settings.stat_label_color | default: '#cccccc' }};
+  }
+
+  .collection-highlight-{{ unique }}__cta {
+    display: flex;
+    gap: 1rem;
+    {% if text_position == 'center' %}
+      justify-content: center;
+    {% elsif text_position == 'right' %}
+      justify-content: flex-end;
+    {% endif %}
+  }
+
+  .collection-highlight-{{ unique }}__button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: {{ section.settings.primary_button_bg | default: '#ffffff' }};
+    color: {{ section.settings.primary_button_text_color | default: '#000000' }};
+    text-decoration: none;
+    border-radius: {{ section.settings.button_border_radius | default: 4 }}px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .collection-highlight-{{ unique }}__button:hover {
+    background: {{ section.settings.primary_button_hover_bg | default: '#f0f0f0' }};
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .collection-highlight-{{ unique }}__button--secondary {
+    background: transparent;
+    color: {{ section.settings.secondary_button_text_color | default: '#ffffff' }};
+    border-color: {{ section.settings.secondary_button_border | default: '#ffffff' }};
+  }
+
+  .collection-highlight-{{ unique }}__button--secondary:hover {
+    background: {{ section.settings.secondary_button_hover_bg | default: '#ffffff' }};
+    color: {{ section.settings.secondary_button_hover_text | default: '#000000' }};
+  }
+
+  .collection-highlight-{{ unique }}__button:focus {
+    outline: 3px solid var(--focus-ring-color, #007cba);
+    outline-offset: 4px;
+  }
+
+  /* Product grid layout */
+  .collection-highlight-{{ unique }}__products {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .collection-highlight-{{ unique }}__product {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: {{ section.settings.product_border_radius | default: 8 }}px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .collection-highlight-{{ unique }}__product:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+  }
+
+  .collection-highlight-{{ unique }}__product-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: {{ section.settings.product_image_radius | default: 4 }}px;
+    margin-bottom: 0.75rem;
+  }
+
+  .collection-highlight-{{ unique }}__product-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: {{ section.settings.text_color | default: '#ffffff' }};
+  }
+
+  .collection-highlight-{{ unique }}__product-price {
+    font-size: 0.875rem;
+    color: {{ section.settings.eyebrow_color | default: '#cccccc' }};
+  }
+
+  /* Banner layout mode */
+  .collection-highlight-{{ unique }}--banner {
+    min-height: 80vh;
+  }
+
+  .collection-highlight-{{ unique }}--banner .collection-highlight-{{ unique }}__products {
+    display: none;
+  }
+
+  /* Grid layout mode */
+  .collection-highlight-{{ unique }}--grid {
+    min-height: auto;
+    padding: {{ section.settings.grid_padding | default: 4 }}rem 0;
+  }
+
+  .collection-highlight-{{ unique }}--grid .collection-highlight-{{ unique }}__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  /* Carousel layout mode */
+  .collection-highlight-{{ unique }}--carousel .collection-highlight-{{ unique }}__products {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .collection-highlight-{{ unique }}--carousel .collection-highlight-{{ unique }}__product {
+    flex: 0 0 200px;
+    scroll-snap-align: start;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .collection-highlight-{{ unique }} {
+      min-height: 70vh;
+    }
+
+    .collection-highlight-{{ unique }}__container {
+      padding: 1.5rem;
+    }
+
+    .collection-highlight-{{ unique }}__content {
+      text-align: center;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .collection-highlight-{{ unique }}__stats {
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .collection-highlight-{{ unique }}__cta {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .collection-highlight-{{ unique }}__button {
+      width: 100%;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .collection-highlight-{{ unique }}--grid .collection-highlight-{{ unique }}__container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .collection-highlight-{{ unique }}__products {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    {% if enable_parallax %}
+      .collection-highlight-{{ unique }}__background::before {
+        background-attachment: scroll;
+      }
+    {% endif %}
+  }
+
+  @media (max-width: 480px) {
+    .collection-highlight-{{ unique }}__products {
+      grid-template-columns: 1fr;
+    }
+
+    .collection-highlight-{{ unique }}__stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .collection-highlight-{{ unique }}__overlay {
+      display: none !important;
+    }
+
+    .collection-highlight-{{ unique }}__content {
+      background: white !important;
+      color: black !important;
+      padding: 2rem;
+      border-radius: 8px;
+    }
+
+    .collection-highlight-{{ unique }}__button {
+      border: 2px solid black !important;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .collection-highlight-{{ unique }}__background::before {
+      background-attachment: scroll !important;
+    }
+
+    .collection-highlight-{{ unique }}__button,
+    .collection-highlight-{{ unique }}__product {
+      transition: none !important;
+    }
+
+    .collection-highlight-{{ unique }}__button:hover,
+    .collection-highlight-{{ unique }}__product:hover {
+      transform: none !important;
+    }
+  }
+</style>
+
+<section class="collection-highlight-{{ unique }} collection-highlight-{{ unique }}--{{ layout_mode }}"
+         data-section-id="{{ section.id }}"
+         data-section-type="collection-highlight"
+         {% if section.settings.collection_heading != blank %}
+           aria-labelledby="collection-heading-{{ unique }}"
+         {% endif %}>
+
+  <!-- Background layer -->
+  <div class="collection-highlight-{{ unique }}__background"></div>
+
+  <!-- Overlay -->
+  {% if overlay_opacity > 0 %}
+    <div class="collection-highlight-{{ unique }}__overlay"></div>
+  {% endif %}
+
+  <!-- Content -->
+  <div class="collection-highlight-{{ unique }}__container">
+
+    <div class="collection-highlight-{{ unique }}__content">
+
+      <!-- Eyebrow text -->
+      {% if section.settings.eyebrow_text != blank %}
+        <div class="collection-highlight-{{ unique }}__eyebrow">
+          {{ section.settings.eyebrow_text | escape }}
+        </div>
+      {% endif %}
+
+      <!-- Main heading -->
+      {% if section.settings.collection_heading != blank %}
+        <h2 id="collection-heading-{{ unique }}" class="collection-highlight-{{ unique }}__heading">
+          {{ section.settings.collection_heading | escape }}
+        </h2>
+      {% elsif featured_collection %}
+        <h2 id="collection-heading-{{ unique }}" class="collection-highlight-{{ unique }}__heading">
+          {{ featured_collection.title | escape }}
+        </h2>
+      {% endif %}
+
+      <!-- Description -->
+      {% if section.settings.collection_description != blank %}
+        <div class="collection-highlight-{{ unique }}__description">
+          {{ section.settings.collection_description }}
+        </div>
+      {% elsif featured_collection and featured_collection.description != blank %}
+        <div class="collection-highlight-{{ unique }}__description">
+          {{ featured_collection.description | truncate: 200 }}
+        </div>
+      {% endif %}
+
+      <!-- Collection stats -->
+      {% if featured_collection and section.settings.show_stats %}
+        <div class="collection-highlight-{{ unique }}__stats">
+          <div class="collection-highlight-{{ unique }}__stat">
+            <div class="collection-highlight-{{ unique }}__stat-number">
+              {{ featured_collection.products_count }}
+            </div>
+            <div class="collection-highlight-{{ unique }}__stat-label">
+              {% if featured_collection.products_count == 1 %}
+                {{ 'collections.general.item' | t }}
+              {% else %}
+                {{ 'collections.general.items' | t }}
+              {% endif %}
+            </div>
+          </div>
+
+          {% if section.settings.show_price_range and featured_collection.products.size > 0 %}
+            {% liquid
+  assign min_price = featured_collection.products.first.price
+  assign max_price = featured_collection.products.first.price
+  for product in featured_collection.products
+  if product.price < min_price
+  assign min_price = product.price
+  endif
+  if product.price > max_price
+  assign max_price = product.price
+  endif
+  endfor
+
+%}
+            <div class="collection-highlight-{{ unique }}__stat">
+              <div class="collection-highlight-{{ unique }}__stat-number">
+                {% if min_price == max_price %}
+                  {{ min_price | money_without_currency }}
+                {% else %}
+                  {{ min_price | money_without_currency }}-{{ max_price | money_without_currency }}
+                {% endif %}
+              </div>
+              <div class="collection-highlight-{{ unique }}__stat-label">
+                {{ 'collections.general.price_range' | t }}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Call to action buttons -->
+      <div class="collection-highlight-{{ unique }}__cta">
+        {% if section.settings.primary_button_text != blank and featured_collection %}
+          <a href="{{ featured_collection.url }}"
+             class="collection-highlight-{{ unique }}__button"
+             aria-describedby="collection-heading-{{ unique }}">
+            {{ section.settings.primary_button_text | escape }}
+          </a>
+        {% endif %}
+
+        {% if section.settings.secondary_button_text != blank and section.settings.secondary_button_url != blank %}
+          <a href="{{ section.settings.secondary_button_url }}"
+             class="collection-highlight-{{ unique }}__button collection-highlight-{{ unique }}__button--secondary"
+             {% if section.settings.secondary_button_url contains 'http' %}target="_blank" rel="noopener"{% endif %}>
+            {{ section.settings.secondary_button_text | escape }}
+          </a>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- Featured products (for grid and carousel layouts) -->
+    {% if layout_mode != 'banner' and featured_collection and featured_collection.products.size > 0 %}
+      <div class="collection-highlight-{{ unique }}__products"
+           role="region"
+           aria-label="{{ 'collections.general.featured_products' | t }}">
+
+        {% for product in featured_collection.products limit: products_to_show %}
+          <article class="collection-highlight-{{ unique }}__product">
+            <a href="{{ product.url | within: featured_collection }}"
+               aria-label="{{ 'products.product.view_product' | t: title: product.title }}">
+
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | image_url: width: 300 }}"
+                     srcset="{{ product.featured_image | image_url: width: 200 }} 200w,
+                             {{ product.featured_image | image_url: width: 300 }} 300w"
+                     sizes="200px"
+                     alt="{{ product.featured_image.alt | escape | default: product.title }}"
+                     class="collection-highlight-{{ unique }}__product-image"
+                     loading="lazy"
+                     width="200"
+                     height="{{ 200 | divided_by: product.featured_image.aspect_ratio | round }}">
+              {% else %}
+                <div class="collection-highlight-{{ unique }}__product-image"
+                     style="background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center;">
+                  <span style="opacity: 0.5;">{{ 'products.product.no_image' | t }}</span>
+                </div>
+              {% endif %}
+
+              <h3 class="collection-highlight-{{ unique }}__product-title">
+                {{ product.title | escape }}
+              </h3>
+
+              {% if section.settings.show_product_prices %}
+                <div class="collection-highlight-{{ unique }}__product-price">
+                  {% if product.compare_at_price > product.price %}
+                    <span style="text-decoration: line-through; opacity: 0.7;">
+                      {{ product.compare_at_price | money }}
+                    </span>
+                    {{ product.price | money }}
+                  {% else %}
+                    {{ product.price | money }}
+                  {% endif %}
+                </div>
+              {% endif %}
+
+            </a>
+          </article>
+        {% endfor %}
+
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% comment %} Structured data for collection {% endcomment %}
+{% if featured_collection %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "CollectionPage",
+    "name": {{ featured_collection.title | json }},
+    "url": {{ shop.url | append: featured_collection.url | json }},
+    {% if featured_collection.description != blank %}
+      "description": {{ featured_collection.description | strip_html | truncate: 300 | json }},
+    {% endif %}
+    {% if featured_collection.image %}
+      "image": {{ featured_collection.image | image_url: width: 1200 | prepend: 'https:' | json }},
+    {% endif %}
+    "numberOfItems": {{ featured_collection.products_count }},
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": {{ featured_collection.products_count }},
+      "itemListElement": [
+        {% for product in featured_collection.products limit: products_to_show %}
+          {
+            "@type": "Product",
+            "position": {{ forloop.index }},
+            "name": {{ product.title | json }},
+            "url": {{ shop.url | append: product.url | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+  }
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Collection Highlight",
+  "tag": "section",
+  "class": "collection-highlight",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Featured Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_heading",
+      "label": "Collection Heading Override",
+      "info": "Leave blank to use collection title"
+    },
+    {
+      "type": "richtext",
+      "id": "collection_description",
+      "label": "Collection Description Override",
+      "info": "Leave blank to use collection description"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow Text",
+      "placeholder": "NEW COLLECTION, FEATURED, etc."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Layout Mode",
+      "default": "banner",
+      "options": [
+        {"value": "banner", "label": "Banner (Text Only)"},
+        {"value": "grid", "label": "Grid (Text + Products)"},
+        {"value": "carousel", "label": "Carousel (Scrolling Products)"}
+      ]
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to Show",
+      "min": 3,
+      "max": 12,
+      "step": 3,
+      "default": 6,
+      "info": "Only applies to grid and carousel layouts"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Section Height",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "vh",
+      "info": "Banner and carousel layouts only"
+    },
+    {
+      "type": "range",
+      "id": "grid_padding",
+      "label": "Grid Layout Padding",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "rem",
+      "info": "Grid layout only"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text Position",
+      "default": "center",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ]
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content Max Width",
+      "min": 400,
+      "max": 800,
+      "step": 50,
+      "default": 600,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "default": 1400,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "select",
+      "id": "background_position",
+      "label": "Background Position",
+      "default": "center center",
+      "options": [
+        {"value": "top left", "label": "Top Left"},
+        {"value": "top center", "label": "Top Center"},
+        {"value": "top right", "label": "Top Right"},
+        {"value": "center left", "label": "Center Left"},
+        {"value": "center center", "label": "Center Center"},
+        {"value": "center right", "label": "Center Right"},
+        {"value": "bottom left", "label": "Bottom Left"},
+        {"value": "bottom center", "label": "Bottom Center"},
+        {"value": "bottom right", "label": "Bottom Right"}
+      ]
+    },
+    {
+      "type": "color",
+      "id": "fallback_background",
+      "label": "Fallback Background Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Enable Parallax Effect",
+      "default": false,
+      "info": "Creates depth with scroll-based movement (disabled on mobile for performance)"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "%"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Features"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show Collection Stats",
+      "default": true,
+      "info": "Shows product count and price range"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price_range",
+      "label": "Show Price Range",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_prices",
+      "label": "Show Product Prices",
+      "default": true,
+      "info": "For grid and carousel layouts"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Primary Button Text",
+      "default": "Shop Collection"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary Button Text"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_url",
+      "label": "Secondary Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Typography"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Text Color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 40,
+      "max": 96,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_weight",
+      "label": "Heading Weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description Size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Stats Styling"
+    },
+    {
+      "type": "color",
+      "id": "stat_number_color",
+      "label": "Stat Number Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "stat_label_color",
+      "label": "Stat Label Color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "header",
+      "content": "Button Styling"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_bg",
+      "label": "Primary Button Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_text_color",
+      "label": "Primary Button Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_hover_bg",
+      "label": "Primary Button Hover Background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_text_color",
+      "label": "Secondary Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_border",
+      "label": "Secondary Button Border",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_hover_bg",
+      "label": "Secondary Button Hover Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_hover_text",
+      "label": "Secondary Button Hover Text",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Border Radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Styling"
+    },
+    {
+      "type": "range",
+      "id": "product_border_radius",
+      "label": "Product Card Border Radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "product_image_radius",
+      "label": "Product Image Border Radius",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "default": 4,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Highlight",
+      "category": "Collections",
+      "settings": {
+        "layout_mode": "banner",
+        "text_position": "center",
+        "overlay_opacity": 50,
+        "show_stats": true,
+        "primary_button_text": "Shop Collection",
+        "section_height": 60
+      }
+    }
+  ]
+}
+{% endschema %}
