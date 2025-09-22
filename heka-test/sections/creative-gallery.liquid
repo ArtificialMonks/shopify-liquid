@@ -14,10 +14,17 @@
   assign unique = section.id | replace: '_', '' | downcase
   assign gallery_style = section.settings.gallery_style
   assign columns_desktop = section.settings.columns_desktop
+  assign columns_mobile = section.settings.columns_mobile | default: 2
   assign gap_size = section.settings.gap_size
   assign enable_lightbox = section.settings.enable_lightbox
   assign show_artist_info = section.settings.show_artist_info
   assign enable_lazy_loading = section.settings.enable_lazy_loading
+
+  # Validate and set grid aspect ratio with fallback
+  assign grid_aspect_ratio = section.settings.grid_aspect_ratio | default: '1 / 1'
+  unless grid_aspect_ratio contains '/'
+    assign grid_aspect_ratio = '1 / 1'
+  endunless
 
 %}
 
@@ -66,17 +73,23 @@
       {% when 'grid' %}
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       {% when 'justified' %}
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        justify-items: stretch;
+        align-items: start;
     {% endcase %}
   }
 
   @media (min-width: 768px) {
     .creative-gallery-{{ unique }}__grid {
-      {% unless gallery_style == 'justified' %}
-        grid-template-columns: repeat({{ columns_desktop }}, 1fr);
-      {% endunless %}
+      {% case gallery_style %}
+        {% when 'masonry' %}
+          grid-template-columns: repeat({{ columns_desktop }}, 1fr);
+        {% when 'grid' %}
+          grid-template-columns: repeat({{ columns_desktop }}, 1fr);
+        {% when 'justified' %}
+          grid-template-columns: repeat({{ columns_desktop }}, minmax(0, 1fr));
+          justify-items: stretch;
+      {% endcase %}
     }
   }
 
@@ -91,9 +104,6 @@
 
     {% if gallery_style == 'masonry' %}
       break-inside: avoid;
-      margin-bottom: {{ gap_size }}px;
-    {% elsif gallery_style == 'justified' %}
-      flex: 0 0 calc({{ 100 | divided_by: columns_desktop }}% - {{ gap_size | times: columns_desktop | minus: gap_size | divided_by: columns_desktop }}px);
       margin-bottom: {{ gap_size }}px;
     {% endif %}
 
@@ -122,7 +132,7 @@
     width: 100%;
     overflow: hidden;
     {% if gallery_style == 'grid' %}
-      aspect-ratio: {{ section.settings.grid_aspect_ratio | default: '1 / 1' }};
+      aspect-ratio: {{ grid_aspect_ratio }};
     {% endif %}
   }
 
@@ -186,6 +196,17 @@
     font-size: 0.875rem;
     opacity: 0.9;
     margin-bottom: 0.5rem;
+  }
+
+  .creative-gallery-{{ unique }}__artist--link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.5);
+    transition: text-decoration-color 0.3s ease;
+  }
+
+  .creative-gallery-{{ unique }}__artist--link:hover {
+    text-decoration-color: rgba(255, 255, 255, 1);
   }
 
   .creative-gallery-{{ unique }}__description {
@@ -312,12 +333,16 @@
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .creative-gallery-{{ unique }}__grid {
-      {% if gallery_style == 'masonry' %}
-        grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: 15px;
-      {% else %}
-        grid-template-columns: repeat(2, 1fr);
-      {% endif %}
+      {% case gallery_style %}
+        {% when 'masonry' %}
+          grid-template-columns: repeat({{ columns_mobile }}, 1fr);
+          grid-auto-rows: 15px;
+        {% when 'grid' %}
+          grid-template-columns: repeat({{ columns_mobile }}, 1fr);
+        {% when 'justified' %}
+          grid-template-columns: repeat({{ columns_mobile }}, minmax(0, 1fr));
+          justify-items: stretch;
+      {% endcase %}
     }
 
     .creative-gallery-{{ unique }}__item {
@@ -438,6 +463,17 @@
 
                 <div class="creative-gallery-{{ unique }}__image-container">
                   <picture>
+                    <!-- WebP format for modern browsers -->
+                    <source type="image/webp" media="(min-width: 990px)"
+                            srcset="{{ image | image_url: width: 600, format: 'webp' }} 600w,
+                                    {{ image | image_url: width: 800, format: 'webp' }} 800w">
+                    <source type="image/webp" media="(min-width: 750px)"
+                            srcset="{{ image | image_url: width: 400, format: 'webp' }} 400w,
+                                    {{ image | image_url: width: 600, format: 'webp' }} 600w">
+                    <source type="image/webp"
+                            srcset="{{ image | image_url: width: 300, format: 'webp' }} 300w,
+                                    {{ image | image_url: width: 400, format: 'webp' }} 400w">
+                    <!-- Fallback formats -->
                     <source media="(min-width: 990px)"
                             srcset="{{ image | image_url: width: 600 }} 600w,
                                     {{ image | image_url: width: 800 }} 800w">
@@ -452,7 +488,8 @@
                          class="creative-gallery-{{ unique }}__image"
                          {% if enable_lazy_loading %}loading="lazy"{% endif %}
                          width="400"
-                         height="{{ 400 | divided_by: image.aspect_ratio | round }}">
+                         height="{{ 400 | divided_by: image.aspect_ratio | round }}"
+                         data-gallery-image>
                   </picture>
 
                   {% if section.settings.enable_hover_effects %}
@@ -462,7 +499,13 @@
                           <h3 class="creative-gallery-{{ unique }}__title">{{ artwork_title | escape }}</h3>
                         {% endif %}
                         {% if show_artist_info and artist_name != blank %}
-                          <div class="creative-gallery-{{ unique }}__artist">{{ artist_name | escape }}</div>
+                          {% if block.settings.artist_portfolio != blank %}
+                            <a href="{{ block.settings.artist_portfolio }}" class="creative-gallery-{{ unique }}__artist creative-gallery-{{ unique }}__artist--link" target="_blank" rel="noopener" aria-label="{{ 'sections.gallery.visit_artist_portfolio' | t: artist: artist_name }}">
+                              {{ artist_name | escape }}
+                            </a>
+                          {% else %}
+                            <div class="creative-gallery-{{ unique }}__artist">{{ artist_name | escape }}</div>
+                          {% endif %}
                         {% endif %}
                         {% if artwork_description != blank %}
                           <div class="creative-gallery-{{ unique }}__description">{{ artwork_description | escape }}</div>
@@ -575,6 +618,8 @@
     // Open lightbox
     lightboxTriggers.forEach(trigger => {
       trigger.addEventListener('click', function() {
+        // Store trigger for focus return
+        window.lastLightboxTrigger = this;
         const src = this.dataset.lightboxSrc;
         const title = this.dataset.lightboxTitle;
         const artist = this.dataset.lightboxArtist;
@@ -590,15 +635,45 @@
         lightboxContainer.classList.add('creative-gallery-{{ unique }}__lightbox--active');
         document.body.style.overflow = 'hidden';
 
-        // Focus management for accessibility
+        // Enhanced focus management for accessibility
         lightboxClose.focus();
+        trapFocus(lightboxContainer);
       });
     });
+
+    // Focus trapping for accessibility
+    function trapFocus(element) {
+      const focusableElements = element.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstFocusableElement = focusableElements[0];
+      const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+      element.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          if (e.shiftKey) {
+            if (document.activeElement === firstFocusableElement) {
+              e.preventDefault();
+              lastFocusableElement.focus();
+            }
+          } else {
+            if (document.activeElement === lastFocusableElement) {
+              e.preventDefault();
+              firstFocusableElement.focus();
+            }
+          }
+        }
+      });
+    }
 
     // Close lightbox
     function closeLightbox() {
       lightboxContainer.classList.remove('creative-gallery-{{ unique }}__lightbox--active');
       document.body.style.overflow = '';
+      // Return focus to trigger element for accessibility
+      if (window.lastLightboxTrigger) {
+        window.lastLightboxTrigger.focus();
+      }
     }
 
     lightboxClose.addEventListener('click', closeLightbox);
@@ -616,9 +691,10 @@
     });
   });
 
-  // Masonry layout optimization
+  // Performance-optimized masonry layout
   {% if gallery_style == 'masonry' %}
-    window.addEventListener('load', function() {
+    let resizeTimeout;
+    function optimizeMasonryLayout() {
       const items = document.querySelectorAll('.creative-gallery-{{ unique }}__item--image');
       items.forEach(item => {
         const img = item.querySelector('img');
@@ -632,7 +708,48 @@
           item.setAttribute('data-height', heightClass);
         }
       });
+    }
+
+    window.addEventListener('load', optimizeMasonryLayout);
+
+    // Debounced resize handler for performance
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(optimizeMasonryLayout, 150);
     });
+  {% endif %}
+
+  // Enhanced image loading with intersection observer (only if lazy loading is enabled)
+  {% if enable_lazy_loading %}
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            // Trigger any additional processing needed for lazy-loaded images
+            img.classList.add('gallery-image-loaded');
+
+            // Enhanced loading performance tracking
+            if (img.complete) {
+              img.classList.add('gallery-image-complete');
+            } else {
+              img.addEventListener('load', function() {
+                this.classList.add('gallery-image-complete');
+              }, { once: true });
+            }
+
+            observer.unobserve(img);
+          }
+        });
+      }, {
+        rootMargin: '50px 0px',
+        threshold: 0.1
+      });
+
+      document.querySelectorAll('[data-gallery-image]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
   {% endif %}
 </script>
 
@@ -681,6 +798,15 @@
       "max": 6,
       "step": 1,
       "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns (Mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
     },
     {
       "type": "range",

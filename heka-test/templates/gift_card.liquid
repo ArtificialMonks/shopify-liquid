@@ -45,7 +45,7 @@
             <img src="{{ settings.logo | image_url: width: 300 }}" alt="{{ shop.name | escape }}" width="300">
           {% else %}
             <img
-              src="{{ 'gift-card/card.svg' | shopify_asset_url }}"
+              src="{{ 'gift-card.svg' | asset_url }}"
               alt="{{ 'gift_card.card' | t }}"
               width="300"
               height="200"
@@ -68,7 +68,7 @@
         {% if gift_card.pass_url %}
           <a href="{{ gift_card.pass_url }}">
             <img
-              src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}"
+              src="{{ 'add-to-apple-wallet.svg' | asset_url }}"
               alt="{{ 'gift_card.add_to_apple_wallet' | t }}"
               width="200"
               height="60"
