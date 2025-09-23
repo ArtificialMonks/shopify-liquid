@@ -35,7 +35,7 @@
 
   .brand-story-{{ unique }}__wrapper {
     display: grid;
-    gap: {{ section.settings.content_gap | default: 3 }}rem;
+    gap: {{ section.settings.content_gap | default: 3  | escape }}rem;
     align-items: center;
 
     {% case layout_style %}
@@ -105,11 +105,11 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: {{ section.settings.overlay_text_color | default: '#ffffff' }};
+      color: {{ section.settings.overlay_text_color | default: '#ffffff'  | escape }};
       background: {{ section.settings.overlay_background | default: 'rgba(0, 0, 0, 0.5)' }};
       padding: 3rem;
     {% else %}
-      color: {{ section.settings.text_color | default: '#000000' }};
+      color: {{ section.settings.text_color | default: '#000000'  | escape }};
     {% endif %}
 
     {% if content_width and layout_style != 'overlay' %}
@@ -186,13 +186,13 @@
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
-    color: {{ section.settings.highlight_title_color | default: '#000000' }};
+    color: {{ section.settings.highlight_title_color | default: '#000000'  | escape }};
   }
 
   .brand-story-{{ unique }}__highlight-text {
     font-size: 0.875rem;
     line-height: 1.5;
-    color: {{ section.settings.highlight_text_color | default: '#666666' }};
+    color: {{ section.settings.highlight_text_color | default: '#666666'  | escape }};
   }
 
   .brand-story-{{ unique }}__cta {
@@ -203,7 +203,7 @@
     display: inline-block;
     padding: 1rem 2rem;
     background: {{ section.settings.button_background | default: '#000000' }};
-    color: {{ section.settings.button_text_color | default: '#ffffff' }};
+    color: {{ section.settings.button_text_color | default: '#ffffff'  | escape }};
     text-decoration: none;
     border-radius: {{ section.settings.button_border_radius | default: 4 }}px;
     font-weight: 600;
@@ -340,7 +340,7 @@
                        srcset="{{ section.settings.story_image | image_url: width: 400 }} 400w,
                                {{ section.settings.story_image | image_url: width: 600 }} 600w"
                        sizes="(min-width: 990px) 50vw, (min-width: 750px) 100vw, 100vw"
-                       alt="{{ section.settings.story_image.alt | escape | default: section.settings.story_heading }}"
+                       alt="{{ section.settings.story_image.alt | escape | default: section.settings.story_heading  | escape }}"
                        class="brand-story-{{ unique }}__image"
                        loading="lazy"
                        width="600"

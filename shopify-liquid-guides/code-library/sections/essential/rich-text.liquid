@@ -135,7 +135,7 @@
                 "
                 {{ block.shopify_attributes }}
               >
-                <div class="quote-text">{{ block.settings.quote }}</div>
+                <div class="quote-text">{{ block.settings.quote | escape }}</div>
                 {%- if block.settings.author != blank -%}
                   <cite class="quote-author">{{ block.settings.author | escape }}</cite>
                 {%- endif -%}

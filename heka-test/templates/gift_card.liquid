@@ -61,7 +61,7 @@
         {% if gift_card.qr_code %}
           <div class="gift-card-qr">
             <p>{{ 'gift_card.qr_image_alt' | t }}</p>
-            <img src="{{ gift_card.qr_code }}" alt="{{ 'gift_card.qr_image_alt' | t }}" width="120" height="120">
+            <img src="{{ gift_card.qr_code }}" alt="{{ 'gift_card.qr_image_alt' | t  | escape }}" width="120" height="120">
           </div>
         {% endif %}
 

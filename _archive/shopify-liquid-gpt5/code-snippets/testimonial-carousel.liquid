@@ -40,7 +40,7 @@ Accessible carousel structure (HTML/Liquid only). Add light JS if needed. {% end
                 </div>
               {% endif %}
               <blockquote class="testimonial__quote">
-                {{ block.settings.quote }}
+                {{ block.settings.quote | escape }}
               </blockquote>
               <figcaption class="testimonial__meta">
                 <span class="testimonial__author">{{ block.settings.author | escape }}</span>

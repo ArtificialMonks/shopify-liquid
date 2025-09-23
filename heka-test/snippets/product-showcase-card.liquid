@@ -32,7 +32,7 @@
   <!-- Image container -->
   <div class="product-showcase-{{ unique }}__image-container">
     {% if featured_image %}
-      <a href="{{ product_url }}" aria-label="{{ 'products.product.view_product' | t: title: product.title }}">
+      <a href="{{ product_url }}" aria-label="{{ 'products.product.view_product' | t: title: product.title  | escape }}">
         <picture>
           <source media="(min-width: 990px)"
                   srcset="{{ featured_image | image_url: width: 600 }} 600w,
@@ -44,7 +44,7 @@
                srcset="{{ featured_image | image_url: width: 300 }} 300w,
                        {{ featured_image | image_url: width: 400 }} 400w"
                sizes="(min-width: 990px) calc(100vw / {{ settings.products_per_row | escape }}), (min-width: 750px) 50vw, 100vw"
-               alt="{{ featured_image.alt | escape | default: product.title }}"
+               alt="{{ featured_image.alt | escape | default: product.title  | escape }}"
                class="product-showcase-{{ unique }}__image"
                loading="lazy"
                width="400"
@@ -87,7 +87,7 @@
     <h3 class="product-showcase-{{ unique }}__title">
       <a href="{{ product_url }}"
          style="text-decoration: none; color: inherit;"
-         aria-label="{{ 'products.product.view_product' | t: title: product.title }}">
+         aria-label="{{ 'products.product.view_product' | t: title: product.title  | escape }}">
         {{ product.title | escape }}
       </a>
     </h3>
@@ -124,14 +124,14 @@
                   class="product-showcase-{{ unique }}__quick-buy"
                   data-product-id="{{ product.id | escape }}"
                   data-variant-id="{{ first_variant.id }}"
-                  aria-label="{{ 'products.product.add_to_cart' | t: title: product.title }}">
+                  aria-label="{{ 'products.product.add_to_cart' | t: title: product.title  | escape }}">
             {{ 'products.product.add_to_cart' | t }}
           </button>
         </form>
       {% else %}
         <a href="{{ product_url }}"
            class="product-showcase-{{ unique }}__quick-buy"
-           aria-label="{{ 'products.product.choose_options' | t: title: product.title }}">
+           aria-label="{{ 'products.product.choose_options' | t: title: product.title  | escape }}">
           {{ 'products.product.choose_options' | t }}
         </a>
       {% endif %}

@@ -30,7 +30,9 @@
         "exa-mcp-server",
         "--tools=web_search_exa,crawling,github_search"
       ],
-      "env": {}
+      "env": {
+        "EXA_API_KEY": "5ac661a2-2eac-4e16-80e8-f03c18a6c442"
+      }
     },
     "sequential-thinking": {
       "type": "stdio",

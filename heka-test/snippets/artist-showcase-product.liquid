@@ -94,7 +94,7 @@
     {%- comment -%} Product Description {%- endcomment -%}
     {%- if show_description and product.description != blank -%}
       <div class="artist-showcase__product-description rte">
-        {{ product.description | truncate: 150 }}
+        {{ product.description | truncate: 150 | escape }}
       </div>
     {%- endif -%}
 

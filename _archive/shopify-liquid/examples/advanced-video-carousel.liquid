@@ -394,7 +394,7 @@
             {% endif %}
             
             <video class="video-carousel__video-{{ carousel_id }} 
-                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type }}{% endif %}"
+                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type | escape }}{% endif %}"
                    {% if block.settings.autoplay_hover %}data-hover-play{% endif %}
                    {% if block.settings.muted %}muted{% endif %}
                    {% if block.settings.loop %}loop{% endif %}
@@ -455,7 +455,7 @@
             {% endif %}
             
             <video class="video-carousel__video-{{ carousel_id }} 
-                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type }}{% endif %}"
+                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type | escape }}{% endif %}"
                    {% if block.settings.autoplay_hover %}data-hover-play{% endif %}
                    {% if block.settings.muted %}muted{% endif %}
                    {% if block.settings.loop %}loop{% endif %}
@@ -515,7 +515,7 @@
             {% endif %}
             
             <video class="video-carousel__video-{{ carousel_id }} 
-                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type }}{% endif %}"
+                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type | escape }}{% endif %}"
                    {% if block.settings.autoplay_hover %}data-hover-play{% endif %}
                    {% if block.settings.muted %}muted{% endif %}
                    {% if block.settings.loop %}loop{% endif %}
@@ -575,7 +575,7 @@
             {% endif %}
             
             <video class="video-carousel__video-{{ carousel_id }} 
-                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type }}{% endif %}"
+                         {% if block.settings.apply_filter %}filter-{{ block.settings.filter_type | escape }}{% endif %}"
                    {% if block.settings.autoplay_hover %}data-hover-play{% endif %}
                    {% if block.settings.muted %}muted{% endif %}
                    {% if block.settings.loop %}loop{% endif %}

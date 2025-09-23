@@ -72,7 +72,7 @@
       data-lightbox-trigger="{{ gallery_id }}"
       data-lightbox-index="{{ index | minus: 1 }}"
       data-lightbox-src="{{ image | image_url: width: 1200 }}"
-      data-lightbox-alt="{{ title | escape | default: 'Gallery image' }}"
+      data-lightbox-alt="{{ title | escape | default: 'Gallery image'  | escape }}"
     >
   {%- endif -%}
 

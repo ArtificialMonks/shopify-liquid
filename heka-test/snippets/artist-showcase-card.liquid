@@ -70,7 +70,7 @@ case image_aspect_ratio
 
         <img
           src="{{ image | image_url: width: 800 }}"
-          alt="{{ title | escape | default: 'Showcase image' }}"
+          alt="{{ title | escape | default: 'Showcase image'  | escape }}"
           width="800"
           height="auto"
           loading="lazy"

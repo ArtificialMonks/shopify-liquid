@@ -128,6 +128,13 @@ docs/
 │   ├── progressive-web-app.md        # App-like experiences
 │   ├── advanced-performance.md       # Core Web Vitals optimization
 │   └── examples/                     # Advanced feature examples
+├── research/                          # 🆕 Technical research and investigations
+│   └── illegal-characters/           # Character encoding research (upload failure prevention)
+│       ├── README.md                  # Research overview and navigation
+│       ├── character-encoding-comprehensive-guide.md # Complete reference covering all domains
+│       ├── validation-patterns-reference.md # Technical regex patterns and detection algorithms
+│       ├── platform-specific-issues.md # Cross-platform compatibility and CLI limitations
+│       └── _archive/                  # Original research documents preserved
 └── shopify-extension/                 # Development tools and VS Code setup
     ├── README.md                      # Extension features and setup
     └── configuration.md               # Detailed configuration guide
@@ -390,6 +397,7 @@ Automated validation → Extension setup → Linting rules → Quality assurance
 | **Setup Validation** | [THEME-CHECK-SETUP.md](./THEME-CHECK-SETUP.md) | Complete validation automation setup |
 | **🆕 Liquid Syntax Validation** | [liquid-syntax-validator.py](./scripts/liquid-syntax-validator.py) | Comprehensive Liquid syntax validation |
 | **🆕 Validation Architecture** | [docs/validation/](./shopify-liquid-guides/docs/validation/) | Validator implementation and reference |
+| **🆕 Character Encoding Research** | [docs/research/illegal-characters/](./shopify-liquid-guides/docs/research/illegal-characters/) | Upload failure prevention and encoding validation |
 | **🆕 MCP Integration** | [docs/development/](./shopify-liquid-guides/docs/development/) | Enhanced development setup |
 | **Learn Shopify Liquid** | [01-fundamentals.md](./shopify-liquid-guides/01-fundamentals.md) | Syntax, objects, filters |
 | **Build First Section** | [02-quick-start.md](./shopify-liquid-guides/02-quick-start.md) | Step-by-step tutorial with validation |

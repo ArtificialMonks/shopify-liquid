@@ -87,6 +87,9 @@ shopify login --store=your-store.myshopify.com
 # 🆕 Deep validation (ultimate + integrity + comprehensive)
 ./scripts/validate-theme.sh deep
 
+# 🆕 Character encoding validation (prevents upload failures)
+python3 scripts/character-encoding-validator.py --all
+
 # 🆕 Shopify MCP Server integration (when working with AI assistants)
 # Note: These are used within Claude Code, not direct command line tools
 # See shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md for complete integration guide
@@ -469,6 +472,7 @@ Critical validation rules:
 - **`shopify-liquid-guides/docs/architecture/theme-overview.md`** - Complete theme architecture
 - **`shopify-liquid-guides/docs/validation/VALIDATOR_ARCHITECTURE_IMPROVEMENTS.md`** - 🆕 Comprehensive validator implementation
 - **`shopify-liquid-guides/docs/validation/SHOPIFY_FILE_TYPE_VALIDATION_MATRIX.md`** - 🆕 Official validation reference
+- **`shopify-liquid-guides/docs/research/illegal-characters/`** - 🆕 Character encoding research (upload failure prevention)
 - **`STRUCTURE.md`** - Complete file tree and navigation guide
 
 ### Production Code References

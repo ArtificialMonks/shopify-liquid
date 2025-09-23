@@ -34,6 +34,7 @@
 - ✅ Ultimate Liquid validator is functional
 - ✅ Theme Check configuration is active
 - ✅ Schema validation rules are loaded
+- ✅ Character encoding validation is ready
 - ✅ MCP server integration is available
 - ✅ Comprehensive syntax validation is ready
 
@@ -107,6 +108,7 @@ Our system automatically detects what type of file you're creating based on:
 | Documentation | Purpose | Link |
 |---------------|---------|------|
 | **Schema Guidelines** | Prevent validation errors | `shopify-liquid-guides/schema-validation/schema-guidelines.md` |
+| **Character Encoding Research** | Upload failure prevention | `shopify-liquid-guides/docs/research/illegal-characters/` |
 | **Design System** | Component tokens & patterns | `shopify-liquid-guides/docs/architecture/design-system-implementation.md` |
 | **File Type Matrix** | Official validation rules | `shopify-liquid-guides/docs/validation/SHOPIFY_FILE_TYPE_VALIDATION_MATRIX.md` |
 | **MCP Integration** | Enhanced validation & API access | `shopify-liquid-guides/docs/development/SHOPIFY-MCP-SETUP.md` |
@@ -1019,6 +1021,12 @@ cat shopify-liquid-guides/schema-validation/schema-guidelines.md
 - ✅ Filter validation (60+ official Shopify filters)
 - ✅ Object validation (official Shopify objects)
 - ✅ Syntax error detection (unclosed tags, malformed expressions)
+
+### **Character Encoding Validation**
+- ✅ Cross-platform encoding compatibility (Windows/macOS/Linux)
+- ✅ Upload failure prevention (BOM detection, control characters)
+- ✅ Context separation validation (JavaScript/CSS/Liquid boundaries)
+- ✅ Security character validation (XSS prevention, escape filters)
 - ✅ Performance pattern detection (nested loops, excessive filters)
 - ✅ Deprecated filter warnings (img_url → image_url)
 

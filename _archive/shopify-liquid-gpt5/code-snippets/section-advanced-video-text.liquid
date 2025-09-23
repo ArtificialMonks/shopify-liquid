@@ -10,7 +10,7 @@
 <section class="advanced-video-text {{ root }}"
   aria-label="{{ section.settings.aria_label | default: 'Video and text section' | escape }}"
   data-section-id="{{ section.id }}"
-  data-animate="{{ section.settings.anim_enable }}"
+  data-animate="{{ section.settings.anim_enable | escape }}"
 >
   <div class="{{ root }}__bg" aria-hidden="true"></div>
   <div class="{{ root }}__inner">
@@ -65,7 +65,7 @@
     <div class="{{ root }}__body rte">
       {{ section.settings.body_richtext }}
       {%- if section.settings.readmore_enable -%}
-      <button class="{{ root }}__readmore" data-enhance="accordion" aria-expanded="false" aria-controls="rm-{{ sid }}">{{ section.settings.readmore_label | default: 'Read more' }}</button>
+      <button class="{{ root }}__readmore" data-enhance="accordion" aria-expanded="false" aria-controls="rm-{{ sid }}">{{ section.settings.readmore_label | default: 'Read more' | escape }}</button>
       <div id="rm-{{ sid }}" class="{{ root }}__more" hidden>{{ section.settings.readmore_content }}</div>
       {%- endif -%}
     </div>

@@ -137,6 +137,15 @@ The repository contains unified Shopify Liquid documentation, production code, a
 - `shopify-liquid/` - Original comprehensive documentation (preserved)
 - `shopify-liquid-gpt5/` - Original practical reference guide (preserved)
 
+### 🔤 Character Encoding Research (`docs/research/illegal-characters/`)
+**Recently restructured** from 9 overlapping research documents into 3 focused guides:
+- `character-encoding-comprehensive-guide.md` - Complete reference covering all domains
+- `validation-patterns-reference.md` - Technical regex patterns and detection algorithms
+- `platform-specific-issues.md` - Cross-platform compatibility and CLI limitations
+- `_archive/` - Original research documents preserved with full context
+
+**Implementation**: Integrated with `ultimate-validator.py` and `character-encoding-validator.py` for comprehensive upload failure prevention across JavaScript/CSS/HTML/CLI domains.
+
 ## Key Documentation Patterns
 
 ### Liquid Section Structure

@@ -38,7 +38,7 @@
 
         {%- if section.settings.subheading != blank -%}
           <div class="feature-grid-subheading rte">
-            {{ section.settings.subheading }}
+            {{ section.settings.subheading | escape }}
           </div>
         {%- endif -%}
       </div>
@@ -147,13 +147,13 @@
 
                   {%- if block.settings.text != blank -%}
                     <div class="feature-text rte">
-                      {{ block.settings.text }}
+                      {{ block.settings.text | escape }}
                     </div>
                   {%- endif -%}
 
                   {%- if block.settings.link_text != blank and block.settings.link_url != blank -%}
                     <a
-                      href="{{ block.settings.link_url }}"
+                      href="{{ block.settings.link_url | escape }}"
                       class="feature-link"
                       {% if block.settings.link_url contains 'http' %}
                         target="_blank"
@@ -176,8 +176,8 @@
     {%- if section.settings.cta_text != blank and section.settings.cta_url != blank -%}
       <div class="feature-grid-cta text-{{ text_alignment }}">
         <a
-          href="{{ section.settings.cta_url }}"
-          class="btn btn-{{ section.settings.cta_style }}"
+          href="{{ section.settings.cta_url | escape }}"
+          class="btn btn-{{ section.settings.cta_style | escape }}"
           {% if section.settings.cta_url contains 'http' %}
             target="_blank"
             rel="noopener noreferrer"

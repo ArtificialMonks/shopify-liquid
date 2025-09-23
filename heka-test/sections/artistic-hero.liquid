@@ -33,7 +33,7 @@
 
     /* Design tokens */
     --hero-bg: {{ section.settings.background_color | default: 'transparent' }};
-    --hero-text: {{ section.settings.text_color | default: '#000000' }};
+    --hero-text: {{ section.settings.text_color | default: '#000000'  | escape }};
     --overlay-color: {{ section.settings.overlay_color | default: '#000000' }};
     --overlay-opacity: {{ overlay_opacity | divided_by: 100.0 }};
 
@@ -167,7 +167,7 @@
     display: inline-block;
     padding: 1rem 2rem;
     background: {{ section.settings.cta_bg_color | default: '#000000' }};
-    color: {{ section.settings.cta_text_color | default: '#ffffff' }};
+    color: {{ section.settings.cta_text_color | default: '#ffffff'  | escape }};
     text-decoration: none;
     border-radius: {{ section.settings.cta_border_radius | default: 4 }}px;
     font-weight: 600;
@@ -375,7 +375,7 @@
     <!-- Main heading -->
     {% if section.settings.hero_heading != blank %}
       <h1 id="hero-heading-{{ unique }}" class="artistic-hero-{{ unique }}__heading">
-        {{ section.settings.hero_heading }}
+        {{ section.settings.hero_heading | escape }}
       </h1>
     {% endif %}
 

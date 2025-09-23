@@ -13,6 +13,7 @@ This repository provides everything needed for world-class Shopify theme develop
 - **⚡ Enhanced Automation**: Progressive validation levels (Development/Production/Ultimate)
 - **🔧 Multi-Level Validation**: Checklist-compliant validation with automated and manual review criteria
 - **📊 50+ Validation Rules**: Comprehensive checklist implementation covering syntax, performance, security, accessibility
+- **🆕 Character Encoding Validation**: Comprehensive framework preventing theme upload failures from encoding issues
 - **🚀 Modern Shopify Features**: 2024-2025 features including Shop Pay, PWA, AI blocks, metaobjects
 - **Complete Architecture Coverage**: All 7 Shopify file types with design system integration
 - **Production-Ready Code**: Copy-paste sections, blocks, templates with unified styling
@@ -59,6 +60,12 @@ python scripts/test-checklist-compliance.py
 
 # 🆕 Deep validation (ultimate + integrity + comprehensive):
 ./scripts/validate-theme.sh deep
+
+# 🆕 Character encoding validation (prevents upload failures):
+python3 scripts/character-encoding-validator.py --all
+
+# 🆕 Auto-fix character encoding issues:
+python3 scripts/character-encoding-validator.py --fix ./
 
 # Run complete validation workflow:
 ./scripts/validate-theme.sh all
@@ -109,7 +116,10 @@ python scripts/test-checklist-compliance.py
 | `scripts/validate-theme.sh` | **Enhanced validation workflow** | Multi-level validation with liquid syntax + design system checks |
 | `scripts/ultimate-validator.py` | **Python validation suite** | Advanced repository-wide validation with liquid syntax integration |
 | `scripts/liquid-syntax-validator.py` | **🆕 Liquid syntax validator** | Comprehensive Liquid syntax validation with python-liquid |
+| `scripts/character-encoding-validator.py` | **🆕 Character encoding validator** | Comprehensive character encoding validation and auto-fixing |
+| `scripts/css-character-patterns.py` | **🆕 CSS pattern library** | Character encoding detection patterns and auto-fix utilities |
 | `scripts/scan-schema-integrity.py` | **Schema validation** | Python-based comprehensive schema checking |
+| `scripts/pre-commit-css-validation.sh` | **🆕 CSS pre-commit hook** | Prevents commits with character encoding issues |
 | `scripts/README.md` | **Scripts documentation** | Complete automation guide |
 | `locales/` | Translation files | Multi-language support |
 | `.vscode/` | VS Code configuration | Intelligent development environment |
@@ -165,6 +175,7 @@ shopify-liquid-guides/             # Complete documentation hub
 - **Real-World Implementations**: Patterns from successful Theme Store themes
 - **Performance-First**: Core Web Vitals optimization and Theme Store compliance
 - **Accessibility Built-In**: WCAG 2.1 AA compliance patterns
+- **Character Encoding Research**: Comprehensive validation preventing upload failures ([Research Documentation](./shopify-liquid-guides/docs/research/illegal-characters/))
 
 ### Developer Experience
 - **Pre-Configured Environment**: VS Code workspace ready for immediate development

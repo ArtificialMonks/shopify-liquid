@@ -18,14 +18,14 @@
       {% for part in paginate.parts %}
         {% if part.is_link %}
           <li class="pagination__item">
-            <a href="{{ part.url }}" class="pagination__link" aria-label="Page {{ part.title }}">
+            <a href="{{ part.url }}" class="pagination__link" aria-label="Page {{ part.title  | escape }}">
               {{ part.title }}
             </a>
           </li>
         {% else %}
           {% if part.title == paginate.current_page %}
             <li class="pagination__item">
-              <span class="pagination__link pagination__link--current" aria-current="page" aria-label="Current page, page {{ part.title }}">
+              <span class="pagination__link pagination__link--current" aria-current="page" aria-label="Current page, page {{ part.title  | escape }}">
                 {{ part.title }}
               </span>
             </li>

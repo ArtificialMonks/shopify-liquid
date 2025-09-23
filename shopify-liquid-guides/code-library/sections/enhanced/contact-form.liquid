@@ -37,13 +37,13 @@
 
         {%- if section.settings.subheading != blank -%}
           <div class="contact-form-subheading rte">
-            {{ section.settings.subheading }}
+            {{ section.settings.subheading | escape }}
           </div>
         {%- endif -%}
 
         {%- if section.settings.contact_info != blank -%}
           <div class="contact-info rte">
-            {{ section.settings.contact_info }}
+            {{ section.settings.contact_info | escape }}
           </div>
         {%- endif -%}
       </div>
@@ -65,7 +65,7 @@
                       {%- if field == 'form' -%}
                         {{ form.errors.messages[field] | escape }}
                       {%- else -%}
-                        {{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] | escape }}.
+                        {{ form.errors.translated_fields[field] | capitalize | escape }} {{ form.errors.messages[field] | escape }}.
                       {%- endif -%}
                     </li>
                   {%- endfor -%}
@@ -189,7 +189,7 @@
                       required
                     >
                     <span class="checkbox-mark"></span>
-                    <span class="checkbox-text">{{ section.settings.privacy_text }}</span>
+                    <span class="checkbox-text">{{ section.settings.privacy_text | escape }}</span>
                   </label>
                 </div>
               {%- endif -%}
@@ -198,7 +198,7 @@
             <div class="form-actions">
               <button
                 type="submit"
-                class="btn btn-{{ section.settings.button_style }} contact-submit"
+                class="btn btn-{{ section.settings.button_style | escape }} contact-submit"
                 data-contact-submit
               >
                 <span class="btn-text">{{ section.settings.button_text | default: 'Send message' | escape }}</span>

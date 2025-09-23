@@ -528,7 +528,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
   .video-text__text-{{ uid }} {
     flex: 1;
     /* Text alignment */
-    text-align: {{ block.settings.text_align | default: 'left' }};
+    text-align: {{ block.settings.text_align | default: 'left'  | escape }};
     
     /* Text max-width constraint */
     {% case block.settings.text_max_width %}
@@ -808,7 +808,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
     .video-text__video-caption-{{ uid }} {
       margin-top: 8px;
       font-size: 14px;
-      color: {{ block.settings.text_color }};
+      color: {{ block.settings.text_color  | escape }};
       opacity: 0.7;
 
       {% case block.settings.video_caption_style %}
@@ -846,7 +846,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
       font-size: {{ block.settings.heading_size }}px;
     {% endif %}
     font-weight: {{ block.settings.heading_weight }};
-    color: {{ block.settings.text_color | default: 'currentColor' }};
+    color: {{ block.settings.text_color | default: 'currentColor'  | escape }};
     line-height: 1.2;
   }
 
@@ -864,7 +864,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
       font-size: {{ block.settings.body_size }}px;
     {% endif %}
     font-weight: {{ block.settings.body_weight }};
-    color: {{ block.settings.text_color | default: 'currentColor' }};
+    color: {{ block.settings.text_color | default: 'currentColor'  | escape }};
     line-height: 1.6;
   }
   
@@ -1015,7 +1015,7 @@ All classes suffixed with unique block.id to prevent collisions between block in
   
   /* Focus states for accessibility */
   .video-text__video-{{ uid }}:focus {
-    outline: 2px solid {{ block.settings.text_color | default: '#005fcc' }};
+    outline: 2px solid {{ block.settings.text_color | default: '#005fcc'  | escape }};
     outline-offset: 2px;
   }
 
@@ -1133,14 +1133,14 @@ All classes suffixed with unique block.id to prevent collisions between block in
     {%- comment -%} Text Content Section {%- endcomment -%}
     <div class="video-text__text-{{ uid }}">
       {%- if block.settings.heading != blank -%}
-        <{{ block.settings.heading_tag | default: 'h2' }} class="video-text__heading-{{ uid }}">
+        <{{ block.settings.heading_tag | default: 'h2' | escape }} class="video-text__heading-{{ uid }}">
           {{- block.settings.heading | escape -}}
-        </{{ block.settings.heading_tag | default: 'h2' }}>
+        </{{ block.settings.heading_tag | default: 'h2' | escape }}>
       {%- endif -%}
       
       {%- if block.settings.body != blank -%}
         <div class="video-text__body-{{ uid }}">
-          {{- block.settings.body -}}
+          {{- block.settings.body | escape -}}
         </div>
       {%- endif -%}
     </div>

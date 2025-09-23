@@ -36,7 +36,7 @@
   }
 
   .product-showcase-{{ unique }}__header {
-    text-align: {{ section.settings.text_alignment | default: 'center' }};
+    text-align: {{ section.settings.text_alignment | default: 'center'  | escape }};
     margin-bottom: 3rem;
   }
 
@@ -50,7 +50,7 @@
 
   .product-showcase-{{ unique }}__description {
     font-size: 1.125rem;
-    color: {{ section.settings.text_color | default: '#666666' }};
+    color: {{ section.settings.text_color | default: '#666666'  | escape }};
     max-width: 600px;
     margin: 0 auto 2rem;
     line-height: 1.6;
@@ -135,7 +135,7 @@
     top: 0.75rem;
     left: 0.75rem;
     background: {{ section.settings.badge_background | default: '#e74c3c' }};
-    color: {{ section.settings.badge_text_color | default: '#ffffff' }};
+    color: {{ section.settings.badge_text_color | default: '#ffffff'  | escape }};
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
@@ -160,7 +160,7 @@
   .product-showcase-{{ unique }}__title {
     font-size: 1.125rem;
     font-weight: 600;
-    color: {{ section.settings.title_color | default: '#000000' }};
+    color: {{ section.settings.title_color | default: '#000000'  | escape }};
     margin-bottom: 0.75rem;
     line-height: 1.4;
     display: -webkit-box;
@@ -192,7 +192,7 @@
     width: 100%;
     padding: 0.75rem 1.5rem;
     background: {{ section.settings.button_background | default: '#000000' }};
-    color: {{ section.settings.button_text_color | default: '#ffffff' }};
+    color: {{ section.settings.button_text_color | default: '#ffffff'  | escape }};
     border: none;
     border-radius: {{ section.settings.button_border_radius | default: 4 }}px;
     font-weight: 600;

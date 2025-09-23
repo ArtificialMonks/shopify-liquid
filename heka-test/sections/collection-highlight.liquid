@@ -84,7 +84,7 @@
 
   .collection-highlight-{{ unique }}__content {
     text-align: {{ text_position }};
-    color: {{ section.settings.text_color | default: '#ffffff' }};
+    color: {{ section.settings.text_color | default: '#ffffff'  | escape }};
     {% if text_position == 'center' %}
       margin: 0 auto;
     {% endif %}
@@ -145,7 +145,7 @@
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: {{ section.settings.stat_label_color | default: '#cccccc' }};
+    color: {{ section.settings.stat_label_color | default: '#cccccc'  | escape }};
   }
 
   .collection-highlight-{{ unique }}__cta {
@@ -162,7 +162,7 @@
     display: inline-block;
     padding: 1rem 2rem;
     background: {{ section.settings.primary_button_bg | default: '#ffffff' }};
-    color: {{ section.settings.primary_button_text_color | default: '#000000' }};
+    color: {{ section.settings.primary_button_text_color | default: '#000000'  | escape }};
     text-decoration: none;
     border-radius: {{ section.settings.button_border_radius | default: 4 }}px;
     font-weight: 600;
@@ -178,13 +178,13 @@
 
   .collection-highlight-{{ unique }}__button--secondary {
     background: transparent;
-    color: {{ section.settings.secondary_button_text_color | default: '#ffffff' }};
+    color: {{ section.settings.secondary_button_text_color | default: '#ffffff'  | escape }};
     border-color: {{ section.settings.secondary_button_border | default: '#ffffff' }};
   }
 
   .collection-highlight-{{ unique }}__button--secondary:hover {
     background: {{ section.settings.secondary_button_hover_bg | default: '#ffffff' }};
-    color: {{ section.settings.secondary_button_hover_text | default: '#000000' }};
+    color: {{ section.settings.secondary_button_hover_text | default: '#000000'  | escape }};
   }
 
   .collection-highlight-{{ unique }}__button:focus {
@@ -227,7 +227,7 @@
     font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
-    color: {{ section.settings.text_color | default: '#ffffff' }};
+    color: {{ section.settings.text_color | default: '#ffffff'  | escape }};
   }
 
   .collection-highlight-{{ unique }}__product-price {
@@ -492,14 +492,14 @@
         {% for product in featured_collection.products limit: products_to_show %}
           <article class="collection-highlight-{{ unique }}__product">
             <a href="{{ product.url | within: featured_collection }}"
-               aria-label="{{ 'products.product.view_product' | t: title: product.title }}">
+               aria-label="{{ 'products.product.view_product' | t: title: product.title  | escape }}">
 
               {% if product.featured_image %}
                 <img src="{{ product.featured_image | image_url: width: 300 }}"
                      srcset="{{ product.featured_image | image_url: width: 200 }} 200w,
                              {{ product.featured_image | image_url: width: 300 }} 300w"
                      sizes="200px"
-                     alt="{{ product.featured_image.alt | escape | default: product.title }}"
+                     alt="{{ product.featured_image.alt | escape | default: product.title  | escape }}"
                      class="collection-highlight-{{ unique }}__product-image"
                      loading="lazy"
                      width="200"

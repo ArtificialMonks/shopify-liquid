@@ -14,6 +14,7 @@ Consolidates ALL validation checks into ONE BULLETPROOF SYSTEM:
 ✅ Theme Store compliance (production ready)
 ✅ Real Shopify API validation (ONLY real features)
 ✅ Liquid syntax validation (proper structure)
+✅ Character encoding validation (NO illegal characters)
 ✅ Progressive validation levels (Development/Production/Ultimate)
 
 BLOCKS DEPLOYMENT if ANY critical issues found.
@@ -30,16 +31,16 @@ from typing import List, Dict, Tuple
 from dataclasses import dataclass
 from enum import Enum
 
-# Import Liquid syntax validator
+# Import specialized validators
 try:
     import importlib.util
     import sys
     import os
 
-    # Load the liquid-syntax-validator.py module
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    validator_path = os.path.join(script_dir, "liquid-syntax-validator.py")
 
+    # Load the liquid-syntax-validator.py module
+    validator_path = os.path.join(script_dir, "liquid-syntax-validator.py")
     spec = importlib.util.spec_from_file_location("liquid_syntax_validator", validator_path)
     liquid_syntax_validator = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(liquid_syntax_validator)
@@ -47,9 +48,20 @@ try:
     ShopifyLiquidSyntaxValidator = liquid_syntax_validator.ShopifyLiquidSyntaxValidator
     LiquidErrorSeverity = liquid_syntax_validator.LiquidErrorSeverity
     LIQUID_VALIDATOR_AVAILABLE = True
+
+    # Load the character-encoding-validator.py module
+    char_validator_path = os.path.join(script_dir, "character-encoding-validator.py")
+    spec = importlib.util.spec_from_file_location("character_encoding_validator", char_validator_path)
+    character_encoding_validator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(character_encoding_validator)
+
+    CharacterEncodingValidator = character_encoding_validator.CharacterEncodingValidator
+    EncodingSeverity = character_encoding_validator.EncodingSeverity
+    CHARACTER_VALIDATOR_AVAILABLE = True
 except Exception as e:
     LIQUID_VALIDATOR_AVAILABLE = False
-    print(f"⚠️  Liquid syntax validator not available: {e}. Enhanced validation disabled.")
+    CHARACTER_VALIDATOR_AVAILABLE = False
+    print(f"⚠️  Specialized validators not available: {e}. Enhanced validation disabled.")
 
 # Constants for repeated messages
 RENDER_TAG_MESSAGE = 'DOES NOT EXIST - Use {% render %} tag'
@@ -1212,6 +1224,80 @@ class ShopifyLiquidValidator:
                     suggestion="Use external scripts and CSP-compliant event handling [CHECKLIST: SECURITY]"
                 )
 
+    def validate_character_encoding(self, content: str, file_path: str, file_type: str):
+        """
+        Validate character encoding issues using the standalone character encoding validator
+        This ensures consistent results between standalone and integrated validation
+        """
+        if not CHARACTER_VALIDATOR_AVAILABLE:
+            return
+
+        try:
+            # Create standalone character encoding validator
+            char_validator = CharacterEncodingValidator()
+
+            # Write content to temporary file if needed, or call validate directly on content
+            # First, let's add the content and file_path to the validator's state
+            char_validator.files_scanned = 1
+
+            # Run all validation patterns directly on content
+            # HTML entity patterns
+            issues = char_validator._validate_patterns(char_validator.HTML_ENTITY_PATTERNS, content, file_path)
+            char_validator.issues.extend(issues)
+
+            # Unicode variable patterns
+            issues = char_validator._validate_patterns(char_validator.UNICODE_VARIABLE_PATTERNS, content, file_path)
+            char_validator.issues.extend(issues)
+
+            # Schema encoding patterns
+            issues = char_validator._validate_patterns(char_validator.SCHEMA_ENCODING_PATTERNS, content, file_path)
+            char_validator.issues.extend(issues)
+
+            # Unescaped output validation
+            issues = char_validator._validate_unescaped_output(content, file_path)
+            char_validator.issues.extend(issues)
+
+            # Meta tag patterns
+            issues = char_validator._validate_patterns(char_validator.META_TAG_PATTERNS, content, file_path)
+            char_validator.issues.extend(issues)
+
+            # Attribute patterns
+            issues = char_validator._validate_patterns(char_validator.ATTRIBUTE_PATTERNS, content, file_path)
+            char_validator.issues.extend(issues)
+
+            # Schema encoding validation
+            issues = char_validator._validate_schema_encoding(content, file_path)
+            char_validator.issues.extend(issues)
+
+            # Convert the standalone validator's issues to our format
+            for issue in char_validator.issues:
+                # Map EncodingSeverity to our Severity enum
+                severity_mapping = {
+                    EncodingSeverity.CRITICAL: Severity.CRITICAL,
+                    EncodingSeverity.ERROR: Severity.ERROR,
+                    EncodingSeverity.WARNING: Severity.WARNING,
+                    EncodingSeverity.INFO: Severity.WARNING  # Map INFO to WARNING for our system
+                }
+
+                self.add_issue(
+                    file_path=file_path,
+                    line=issue.line_number,
+                    issue_type=issue.issue_type,
+                    severity=severity_mapping.get(issue.severity, Severity.WARNING),
+                    message=issue.message,
+                    suggestion=f"{issue.fix_suggestion} [ILLEGAL-CHARACTER]"
+                )
+
+        except Exception as e:
+            self.add_issue(
+                file_path=file_path,
+                line=0,
+                issue_type="character_validation_error",
+                severity=Severity.WARNING,
+                message=f"Character encoding validation failed: {str(e)}",
+                suggestion="Manual character encoding review recommended"
+            )
+
     def validate_schema_placement(self, content: str, file_path: str, file_type: str):
         """
         Validate schema block placement and format
@@ -1724,6 +1810,9 @@ class ShopifyLiquidValidator:
 
         # NEW: Comprehensive edge case validation
         self.validate_shopify_edge_cases(content, file_path_str, file_type)
+
+        # NEW: Character encoding validation
+        self.validate_character_encoding(content, file_path_str, file_type)
 
         # NEW: Comprehensive Liquid syntax validation (TEMPORARILY DISABLED FOR DEBUGGING)
         # if self.liquid_validator and file_type in ['section', 'layout', 'template_liquid', 'snippet', 'theme_block']:
